@@ -1,7 +1,7 @@
 
 # Compilation
 CC		= clang++
-CFLAGS	=  -g  -Wall -Wextra -Wshadow -Wconversion -Wpedantic -std=c++98
+CFLAGS	=  -g  -Wall -Wextra -Wshadow -Wconversion -Wpedantic -Iinclude -std=c++98
 C_OBJ	= $(CC) $(CFLAGS) $(INC) -c $< -o $@
 C_MAIN	= $(CC) $(CFLAGS) $(INC) $(OBJ) $(MAIN) -o $(NAME)
 
@@ -18,7 +18,8 @@ D_OBJ	= obj
 # Files
 MAIN	= test.cpp
 
-_HEAD	= vector.hpp iterator.hpp iterator_traits.hpp vector_iterator.hpp enable_if.hpp test.hpp
+
+_HEAD	= 
 HEAD	= $(_HEAD)
 
 _SRC	= test_pair.cpp

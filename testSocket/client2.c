@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #define PORT 8080
@@ -11,6 +12,8 @@ int main(int argc, char const* argv[])
 {
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
+	struct pollfd pollfds[1];
+
     char* hello = "Hello from client";
     char buffer[1024] = { 0 };
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -37,10 +40,31 @@ int main(int argc, char const* argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    send(sock, hello, strlen(hello), 0);
+
+	pollfds[0].fd = sock;
+	pollfds[0].events = POLLIN | POLLOUT;
+	int res;
+	int i = 10;
+	while(i-- > 0)
+	{
+		res = poll(pollfds, 1, 0);
+		if (res != 0)
+		{
+			if ((pollfds[0].revents & POLLIN) == POLLIN)
+			{
+				valread = read(pollfds[0].fd, buffer, 1024);
+				if (valread > 0)
+					printf("\nRead : %s\n", buffer);
+			}
+			if ((pollfds[0].revents & POLLOUT) == POLLOUT)
+				write(pollfds[0].fd, hello, strlen(hello));
+		}
+		printf("\nclient event %d\n", pollfds[0].revents); 
+	}
+    // send(sock, hello, strlen(hello), 0);
 //    printf("Hello message sent\n");
-    valread = read(sock, buffer, 1024);
-    printf("%s\n", buffer);
+    // valread = read(sock, buffer, 1024);
+    // printf("%s\n", buffer);
   
     // closing the connected socket
     close(client_fd);

@@ -59,20 +59,28 @@ int main(int argc, char const* argv[])
     }
 
 	pollfds[0].fd = new_socket;
+	pollfds[0].events = POLLIN | POLLOUT;
 	int res;
-	while(1)
+	int i = 10;
+	while(i-- > 0)
 	{
-		res = poll(pollfds, 1, 1);
+		res = poll(pollfds, 1, 0);
 		if (res != 0)
 		{
-			printf("%d\n", pollfds[0].revents);
+			if ((pollfds[0].revents & POLLIN) == POLLIN)
+			{
+				valread = read(new_socket, buffer, 1024);
+				if (valread > 0)
+					printf("\nRead : %s\n", buffer);
+			}
+			if ((pollfds[0].revents & POLLOUT) == POLLOUT)
+				write(new_socket, hello, strlen(hello));
 		}
-
-			printf("yoyoyoyoy%d\n", pollfds[0].revents);
+		printf("\nserver event %d\n", pollfds[0].revents); 
 	}
-    valread = read(new_socket, buffer, 1024);
-    printf("%s\n", buffer);
-    send(new_socket, hello, strlen(hello), 0);
+    
+    // printf("%s\n", buffer);
+    // send(new_socket, hello, strlen(hello), 0);
 //    printf("Hello message sent\n");
     
   // closing the connected socket
