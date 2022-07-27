@@ -2,16 +2,20 @@
 // programming
 #include <arpa/inet.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
+#include <iostream>
+#include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#define PORT 8080
+#define PORT 6666
   
 int main(int argc, char const* argv[])
 {
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
-    char* hello = "Hello from client";
+	struct pollfd pollfds[1];
+	std::string	input;		
+
     char buffer[1024] = { 0 };
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
@@ -37,10 +41,34 @@ int main(int argc, char const* argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    send(sock, hello, strlen(hello), 0);
+
+	pollfds[0].fd = sock;
+	pollfds[0].events = POLLIN | POLLOUT;
+	int res;
+	while(1)
+	{
+		if (!input.size())
+			std::getline(std::cin, input);
+		res = poll(pollfds, 1, 0);
+		if (res != 0)
+		{
+			if ((pollfds[0].revents & POLLIN) == POLLIN)
+			{
+				valread = read(pollfds[0].fd, buffer, 1024);
+				if (valread > 0)
+					printf("\nRead : %s\n", buffer);
+			}
+			if (pollfds[0].revents & POLLOUT && input.size())
+			{
+				if (send(pollfds[0].fd, input.c_str(), input.size(), MSG_DONTWAIT))
+					input.clear();
+			}
+		}
+	}
+    // send(sock, hello, strlen(hello), 0);
 //    printf("Hello message sent\n");
-    valread = read(sock, buffer, 1024);
-    printf("%s\n", buffer);
+    // valread = read(sock, buffer, 1024);
+    // printf("%s\n", buffer);
   
     // closing the connected socket
     close(client_fd);
