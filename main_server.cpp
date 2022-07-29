@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main_server.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/27 18:02:11 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/29 10:36:11 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,14 @@
 #include <list>
 #include <vector>
 
+#include "Socket.hpp"
+
 #define PORT 6666
 
 using std::string;
+using irc::Socket;
+using irc::t_sockaddr6;
+using irc::t_pollfd;
 
 typedef struct pollfd t_pollfd;
 
@@ -50,6 +55,7 @@ int main(int argc, char **argv)
 	char	buffer[1025];
 	string	password;
 
+	t_sock
 	struct sockaddr_in	address;
 	t_pollfd 			new_sock;
 	t_pollfd			socket_fds[1000];
