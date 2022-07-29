@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_server.cpp                                    :+:      :+:    :+:   */
+/*   main_server2.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/29 11:10:33 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/29 11:51:07 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "Socket.hpp"
+#include "irc_define.hpp"
 
 #define PORT 6666
 
@@ -48,24 +49,24 @@ void	close_sockets(std::vector<t_pollfd>	& socket_fds)
 
 int main(int argc, char **argv)
 {
-	int		server_fd;
 	int		port;
 	int		bytes_read;
 	bool	_exit = false;
 	char	buffer[1025];
 	string	password;
 
-	Socket				temp_sock;
-	t_pollfd			socket_fds[1000];
-	int					connections = 0;
-	int					poll_n;
+	Socket	serv_sock;
+	Socket	temp_sock;
+	Socket	socket_fds[MAX_CLIENTS];
+	int		connections = 0;
+	int		poll_n;
 
 
 
 	port = PORT;
 	password = argv[2];
-	server_fd = socket(AF_INET, SOCK_STREAM, 0); // attempt to open a socket for the server
-	if (server_fd <= 2)
+	serv_sock.setFD((socket(AF_INET, SOCK_STREAM, 0))); // attempt to open a socket for the server
+	if (serv_sock.getFd() <= 2)
 		error_exit("socket failed", EXIT_FAILURE);
 
 	int opt; // to store the setsockopt options

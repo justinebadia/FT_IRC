@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/07/29 10:16:10 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/29 11:15:38 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ public:
 
 	/* Setters */
 	void	setEvents ( const short & fde );
-	void	setFD ( const t_pollfd & pfd );
+	void	setPollFD ( const t_pollfd & pfd );
+	void	setFD ( const size_fd & fd );
 
 	/* Utils */
 	bool	isEvent ( int event ) const ;
