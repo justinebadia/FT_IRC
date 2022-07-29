@@ -18,29 +18,41 @@
 #include <map>
 #include <vector>
 
+#define PORT 6667 // irc server port number
+
 class Client;
 class Channel;
 class Message;
+
+namespace irc {
 
 class Server {
 
 private:
 
-	int											server_socket;
-	unsigned int								port;
-	std::string									password;
-	std::list<std::pair<Client* , Channel* > >	database;
-	//std::vector<OPER> ???
-//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
+	Server( void ); // default constructor
+	Server( const Server& other ); // copy constructor
+	Server& operator=( const Server& other ); // copy operator overload 
+
+	int			_server_socket;
+	const unsigned int	_port;
+	const std::string	_password;
+	bool			_exit;
+
+	std::list<std::pair<Client* , Channel* > >	_database;
 	
+	//std::vector<OPER> ???
+	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
 	
 	
 public:
-	Server( void );
-	~Server( void );
-	Server( const Server& other );
-	Server& operator=( const Server& other );
+	Server( const unsigned int& port, const std::string password, bool exit ); // main constructor
+	~Server( void ); // default destructor
+
+	bool	get_exit_status( void );
 
 };
+
+} // namespace irc end scope
 
 #endif
