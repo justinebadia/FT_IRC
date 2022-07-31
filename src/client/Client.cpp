@@ -1,26 +1,21 @@
 #include "Client.hpp"
 
-Client::Client()
-{
+Client::Client( void ) // default constructor
+{}
 
-}
+Client::Client( Client const &obj ) // copy constructor
+{}
 
-Client::Client( Client const &obj )
-{
+Client::~Client( void ) // destructor
+{}
 
-}
-
-Client::~Client()
-{
-}
-
-Client &	Client::operator=( Client const & obj )
+Client&	Client::operator=( Client const & obj )
 {
 	std::cout << "Copy assignment operator called" << std::endl;
 	return *this;
 }
 
-void		Client::setVar( type var)
+void	Client::setVar( type var)
 {
 	_var= var;
 }
@@ -28,6 +23,16 @@ void		Client::setVar( type var)
 type		Client::getVar( void ) const
 {
 	return _var;
+}
+
+string	get_nickname( void ) const
+{
+	return this->_nickname;
+}
+
+string	get_username( void ) const
+{
+	return this->_username;
 }
 
 std::ostream &	operator<<( std::ostream & o, Client const & obj )

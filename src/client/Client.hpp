@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
@@ -25,21 +23,39 @@ using std::map;
 using std::string;
 using std::list;
 
-class Client
-{
-private:
-	static map<string, Client> _clients;
+namespace irc {
 
+class Client {
+
+private:
+
+	string	_nickname;
+	string	_username;
+	
+	static map<string, Client> _client_map;
 
 public:
-	Client();
-	Client( const Client& obj );
-	~Client();
-
-	Client&	operator=( const Client& obj );
+	Client( void ); // default constructor
+	Client( const Client& other ); // copy constructor
+	Client&	operator=( const Client& other ); // copy operator overload
+	~Client( void ); // destructor
+	
 	static list<Client> _client_list; 
+
+	string	get_nickname( void ) const;
+	string	get_username( void ) const;
 };
 
 std::ostream	&operator << ( std::ostream & o, const Client& obj );
 
+} // namespace irc end scope
+
 #endif
+
+/* notes:
+user status:
+->pending (connected to the server, but doesn't have a nick yet);
+->ban 
+->kick
+->
+*/
