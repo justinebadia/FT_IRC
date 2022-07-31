@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/31 18:14:52 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/31 18:41:58 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ enum e_pending
 };
 
 private:
-	static t_client_list	_client_list;
-	static size_t			_client_count;
+	// static t_client_list	_client_list;
+	// static size_t			_client_count;
 	
 	string		_nickname;
 	string		_username;
@@ -59,6 +59,7 @@ private:
 	Client( void );
 public:
 	Client( int fd, t_addr6 addr );
+	Client( string nick ); // WARNING: TESTING PURPOSE
 	Client( const Client& other );
 	Client&	operator=( const Client& other );
 	~Client( void );
@@ -66,11 +67,11 @@ public:
 	bool	operator==( const Client& rhs) const;
 
 	/* Getters */
-	static const t_client_list &	get_client_list ( void );
-	static Client*					get_client ( int fd );
-	static Client*					get_client ( string nick );
+	// static const t_client_list &	get_client_list ( void );
+	// static Client*					get_client ( int fd );
+	// static Client*					get_client ( string nick );
 	static t_pollfd*				get_pollfd_array ( void );
-	static size_t					get_client_count ( void );
+	// static size_t					get_client_count ( void );
 	t_pollfd&						get_pollfd ( void );
 	t_addr6&						get_addr ( void );
 	t_addr6							get_addr_copy ( void ) const;

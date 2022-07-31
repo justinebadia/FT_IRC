@@ -1,7 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
+/*   Updated: 2022/07/31 18:46:23 by sfournie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Server.hpp" // including : <string><list><map><vector>
 
+using namespace irc;
 
-Server::Server( void ){} // default constructor [PRIVATE]
+Server::Server( void ) : _port(PORT), _password("") {} // default constructor [PRIVATE]
 
 
 Server::Server( const Server& other ) // copy constructor + initialization list [PRIVATE]
@@ -14,8 +27,9 @@ Server::Server( const Server& other ) // copy constructor + initialization list 
 }
 
 
-Server&	Server::operator( const Server& other ) // copy operator overload [PRIVATE]
+Server&	Server::operator=( const Server& other ) // copy operator overload [PRIVATE]
 {
+	
 	// this->_database = other._database; // use stl algorithm to copy the pairs in the list
 	// return *this;
 }
@@ -30,7 +44,21 @@ Server::Server( const unsigned int& port, const std::string password, bool exit 
 	// more code
 }
 
-Server& Server::get_server( const unsigned int& port = 0, const std::string password = "", bool exit = false ) // singleton
+void	Server::add_client( const Client & client )
+{
+	_client_list.push_back(client);
+}
+
+void	Server::remove_client( const string & nick )
+{
+	Client * c;
+
+	c = get_client(nick);
+	if (c != NULL)
+		_client_list.remove(*c); //WARNING: TESTING PURPOSE
+}
+
+Server& Server::get_server( const unsigned int& port, const std::string password, bool exit ) // singleton
 {
 	static Server singleton(port, password, exit); // static singleton declared on the stack, calling the main server constructor
 
@@ -45,5 +73,30 @@ Server::~Server( void ) // default destructor
 
 
 bool	Server::get_exit_status( void ){ return _exit; }
+
+const t_client_list&	Server::get_client_list ( void ) { return _client_list; }
+size_t					Server::get_client_count ( void ) { return _client_list.size(); }
+Client *				Server::get_client ( int fd )
+{
+	t_client_list::iterator it;
+
+	for (it = _client_list.begin(); it != _client_list.end(); it++)
+	{
+		if ((*it).get_pollfd().fd == fd)
+			return &(*it);
+	}
+	return NULL;
+}
+Client *				Server::get_client ( string nick )
+{
+	t_client_list::iterator it;
+
+	for (it = _client_list.begin(); it != _client_list.end(); it++)
+	{
+		if ((*it).get_nickname() == nick)
+			return &(*it);
+	}
+	return NULL;
+}
 
 void	Server::set_exit_status( bool true_signal ){ get_server()._exit = true_signal; }

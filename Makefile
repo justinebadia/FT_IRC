@@ -20,7 +20,8 @@ INCS	= -I$(D_INCS)
 # Files
 MAIN		= 	test_files/test.cpp
 
-_CLASS_SRCS	=	Client/Client.cpp
+_CLASS_SRCS	=	Client/Client.cpp \
+				Server/Server.cpp
 				
 CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
 
