@@ -1,38 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ip.hpp                                             :+:      :+:    :+:   */
+/*   typedef.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/26 15:14:51 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/26 15:19:44 by sfournie         ###   ########.fr       */
+/*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
+/*   Updated: 2022/07/31 14:38:17 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#ifndef IP_HPP
-#define IP_HPP
+#include <map>
+#include <list>
+#include <netinet/in.h>
+#include <poll.h>
 
-#include <string>
+namespace irc {
 
-namespace irc { 
+class Client;
+class Server;
 
-typedef struct s_ip
-{
-	std::string ip;
-	bool		v6 = false;
+typedef std::list<Client>			t_client_list;
+typedef struct	pollfd				t_pollfd;
+typedef struct	sockaddr_in6		t_addr6;
+typedef int							size_fd; // change this if we wanna use another data type
 
-	s_ip();
-	s_ip( std::string ip, bool v6 ) 
-	{ 
-		this->ip = ip;
-		this->v6 = v6;
-	}
-	
-}	t_ip;
-
-};
-
-#endif
+}

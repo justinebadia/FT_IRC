@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/29 11:10:33 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/31 13:56:31 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 #define PORT 6666
 
 using std::string;
-using irc::Socket;
-using irc::t_sockaddr6;
-using irc::t_pollfd;
+// using irc::Socket;
+// using irc::t_sockaddr6;
+// using irc::t_pollfd;
 
 typedef struct pollfd t_pollfd;
 
@@ -38,13 +38,13 @@ void	error_exit(const char * msg_error, int error = 1)
     exit(error);
 }
 
-void	close_sockets(std::vector<t_pollfd>	& socket_fds)
-{
-	for (std::vector<t_pollfd>::iterator i; i != socket_fds.end(); i++)
-	{
-		close((*i).fd);
-	}
-}
+// void	close_sockets(std::vector<t_pollfd>	& socket_fds)
+// {
+// 	for (std::vector<t_pollfd>::iterator i; i != socket_fds.end(); i++)
+// 	{
+// 		close((*i).fd);
+// 	}
+// }
 
 int main(int argc, char **argv)
 {
@@ -55,10 +55,11 @@ int main(int argc, char **argv)
 	char	buffer[1025];
 	string	password;
 
-	Socket				temp_sock;
-	t_pollfd			socket_fds[1000];
-	int					connections = 0;
-	int					poll_n;
+	int						new_sock;
+	t_pollfd				socket_fds[1000];
+	struct	sockaddr_in		address;
+	int						connections = 0;
+	int						poll_n;
 
 
 
@@ -88,12 +89,14 @@ int main(int argc, char **argv)
 	while (!_exit)
 	{
 		// check for incoming connections
-		new_sock.fd = accept(server_fd, NULL, NULL);
-		while (new_sock.fd > 0)
+		new_sock = accept(server_fd, NULL, NULL);
+		while (new_sock > 0)
 		{
-			printf("\n new connection with fd=%d\n", new_sock.fd);
-			new_sock.events = POLLIN | POLLOUT;
-			socket_fds[connections++] = t_pollfd(new_sock);
+			printf("\n new connection with fd=%d\n", new_sock);
+			
+			socket_fds[connections] = t_pollfd();
+			socket_fds[connections++].fd = new_sock;
+			socket_fds[connections++].events = POLLIN | POLLOUT;
 
 			new_sock.fd = accept(server_fd, NULL, NULL);
 		}

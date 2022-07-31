@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/29 11:51:07 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/31 13:59:28 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) // attempt to set options on the socket
 		error_exit("setsockopt", EXIT_FAILURE);
 		
-	address.sin_family = AF_INET;
+	address.sin_family = AF_UNSPEC;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 	// Forcefully attaching socket to the PORT
