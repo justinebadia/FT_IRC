@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:21:32 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/07/31 13:29:48 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/07/31 14:57:05 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace irc {
 #define MAX_PENDING			10 	// Amount of clients in registation phase 
 #define MAX_CHANNELS		20	// Amount of created channels
 #define MAX_CLIENT_PER_CHAN	10	// Channel capacity
-#define MAX_CHAN_PER_CLIENT
+#define MAX_CHAN_PER_CLIENT 5
 
 // BUFFERS
 #define BUFFIN	0
