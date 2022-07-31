@@ -17,6 +17,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <signal.h> // SIGINT == control-C
 
 #define PORT 6667 // irc server port number
 
@@ -49,8 +50,9 @@ public:
 	Server( const unsigned int& port, const std::string password, bool exit ); // main constructor
 	~Server( void ); // default destructor
 
+	Server&	get_server( const unsigned int& port, const std::string password, bool exit ); // singleton
 	bool	get_exit_status( void );
-
+	void	set_exit_status( bool true_signal );
 };
 
 } // namespace irc end scope

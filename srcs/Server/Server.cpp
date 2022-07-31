@@ -9,12 +9,15 @@ Server::Server( const Server& other ) // copy constructor + initialization list 
 	, _port(other._port)
 	, _password(other._password)
 	, _exit(other._exit)
-	{ *this = other; }
+{ 
+	*this = other;
+}
 
 
-Server&	irc::Server::operator( const Server& other ) // copy operator overload [PRIVATE]
+Server&	Server::operator( const Server& other ) // copy operator overload [PRIVATE]
 {
 	// this->_database = other._database; // use stl algorithm to copy the pairs in the list
+	// return *this;
 }
 
 
@@ -27,6 +30,13 @@ Server::Server( const unsigned int& port, const std::string password, bool exit 
 	// more code
 }
 
+Server& Server::get_server( const unsigned int& port = 0, const std::string password = "", bool exit = false ) // singleton
+{
+	static Server singleton(port, password, exit); // static singleton declared on the stack, calling the main server constructor
+
+	return singleton;
+}
+
 
 Server::~Server( void ) // default destructor
 {
@@ -34,4 +44,6 @@ Server::~Server( void ) // default destructor
 }
 
 
-bool	irc::Server::get_exit_status( void ){ return this->_exit; }
+bool	Server::get_exit_status( void ){ return _exit; }
+
+void	Server::set_exit_status( bool true_signal ){ get_server()._exit = true_signal; }
