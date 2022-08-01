@@ -12,6 +12,9 @@
 
 #pragma once
 
+#ifndef IRC_DEFINE_HPP
+#define IRC_DEFINE_HPP
+
 namespace irc {
 
 #define SUCCESS 0
@@ -33,5 +36,6 @@ namespace irc {
 //Errors
 #define	ERR_ALLOC	1
 
-}
- // namespace bracket
+} // namespace end bracket
+
+#endif
