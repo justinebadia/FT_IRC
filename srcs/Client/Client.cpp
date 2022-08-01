@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 13:10:10 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ short			Client::get_events ( void ) const { return (_socket.pollfd.events); }
 short			Client::get_revents ( void ) const { return (_socket.pollfd.revents); }
 const string&	Client::get_nickname( void ) const { return _nickname; }
 const string&	Client::get_username( void ) const { return _username; }
+const string&	Client::get_hostname( void ) const { return _nickname; } //TODO
+const string&	Client::get_source( void ) const { return _nickname; } //TODO
 // t_addr6&		Client::get_addr_ref( void ) { return _socket.addr; }
 string&			Client::get_buff( u_int buff_i ) 
 { 

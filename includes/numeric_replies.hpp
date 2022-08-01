@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/27 18:02:00 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,24 @@
 // #define ERR_SASLABORTED			906
 // #define ERR_SASLALREADY			907
 // #define RPL_SASLMECHS			908
+
+class Message;
+
+/*NICK REPLIES*/
+void err_nonicknamegiven( Message & msg);
+void err_erroneusnickname( Message & msg);
+void err_nicknameinuse( Message & msg);
+void err_nickcollision( Message & msg);
+/*USERS REPLIES*/
+void err_nosuchserver( Message & msg);
+void err_userdisabled( Message & msg );
+void rpl_nousers( Message & msg );
+void rpl_usersstart( Message & msg );
+void rpl_endofusers( Message & msg );
+/*USERS MSG REPLIES*/
+void err_needmoreparams( Message & msg );
+void err_alreadyregistered( Message & msg );
+
 
 
 

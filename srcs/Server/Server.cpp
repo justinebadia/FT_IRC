@@ -6,16 +6,18 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 13:10:44 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp" // including : <string><list><map><vector>
+#include "commands.hpp"
+#include "replies.hpp"
+#include "numeric_replies.hpp"
 
 using namespace irc;
 
 Server::Server( void ) : _port(PORT), _password("") {} // default constructor [PRIVATE]
-
 
 Server::Server( const Server& other ) // copy constructor + initialization list [PRIVATE]
 	: _server_socket(other._server_socket)
@@ -40,6 +42,8 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(false)
 {
+	init_command_map();
+	init_reply_map();
 	// more code
 }
 
@@ -86,7 +90,7 @@ Client*					Server::get_client ( int fd )
 	}
 	return NULL;
 }
-Client*				Server::get_client ( string nickname )
+Client*	Server::get_client ( string nickname )
 {
 	t_client_list::iterator it;
 
@@ -98,4 +102,58 @@ Client*				Server::get_client ( string nickname )
 	return NULL;
 }
 
+t_cmd_function_ptr		Server::get_command_ptr ( string name )
+{
+	t_command_map::iterator it;
+
+	for (it = _command_map.begin(); it != _command_map.end(); it++)
+	{
+		if ((*it).first == name)
+			return (*it).second;
+	}
+	return NULL;
+}
+
+t_reply_function_ptr	Server::get_reply_ptr ( int code )
+{
+	t_reply_map::iterator it;
+
+	for (it = _reply_map.begin(); it != _reply_map.end(); it++)
+	{
+		if ((*it).first == code)
+			return (*it).second;
+	}
+	return NULL;
+}
+
 void	Server::set_exit_status( bool true_signal ){ get_server()._exit = true_signal; }
+
+void	Server::init_command_map( void )
+{
+	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
+	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
+
+}
+
+void	Server::init_reply_map( void )
+{
+	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));
+	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));
+	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));
+	// _reply_map.insert(std::make_pair(ERR_NICKCOLLISION, err_nickcollision));
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));
+	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));
+	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));
+	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));
+	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));
+	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
+	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
+
+	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
+
+}
+
+const string& Server::get_server_name( void )
+{
+
+}

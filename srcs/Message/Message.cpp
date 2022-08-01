@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 13:15:29 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,25 @@ Message&	Message::operator=( const Message& rhs )
 
 string		Message::operator[]( int i )
 {
-	size_t pos = 0;
-	string token;
+	size_t start	= 0;
+	size_t last		= 0;
+	size_t next		= 0;
+	size_t len		= _message_in.length();
 
-	size_t last = 0;
-	size_t next = 0;
-	while ((next = _message_in.find(MSG_DELIMITER, last)) != string::npos && i >= 0)
+	while (i-- >= 0)
 	{   
-		token = _message_in.substr(last, next-last);
-		last = next + 1; } cout << s.substr(last) << endl;
+		next = _message_in.find(MSG_DELIMITER, last);
+		if (next == string::npos)
+		{
+			if (i > 0)
+				return "";
+			next = _message_in.length();
+		} 
+		start = last;
+		len = next - last;
+		last = next + 1;
 	}
-
-	while ((pos = _message_in.find(MSG_DELIMITER)) != std::string::npos) 
-	{
-		token = s.substr(0, pos);
-		std::cout << token << std::endl;
-		s.erase(0, pos + delimiter.length());
-	}
+	return _message_in.substr(start, len);
 }
 
 Message::~Message( void ) {  }

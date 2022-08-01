@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/07/31 18:44:04 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,19 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <utility>
 #include <signal.h> // SIGINT == control-C
 #include "typedef.hpp"
 #include "irc_define.hpp"
 #include "../Client/Client.hpp"
+#include "Message.hpp"
+#include "typedef.hpp"
+
 
 #define PORT 6667 // irc server port number
 using std::string;
 
 class Channel;
-class Message;
 
 namespace irc {
 
@@ -40,10 +43,13 @@ private:
 
 	int					_server_socket;
 	const unsigned int	_port;
-	const string	_password;
+	const string		_password;
+	const string		_server_name;
 	bool				_exit;
 
 	t_client_list		_client_list;
+	t_command_map		_command_map;
+	t_reply_map			_reply_map;
 
 	std::list<std::pair<Client* , Channel* > >	_database;
 	
@@ -56,9 +62,12 @@ public:
 	Server( const unsigned int& port, const string password, bool exit ); // main constructor
 	~Server( void ); // default destructor
 
+	void	init_command_map( void );
+	void	init_reply_map( void );
 	void	add_client( const Client& client );
 	void	remove_client( const string& nickname );
 
+	/* getters */
 	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
 	bool					get_exit_status( void );
 	const t_client_list&	get_client_list ( void );
@@ -66,6 +75,9 @@ public:
 	Client*					get_client ( string nickname );
 	size_t					get_client_count ( void );
 	t_pollfd*				get_pollfd_array ( void );
+	const string&			get_server_name( void ); //TODO
+	t_cmd_function_ptr		get_command_ptr( string name );
+	t_reply_function_ptr	get_reply_ptr( int code );
 
 	void	set_exit_status( bool true_signal );
 };

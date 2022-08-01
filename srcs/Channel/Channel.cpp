@@ -1,5 +1,8 @@
 #include "Channel.hpp"
 
+namespace irc 
+{
+
 Channel::Channel( void ){} // default constructor [PRIVATE]
 
 Channel::Channel( const Channel& other ){ *this = other; } // copy constructor [PRIVATE]
@@ -42,3 +45,4 @@ std::ostream& operator<<( std::ostream& o, const Channel& obj )
 	return o; 
 }
 
+}

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:39:27 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/29 11:05:17 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,50 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <iostream>
+#include <regex>
+#include <string>
+#include "utils.hpp"
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::cerr;
 using std::endl;
+using std::regex;
 
-int	error_log ( const string & src,const string & msg, int error_code )
+namespace irc
+{
+
+int		error_log( const string & src,const string & msg, int error_code )
 {
 	cerr << "Error " << error_code << " : " << msg << endl;
+	return error_code;
 }
 
-template < class Cont, typename value_type>
-// Allocated on the stack; works with most STL containers
-value_type*	convert_stl_to_array ( const Cont & cont )
+bool	validate_entry( string regex_format, string entry)
 {
-	value_type array[cont.size()];
-	try
-	{
-    	std::copy(cont.begin(), cont.end(), array);
-	}
-	catch (std::exception & e)
-	{
-		string msg = e.what();
-		msg.append(" Returning NULL");
-		error_log("convert_stl_to_array", msg , errno );
-	}
-	return array;
+	regex	reg_cmp(regex_format);
+	bool res = std::regex_match(entry, reg_cmp);
+	return res;
+}
+
+// template < class Cont, typename value_type>
+// Allocated on the stack; works with most STL containers
+// value_type*	convert_stl_to_array ( const Cont & cont )
+// {
+// 	value_type array[cont.size()];
+// 	try
+// 	{
+//     	std::copy(cont.begin(), cont.end(), array);
+// 	}
+// 	catch (std::exception & e)
+// 	{
+// 		string msg = e.what();
+// 		msg.append(" Returning NULL");
+// 		error_log("convert_stl_to_array", msg , errno );
+// 	}
+// 	return array;
+// }
+
 }

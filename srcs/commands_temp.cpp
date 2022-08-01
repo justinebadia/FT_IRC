@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.cpp                                       :+:      :+:    :+:   */
+/*   commands_temp.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,7 +17,6 @@
 #include "commands.hpp"
 #include "utils.hpp"
 #include "numeric_replies.hpp"
-#include "replies.hpp"
 
 namespace irc
 {
@@ -27,18 +26,24 @@ void	cmd_nick( Message & msg )
 	Server& server			= Server::get_server();
 	Client& client			= *msg.get_client_ptr();
 
+	std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
-		run_reply(ERR_ERRONEUSNICKNAME, msg);
+		server.get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
 		return;
 	}
 	if ( server.get_client( msg[1] ) )
 	{
-		run_reply(ERR_NICKNAMEINUSE, msg);
+		server.get_reply_ptr(ERR_NICKNAMEINUSE)(msg);
 		return;
 	}
 	client.set_nickname(msg[1]);
 	std::cout << "Successfully set the nickname to " << msg[1];
+}
+
+void cmd_user( Message & msg )
+{
+	
 }
 
 }

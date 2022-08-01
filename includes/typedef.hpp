@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 13:10:09 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #ifndef TYPEDEF_HPP
 #define TYPEDEF_HPP
 
+#include <utility>
 #include <map>
 #include <list>
 #include <netinet/in.h>
@@ -23,17 +24,24 @@
 using std::string;
 using std::map;
 using std::list;
+using std::pair;
 
 namespace irc {
 
 class Client;
 class Message;
 
-typedef list<Client>					t_client_list;
+typedef list<Client>t_client_list;
 
-typedef									void(*cmd_function_ptr)(Message&);
-typedef									void(*cmd_function_ptr)(Message&);
-typedef map<string, cmd_function_ptr>	t_command_map;
+typedef	void(*t_cmd_function_ptr)(Message&);
+typedef	void(*t_reply_function_ptr)(Message&);
+
+typedef	pair<string, t_cmd_function_ptr>	t_cmd_pair;
+typedef	pair<int, t_reply_function_ptr>		t_reply_pair;
+
+typedef map<string, t_cmd_function_ptr>		t_command_map;
+typedef map<int, t_reply_function_ptr>		t_reply_map;
+
 // typedef map<int, 
 
 // typedef map<string, string>				t_message_info; // WARNING: might not use it

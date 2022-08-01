@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.cpp                                       :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,44 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include "Client.hpp"
-#include "Message.hpp"
-#include "Server.hpp"
-#include "commands.hpp"
-#include "utils.hpp"
-#include "numeric_replies.hpp"
-#include "replies.hpp"
+#ifndef UTILS_HPP
+#define UTILS_HPP
+#include <string>
+#include <regex>
+
+using std::string;
 
 namespace irc
 {
 
-void	cmd_nick( Message & msg )
-{ 
-	Server& server			= Server::get_server();
-	Client& client			= *msg.get_client_ptr();
-
-	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
-	{
-		run_reply(ERR_ERRONEUSNICKNAME, msg);
-		return;
-	}
-	if ( server.get_client( msg[1] ) )
-	{
-		run_reply(ERR_NICKNAMEINUSE, msg);
-		return;
-	}
-	client.set_nickname(msg[1]);
-	std::cout << "Successfully set the nickname to " << msg[1];
-}
+int		error_log( const string & src,const string & msg, int error_code );
+bool	validate_entry( string regex_format, string entry);
 
 }
 
-// void	cmd_join( 
-
-// }
-
-// void	reply_nickname_exist( Message& msg)
-// {
-// 	msg.append_out("359"
-// }
+#endif

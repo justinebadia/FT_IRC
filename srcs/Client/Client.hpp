@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 13:10:06 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,10 @@ public:
 	short							get_revents ( void ) const;
 	short							get_events ( void ) const;
 	string&							get_buff ( u_int buff_i );
-	const string &					get_nickname( void ) const;
-	const string &					get_username( void ) const;
+	const string&					get_nickname( void ) const;
+	const string&					get_username( void ) const;
+	const string&					get_hostname( void ) const;
+	const string&					get_source( void ) const;
 
 	/* Setters */
 	void	set_nickname( const string& nickname );

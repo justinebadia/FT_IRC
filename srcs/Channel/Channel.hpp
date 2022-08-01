@@ -41,7 +41,7 @@ public:
 	const string&	get_channel_password( void ) const;
 	list<Client *>	get_channel_clientlist( void );
 	list<string>	get_channel_banlist( void );
-	static int	get_nb_of_channels( void ) const;
+	static int	get_nb_of_channels( void );
 	int		get_nb_of_operators( void ) const;
 };
 
