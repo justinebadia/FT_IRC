@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 12:57:01 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 13:15:29 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,18 @@ Message&	Message::operator=( const Message& rhs )
 	return *this;
 }
 
-string		Message::operator[]( u_int i )
+string		Message::operator[]( int i )
 {
 	size_t pos = 0;
 	string token;
 
 	size_t last = 0;
 	size_t next = 0;
-	while ((next = s.find(delimiter, last)) != string::npos)
+	while ((next = _message_in.find(MSG_DELIMITER, last)) != string::npos && i >= 0)
 	{   
-		.substr(last, next-last) << endl;
+		token = _message_in.substr(last, next-last);
 		last = next + 1; } cout << s.substr(last) << endl;
-}
+	}
 
 	while ((pos = _message_in.find(MSG_DELIMITER)) != std::string::npos) 
 	{

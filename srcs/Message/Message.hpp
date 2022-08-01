@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 12:57:01 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 13:13:47 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 
 #include "irc_define.hpp"
 #include "typedef.hpp"
-#include "struct.hpp"
 #include "Client.hpp"
 
 #define MSG_DELIMITER	" "
@@ -51,7 +50,7 @@ public:
 	~Message( void );
 	
 	bool	operator==( const Message& rhs) const;
-	string	operator[]( u_int rhs);
+	string	operator[]( int rhs);
 
 	/* getters */
 	Client*			get_client_ptr( void ) const;
