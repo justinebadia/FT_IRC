@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 16:37:27 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 17:10:25 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,16 @@ void	cmd_nick( Message & msg )
 
 void cmd_user( Message & msg )
 {
+	/*Command: USER -  Parameters: <username> <hostname> <servername> <realname>*/
+	/*split la ligne sur les espaces pour vérifier si param ‹ 5 sinon code 461NEEDMOREPARAM
+	On va find le realname grace au : et on vérifie s'il n'a pas déjà été donné 
+	s'il a déjà été donné ?? code 462 ?? 
+	On vérifie le hostname et le servername ?
+	On checke le username et on le set ? 
 	
+	Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet*/
+
+	return ;
 }
 
 }

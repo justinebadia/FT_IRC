@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/31 14:52:05 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 17:10:06 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 #include <map>
 #include <list>
 #include <vector>
-
-#include "Socket.hpp"
 
 #define PORT 6666
 
@@ -98,7 +96,7 @@ int main(int argc, char **argv)
 			socket_fds[connections++].fd = new_sock;
 			socket_fds[connections++].events = POLLIN | POLLOUT;
 
-			new_sock.fd = accept(server_fd, NULL, NULL);
+			new_sock = accept(server_fd, NULL, NULL);
 		}
 
 		// poll if there are clients
