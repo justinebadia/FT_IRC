@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/31 18:44:59 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 10:24:55 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,13 @@
 
 using namespace irc;
 
-/* static initialization */
-// t_client_list	Client::_client_list;
-// size_t			Client::_client_count = 0;
-
 Client::Client( int fd, t_addr6 addr )
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = true;
 	_pending = 0;
-	_socket.addr = addr;
-	// _client_list.push_back(*this);
-	// _client_count++;
-	
+	_socket.addr = addr;	
 }
 
 Client::Client( string nick )
@@ -36,10 +29,7 @@ Client::Client( string nick )
 	_socket.pollfd.fd = 0;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = true;
-	_pending = 0;
-	// _client_list.push_back(*this);
-	// _client_count++;
-	
+	_pending = 0;	
 }
 
 Client::Client( const Client& rhs )
@@ -57,7 +47,6 @@ Client&	Client::operator=( const Client& rhs )
 	_socket_opened = rhs.is_opened();
 	_pending = rhs.is_pending();
 	_socket.addr = rhs.get_addr_copy();
-	// _client_count++;
 	return *this;
 }
 
@@ -73,32 +62,6 @@ bool	Client::operator==( const Client& rhs) const
 		return true;
 	return false;
 }
-
-/* static getters */
-// const t_client_list&	Client::get_client_list ( void ) { return _client_list; }
-// size_t					Client::get_client_count ( void ) { return _client_count; }
-// Client *				Client::get_client ( int fd )
-// {
-// 	t_client_list::iterator it;
-
-// 	for (it = _client_list.begin(); it != _client_list.end(); it++)
-// 	{
-// 		if ((*it).get_pollfd().fd == fd)
-// 			return &(*it);
-// 	}
-// 	return NULL;
-// }
-// Client *				Client::get_client ( string nick )
-// {
-// 	t_client_list::iterator it;
-
-// 	for (it = _client_list.begin(); it != _client_list.end(); it++)
-// 	{
-// 		if ((*it).get_nickname() == nick)
-// 			return &(*it);
-// 	}
-// 	return NULL;
-// }
 
 /* getters */
 t_pollfd&		Client::get_pollfd ( void ) { return _socket.pollfd; }

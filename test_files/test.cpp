@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 17:04:37 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/31 18:47:30 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 12:44:22 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,6 @@
 using std::cout;
 using std::cerr;
 using std::endl;
-
-Client *	get_client ( string nick, t_client_list _client_list)
-{
-	t_client_list::iterator it;
-
-	for (it = _client_list.begin(); it != _client_list.end(); it++)
-	{
-		if ((*it).get_nickname() == nick)
-			return &(*it);
-	}
-	return NULL;
-}
 
 int main ( void )
 {

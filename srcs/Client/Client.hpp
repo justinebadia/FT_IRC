@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/31 18:41:58 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 10:32:10 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,7 @@ enum e_pending
 	PASS_SET = 4
 };
 
-private:
-	// static t_client_list	_client_list;
-	// static size_t			_client_count;
-	
+private:	
 	string		_nickname;
 	string		_username;
 	t_socket	_socket;
@@ -67,11 +64,7 @@ public:
 	bool	operator==( const Client& rhs) const;
 
 	/* Getters */
-	// static const t_client_list &	get_client_list ( void );
-	// static Client*					get_client ( int fd );
-	// static Client*					get_client ( string nick );
 	static t_pollfd*				get_pollfd_array ( void );
-	// static size_t					get_client_count ( void );
 	t_pollfd&						get_pollfd ( void );
 	t_addr6&						get_addr ( void );
 	t_addr6							get_addr_copy ( void ) const;
