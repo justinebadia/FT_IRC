@@ -98,4 +98,17 @@ Client*				Server::get_client ( string nickname )
 	return NULL;
 }
 
-void	Server::set_exit_status( bool true_signal ){ get_server()._exit = true_signal; }
+void	Server::set_signal_ctrl_c( const Server& server )
+{
+	signal(SIGINT, &server.set_exit_true);
+}
+
+void	Server::set_exit_true( int signal )
+{
+	(void)signal;
+
+	// more code to free allocated memory here? or after the main loop?
+
+	get_server()._exit = true; 
+}
+
