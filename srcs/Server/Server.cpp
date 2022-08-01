@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:10:10 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/01 17:17:36 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ Server&	Server::operator=( const Server& other ) // copy operator overload [PRIV
 
 
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor + initialization list
-	: _server_socket(0)
+	: _server_socket() // TODO
 	, _port(PORT) // 6667 defined in Server.hpp
 	, _password(password)
 	, _exit(false)
