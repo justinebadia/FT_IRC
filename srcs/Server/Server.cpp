@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp" // including : <string><list><map><vector>
+#include "Server.hpp"
 
 using namespace irc;
 
@@ -40,7 +40,7 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(false)
 {
-	// more code
+	// WARNING: implement more code here?
 }
 
 void	Server::add_client( const Client& client )
@@ -59,7 +59,7 @@ void	Server::remove_client( const string& nickname )
 
 Server& Server::get_server( const unsigned int& port, const string password, bool exit ) // singleton
 {
-	static Server singleton(port, password, exit); // static singleton declared on the stack, calling the main server constructor
+	static Server singleton(port, password, exit); // static singleton, calling the main server constructor
 
 	return singleton;
 }
@@ -71,11 +71,15 @@ Server::~Server( void ) // default destructor
 }
 
 
-bool	Server::get_exit_status( void ){ return _exit; }
+/*--------------------------------------GETTERS-----------------------------------------*/
 
-const t_client_list&	Server::get_client_list ( void ) { return _client_list; }
-size_t					Server::get_client_count ( void ) { return _client_list.size(); }
-Client*					Server::get_client ( int fd )
+bool					Server::get_exit_status( void ){ return _exit; }
+
+const t_client_list&	Server::get_client_list( void ) { return _client_list; }
+
+size_t					Server::get_client_count( void ) { return _client_list.size(); }
+
+Client*					Server::get_client( int fd )
 {
 	t_client_list::iterator it;
 
@@ -86,16 +90,21 @@ Client*					Server::get_client ( int fd )
 	}
 	return NULL;
 }
-Client*				Server::get_client ( string nickname )
+
+Client*				Server::get_client( string nickname )
 {
 	t_client_list::iterator it;
 
 	for (it = _client_list.begin(); it != _client_list.end(); it++)
 	{
-		if ((*it).get_nickname() == nick)
+		if ((*it).get_nickname() == nickname)
 			return &(*it);
 	}
 	return NULL;
 }
 
+
+/*--------------------------------------SETTERS-----------------------------------------*/
+
 void	Server::set_exit_status( bool true_signal ){ get_server()._exit = true_signal; }
+
