@@ -29,13 +29,12 @@ Server::Server( const Server& other ) // copy constructor + initialization list 
 
 Server&	Server::operator=( const Server& other ) // copy operator overload [PRIVATE]
 {
-	
 	// this->_database = other._database; // use stl algorithm to copy the pairs in the list
 	// return *this;
 }
 
 
-Server::Server( const unsigned int& port, const std::string password, bool exit ) // main server constructor + initialization list
+Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor + initialization list
 	: _server_socket(0)
 	, _port(PORT) // 6667 defined in Server.hpp
 	, _password(password)
@@ -44,21 +43,21 @@ Server::Server( const unsigned int& port, const std::string password, bool exit 
 	// more code
 }
 
-void	Server::add_client( const Client & client )
+void	Server::add_client( const Client& client )
 {
 	_client_list.push_back(client);
 }
 
-void	Server::remove_client( const string & nick )
+void	Server::remove_client( const string& nickname )
 {
-	Client * c;
+	Client* c;
 
-	c = get_client(nick);
+	c = get_client(nickname);
 	if (c != NULL)
 		_client_list.remove(*c); //WARNING: TESTING PURPOSE
 }
 
-Server& Server::get_server( const unsigned int& port, const std::string password, bool exit ) // singleton
+Server& Server::get_server( const unsigned int& port, const string password, bool exit ) // singleton
 {
 	static Server singleton(port, password, exit); // static singleton declared on the stack, calling the main server constructor
 
@@ -76,7 +75,7 @@ bool	Server::get_exit_status( void ){ return _exit; }
 
 const t_client_list&	Server::get_client_list ( void ) { return _client_list; }
 size_t					Server::get_client_count ( void ) { return _client_list.size(); }
-Client *				Server::get_client ( int fd )
+Client*					Server::get_client ( int fd )
 {
 	t_client_list::iterator it;
 
@@ -87,7 +86,7 @@ Client *				Server::get_client ( int fd )
 	}
 	return NULL;
 }
-Client *				Server::get_client ( string nick )
+Client*				Server::get_client ( string nickname )
 {
 	t_client_list::iterator it;
 

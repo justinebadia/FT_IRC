@@ -38,12 +38,12 @@ private:
 	Server( const Server& other ); // copy constructor
 	Server& operator=( const Server& other ); // copy operator overload 
 
-	int			_server_socket;
+	int					_server_socket;
 	const unsigned int	_port;
-	const std::string	_password;
-	bool			_exit;
+	const string	_password;
+	bool				_exit;
 
-	t_client_list	_client_list;
+	t_client_list		_client_list;
 
 	std::list<std::pair<Client* , Channel* > >	_database;
 	
@@ -52,23 +52,24 @@ private:
 	
 	
 public:
-	Server( const unsigned int& port, const std::string password, bool exit ); // main constructor
+
+	Server( const unsigned int& port, const string password, bool exit ); // main constructor
 	~Server( void ); // default destructor
 
-	void	add_client( const Client & client );
-	void	remove_client( const string & nick );
+	void	add_client( const Client& client );
+	void	remove_client( const string& nickname );
 
-	static Server&			get_server( const unsigned int& port = 0, const std::string password = "", bool exit = false ); // singleton
+	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
 	bool					get_exit_status( void );
 	const t_client_list&	get_client_list ( void );
 	Client*					get_client ( int fd );
-	Client*					get_client ( std::string nick );
+	Client*					get_client ( string nickname );
 	size_t					get_client_count ( void );
 	t_pollfd*				get_pollfd_array ( void );
 
 	void	set_exit_status( bool true_signal );
 };
 
-} // namespace irc end scope
+} // namespace irc end bracket
 
 #endif
