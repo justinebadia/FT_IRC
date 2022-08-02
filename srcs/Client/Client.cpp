@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:15:21 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:17:02 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 using namespace irc;
 
-Client::Client( int fd, t_addr6 addr )
+Client::Client( int fd )
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = true;
 	_pending = 0;
-	_socket.addr = addr;	
+	// _socket.addr = addr;	
 }
 
 Client::Client( string nick )  // WARNING: TESTING PURPOSE constructor
@@ -47,7 +47,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 	_socket_opened = rhs.is_opened();
 	
 	_pending = rhs.is_pending();
-	_socket.addr = rhs.get_addr_copy();
+	// _socket.addr = rhs.get_addr_copy();
 	return *this;
 }
 
@@ -63,8 +63,8 @@ bool	Client::operator==( const Client& rhs) const
 
 /* getters */
 t_pollfd&		Client::get_pollfd ( void ) { return _socket.pollfd; }
-t_addr6&		Client::get_addr ( void ) { return _socket.addr; }
-t_addr6			Client::get_addr_copy ( void ) const { return _socket.addr; }
+t_addr&			Client::get_addr ( void ) { return _socket.addr; }
+t_addr			Client::get_addr_copy ( void ) const { return _socket.addr; }
 const int&		Client::get_fd ( void ) const { return _socket.pollfd.fd; }
 short			Client::get_events ( void ) const { return (_socket.pollfd.events); }
 short			Client::get_revents ( void ) const { return (_socket.pollfd.revents); }

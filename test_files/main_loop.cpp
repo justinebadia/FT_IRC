@@ -6,13 +6,14 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:28:30 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:05:51 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "typedef.hpp"
 #include <string>
+#include <unistd.h>
 
 using std::cout;
 using std::cerr;
@@ -24,19 +25,22 @@ using irc::Server;
 int	run_server( Server& server )
 {
 	t_pollfd*	pollfds;
+	size_t		client_count;
 	int			i;
 
 	while (server.get_exit_status() == false)
 	{
+		client_count = server.get_client_count();
 		pollfds = server.poll_sockets();
 		if (pollfds == NULL)
 			continue;
 		server.process_connections(pollfds[0]);
-		if (server.get_client_count() > 0)
+		if (client_count > 0)
 		{
-			server.process_clients(&pollfds[1]);
+			server.process_clients(&pollfds[1], client_count);
 		}
-	}	
+	}
+	close(server.get_pollfd_fd());
 }
 
 int	main( int argc, char** argv )

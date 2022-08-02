@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:38:19 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:17:09 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ private:
 	
 public:
 
-	Client( t_socket client_socket );					// main constructor
+	Client( int fd );									// main constructor
+	// Client( t_socket client_socket );				// main constructor
 	Client( string nick ); 								// WARNING: TESTING PURPOSE constructor
 
 	Client( const Client& other ); 						// copy constructor
@@ -78,12 +79,12 @@ public:
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
-	t_addr6&						get_addr( void );
-	t_addr6							get_addr_copy( void ) const;
+	t_addr&							get_addr( void );
+	t_addr							get_addr_copy( void ) const;
 	const int&						get_fd( void ) const;
 	short							get_revents( void ) const;
 	short							get_events( void ) const;
-	string&							get_buff( u_int buff_i );
+	const string&					get_buff( u_int buff_i );
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	const string&					get_hostname( void ) const;

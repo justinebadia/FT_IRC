@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 14:38:04 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:49:35 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ public:
 	
 	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
 
-	const t_socket&			get_server_socket( void ) const;
-	const string&			get_server_name( void ) const;
-	const unsigned int		get_server_port( void ) const;
-	const string			get_server_password( void ) const;
-	bool					get_exit_status( void ) const;
+	const t_socket&			get_socket( void ) const;
+	const string&			get_name( void ) const;
+	const unsigned int		get_port( void ) const;
+	const string&			get_password( void ) const;
+	bool					get_exit_status( void );
 	const int				get_pollfd_fd( void ) const;
 
 	// [Client related getters]
@@ -121,8 +121,7 @@ public:
 
 	t_pollfd*	poll_sockets( void );
 	void		process_connections( const t_pollfd& pollfd );
-	void		process_clients( const t_pollfd* pollfd_array );
-
+	void		process_clients( const t_pollfd* pollfd_array, size_t size );
 
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
 	

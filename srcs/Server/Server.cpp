@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:39:28 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:18:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include "numeric_replies.hpp"
 #include "typedef.hpp"
 #include <iostream>
+#include <unistd.h>
+#include <sys/fcntl.h>
 
 using namespace irc;
 using std::cout;
@@ -32,7 +34,7 @@ Server::Server( void ) : _port(PORT), _password(""){}		// default constructor [P
 
 Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
 	: _server_socket(other._server_socket)
-	, _server_name(other._server_name);
+	, _server_name(other._server_name)
 	, _port(other._port)
 	, _password(other._password)
 	, _exit(other._exit)
@@ -47,13 +49,35 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(false)
 {
-	if (_server_socket.pollfd.fd = socket(AF_INET6, SOCK_STREAM, 0) == FAIL)
+	int			server_fd;
+	t_addr&		addr = _server_socket.addr;
+	t_pollfd&	pollfd = _server_socket.pollfd;
+
+	server_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (server_fd == FAIL)
 	{
-		std::cout << "Error: socket()" << std::endl;
 		throw Server::SocketErrorException();
 	}
-	_server_socket.pollfd.events = 0;
-	_server_socket.pollfd.revents = 0;
+	int opt; // to store the setsockopt options
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) // attempt to set options on the socket
+	{
+		std::cerr << "Error: setsockopt()" << std::endl;
+	}
+	addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons(port);
+	if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0)
+	{
+		std::cerr << "Error: bind()" << std::endl;
+	}
+	fcntl(server_fd, F_SETFL, O_NONBLOCK);
+	if (listen(server_fd, 3) < 0) 
+	{
+		std::cerr << "Error: listen()" << std::endl;
+	}
+	pollfd.fd = server_fd; // WARNING: _set_fd
+	pollfd.events = POLLIN;
+	pollfd.revents = 0;
 
 	init_command_map();
 	init_reply_map();
@@ -66,7 +90,7 @@ t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
 	pollfd_array = get_pollfd_array();
 	if (!pollfd_array)
 		return NULL;
-	poll(pollfd_array, static_cast<nfds_t>(get_client_count()), 0);
+	poll(pollfd_array, static_cast<nfds_t>(get_client_count() + 1), 0);
 	return pollfd_array;
 }
 
@@ -103,11 +127,11 @@ Server&				Server::get_server( const unsigned int& port, const string password, 
 	return singleton;
 }
 
-const t_socket&			Server::get_server_socket( void ) const { return _server_socket; }
-const string&			Server::get_server_name( void ) const { return _server_name; }
+const t_socket&			Server::get_socket( void ) const { return _server_socket; }
+const string&			Server::get_name( void ) const { return _server_name; }
 const unsigned int		Server::get_port( void ) const { return _port; }
 const string&			Server::get_password( void ) const { return _password; }
-const bool				Server::get_exit_status( void ) const { return _exit; }
+bool					Server::get_exit_status( void ) { return _exit; }
 const int				Server::get_pollfd_fd( void ) const { return _server_socket.pollfd.fd; }
 
 
@@ -156,10 +180,10 @@ t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed
 		pollfd_array = new t_pollfd[size];
 		if (!pollfd_array)
 			return NULL;
-		pollfd_array[0] = get_server_socket().pollfd;
+		pollfd_array[0] = get_socket().pollfd;
 		for (it = client_list.begin(); it != client_list.end() && i < size; it++)
 		{
-			pollfd_array[i] = (*it).get_pollfd();
+			pollfd_array[i++] = (*it).get_pollfd();
 		}
 	}
 	return pollfd_array;
@@ -198,10 +222,10 @@ t_reply_function_ptr	Server::get_reply_ptr( int code )
 
 /*---------------------------------SETTERS-----------------------------------*/
 
-void	Server::signal_ctrl_c( void )
-{
-	signal(SIGINT, &set_exit_true( int signal );
-}
+// void	Server::signal_ctrl_c( void )
+// {
+// 	signal(SIGINT, &set_exit_true( int signal );
+// }
 
 void	Server::set_exit_true( int signal )
 {
@@ -210,20 +234,6 @@ void	Server::set_exit_true( int signal )
 }
 
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
-
-void	Server::add_client( const Client& client )
-{
-	_client_list.push_back(client);
-}
-
-void	Server::remove_client( const string& nickname )
-{
-	Client* c;
-
-	c = get_client(nickname);
-	if (c != NULL)
-		_client_list.remove(*c); //WARNING: TESTING PURPOSE
-}
 
 void	Server::init_command_map( void )
 {
@@ -259,11 +269,10 @@ void	Server::process_connections( const t_pollfd& pollfd )
 		while(1)
 		{
 			socklen_t	len;
-			cout << "Server::process_connections: Checking for connections with accept() " << client_fd << endl; // WARNING
 			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr), &len);
 			if (client_fd == -1)
 				break;
-			add_client(Client(client_fd, t_addr6()));
+			add_client(Client(client_fd));
 			cout << "Server::process_connections: Added client with fd " << client_fd << endl; // WARNING
 		}
 	}
@@ -283,9 +292,23 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	
 	client = get_client(pollfd.fd);
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
+	if (bytes <= 0)
+		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
 	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << buffer << endl; // WARNING
+
+	/* TO BE REMOVED */
+	t_cmd_function_ptr command;
+	Message	message(client);
+	message.append_in(client->get_buff(0));
+	command = get_command_ptr(message[0]);
+	if (command)
+		command(message);
+	else
+		cout << "command " << message[0] << " not found" << endl;
+	client->append_buff(1, message.get_message_out());
+	cout << client->get_nickname() << endl;
 }
 
 void	Server::_process_client_pollout( const t_pollfd& pollfd )
@@ -294,32 +317,33 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	Client		*client;
 	
 	client = get_client(pollfd.fd);
+	if (client->get_buff(1).size() <= 0)
+		return;
+	cout << "Buff content before sending: " << client->get_buff(1).c_str() << endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
+	cout << "Buff content after sending: " << client->get_buff(1).c_str() << endl;
 	cout << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << endl; // WARNING
-	client->trim_buff(1, static_cast<size_t>(bytes));
+	// client->trim_buff(1, static_cast<size_t>(bytes));
 
 	
 }
 
-void	Server::process_clients( const t_pollfd* pollfd_array )
+void	Server::process_clients( const t_pollfd* pollfd_array, size_t size )
 {
 	int			i;
-	char		buffer[MAX_IN + 1];
-	Client		*client;
-
-	for (i = 0; i < get_client_count(); i++)
+	for (i = 0; i < size; i++)
 	{
-		if (pollfd_array[i].revents | POLLERR)
+		if (pollfd_array[i].revents & POLLERR)
 		{
 			_process_client_pollerr( pollfd_array[i] );
 			continue;
 		}
-		if (pollfd_array[i].revents | POLLIN)
+		if (pollfd_array[i].revents & POLLIN)
 		{
 			_process_client_pollin( pollfd_array[i]);
 		}
 		//_process_client_messages
-		if (pollfd_array[i].revents | POLLOUT)
+		if (pollfd_array[i].revents & POLLOUT)
 		{
 			_process_client_pollout(pollfd_array[i]);
 		}
