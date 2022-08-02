@@ -6,11 +6,8 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/08/02 09:19:45 by tshimoda         ###   ########.fr       */
-=======
+/*   Updated: 2022/08/02 09:48:05 by tshimoda         ###   ########.fr       */
 /*   Updated: 2022/08/01 17:21:35 by sfournie         ###   ########.fr       */
->>>>>>> ef0f3386c580b04f06f43c88702100f373962528
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +86,6 @@ public:
 	
 	std::ostream&	operator<<( std::ostream& o, const Message& obj );
 
-} // namespace irc end scope
+} // namespace irc end bracket
 
 #endif

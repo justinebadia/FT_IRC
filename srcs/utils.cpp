@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:39:27 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:21:35 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 09:36:16 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,5 @@ bool	validate_entry( string regex_format, string entry)
 // 	return array;
 // }
 
-}
+} // namespace irc end bracket
+

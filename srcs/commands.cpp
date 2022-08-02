@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 16:58:57 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 09:35:20 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 namespace irc
 {
 
-void	cmd_nick( Message & msg )
+void	cmd_nick( Message& msg )
 { 
 	Server& server			= Server::get_server();
 	Client& client			= *msg.get_client_ptr();
@@ -41,7 +41,6 @@ void	cmd_nick( Message & msg )
 	std::cout << "Successfully set the nickname to " << msg[1];
 }
 
-}
 
 // void	cmd_join( 
 
@@ -51,3 +50,7 @@ void	cmd_nick( Message & msg )
 // {
 // 	msg.append_out("359"
 // }
+
+
+} // namespace irc end bracket
+
