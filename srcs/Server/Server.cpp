@@ -6,14 +6,14 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:39:28 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:16:18 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <netdb.h>
 #include <poll.h>
-#include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h> "irc_define.hpp"
+#include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h><exception><iostream> "irc_define.hpp"
 					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
 
@@ -47,52 +47,46 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(false)
 {
-	if (_server_socket.pollfd.fd = socket(AF_INET6, SOCK_STREAM, 0) == FAIL)
-	{
-		std::cout << "Error: socket()" << std::endl;
-		throw Server::SocketErrorException();
-	}
-	_server_socket.pollfd.events = 0;
-	_server_socket.pollfd.revents = 0;
-
+	init_server();
 	init_command_map();
 	init_reply_map();
-}
-
-t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
-{
-	t_pollfd*	pollfd_array;
-
-	pollfd_array = get_pollfd_array();
-	if (!pollfd_array)
-		return NULL;
-	poll(pollfd_array, static_cast<nfds_t>(get_client_count()), 0);
-	return pollfd_array;
-}
-
-void	Server::add_client( const Client& client )
-{
-	_client_list.push_back(client);
 }
 
 Server::~Server( void )										// default destructor
 {}
 
-void	Server::remove_client( const string& nickname )
+/*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
+
+void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
-	Client* c;
-	c = get_client(nickname);
-	if (c != NULL)
-		_client_list.remove(*c); //WARNING: need a more complete removal (banlist, links with channels, etc.)
+	remove_client(pollfd.fd);
+	cout << "Server::_process_client_pollerr: removed client fd " << endl; // WARNING
 }
 
-void	Server::remove_client( const int& fd )
+void	Server::_process_client_pollin( const t_pollfd& pollfd )
 {
-	Client* c;
+	char		buffer[MAX_IN + 1];
+	ssize_t		bytes;
+	Client		*client;
 
-	c = get_client(fd);
-	if (c != NULL)
-		_client_list.remove(*c); //WARNING: need a more complete removal (banlist, links with channels, etc.)
+	client = get_client(pollfd.fd);
+	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
+	buffer[bytes] = '\0';
+	client->append_buff(BUFFIN, string(buffer));
+	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << buffer << endl; // WARNING
+}
+
+void	Server::_process_client_pollout( const t_pollfd& pollfd )
+{
+	ssize_t		bytes;
+	Client		*client;
+
+	client = get_client(pollfd.fd);
+	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
+	cout << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << endl; // WARNING
+	client->trim_buff(1, static_cast<size_t>(bytes));
+
+
 }
 
 /*---------------------------------GETTERS-----------------------------------*/
@@ -103,12 +97,15 @@ Server&				Server::get_server( const unsigned int& port, const string password, 
 	return singleton;
 }
 
-const t_socket&			Server::get_server_socket( void ) const { return _server_socket; }
-const string&			Server::get_server_name( void ) const { return _server_name; }
+const t_socket&			Server::get_socket( void ) const { return _server_socket; }
+const string&			Server::get_name( void ) const { return _server_name; }
 const unsigned int		Server::get_port( void ) const { return _port; }
 const string&			Server::get_password( void ) const { return _password; }
-const bool				Server::get_exit_status( void ) const { return _exit; }
-const int				Server::get_pollfd_fd( void ) const { return _server_socket.pollfd.fd; }
+bool					Server::get_exit_status( void ) const { return _exit; }
+
+t_pollfd&				Server::get_pollfd( void ){ return _server_socket.pollfd; }
+t_addr&					Server::get_addr( void ){ return _server_socket.addr; }
+const int&				Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
 
 
 // [Client related getters]
@@ -140,30 +137,6 @@ Client*	Server::get_client( string nickname )
 	return NULL;
 }
 
-t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed
-{
-	t_client_list			client_list;
-	t_client_list::iterator it;
-	t_pollfd*				pollfd_array;
-	size_t					size = get_client_count() + 1;
-	size_t					i = 1;
-
-	if (size == 0)
-		return NULL;
-	else
-	{
-		client_list = get_client_list();
-		pollfd_array = new t_pollfd[size];
-		if (!pollfd_array)
-			return NULL;
-		pollfd_array[0] = get_server_socket().pollfd;
-		for (it = client_list.begin(); it != client_list.end() && i < size; it++)
-		{
-			pollfd_array[i] = (*it).get_pollfd();
-		}
-	}
-	return pollfd_array;
-}
 
 // [Message related getters]
 
@@ -191,12 +164,38 @@ t_reply_function_ptr	Server::get_reply_ptr( int code )
 	return NULL;
 }
 
-// ====== INSERT HERE =======  get_pollfd_array() !!!
-// ====== INSERT HERE =======  get_pollfd_array() !!!
-// ====== INSERT HERE =======  get_pollfd_array() !!!
+t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed
+{
+	t_client_list			client_list;
+	t_client_list::iterator it;
+	t_pollfd*				pollfd_array;
+	size_t					size = get_client_count() + 1;
+	size_t					i = 1;
+
+	if (size == 0)
+		return NULL;
+	else
+	{
+		client_list = get_client_list();
+		pollfd_array = new t_pollfd[size];
+		if (!pollfd_array)
+			return NULL;
+		pollfd_array[0] = get_server_socket().pollfd;
+		for (it = client_list.begin(); it != client_list.end() && i < size; it++)
+		{
+			pollfd_array[i] = (*it).get_pollfd();
+		}
+	}
+	return pollfd_array;
+}
 
 
 /*---------------------------------SETTERS-----------------------------------*/
+
+void	Server::set_fd( const int& fd );
+{
+	_server_socket.pollfd.fd = fd;
+}
 
 void	Server::signal_ctrl_c( void )
 {
@@ -211,18 +210,61 @@ void	Server::set_exit_true( int signal )
 
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
+void	Server::init_server( void )
+{
+	if (this->set_fd() = socket(AF_INET6, SOCK_STREAM, 0) == FAIL)	// Step 1:  socket()
+	{
+		throw Server::SocketErrorException();
+	}
+
+	this->get_pollfd().events = 0;
+	this->get_pollfd().revents = 0;
+
+	int opt; // to store the setsockopt options
+	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, size(opt)) == FAIL) // Step 2: setsockopt()
+	{
+		throw Server::SetsockoptErrorException();
+	}
+	
+	this->get_addr().sin_family = AFINET6;
+	this->get_addr().sin_addr = INADDR_ANY;
+	this->get_addr().sin_port = htons(PORT);
+	
+	if (bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr()) == FAIL) // Step 3: bind()
+	{
+		throw Server::BindErrorException();
+	}
+
+	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
+	{
+		throw Server::ListenErrorException();
+	}
+
+	fcntl(server_fd, F_SETFL, O_NONBLOCK);
+}
+
+
 void	Server::add_client( const Client& client )
 {
 	_client_list.push_back(client);
 }
 
+
 void	Server::remove_client( const string& nickname )
 {
 	Client* c;
-
 	c = get_client(nickname);
 	if (c != NULL)
-		_client_list.remove(*c); //WARNING: TESTING PURPOSE
+		_client_list.remove(*c); //WARNING: need a more complete removal (banlist, links with channels, etc.)
+}
+
+void	Server::remove_client( const int& fd )
+{
+	Client* c;
+
+	c = get_client(fd);
+	if (c != NULL)
+		_client_list.remove(*c); //WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
 void	Server::init_command_map( void )
@@ -250,13 +292,24 @@ void	Server::init_reply_map( void )
 
 }
 
+t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
+{
+	t_pollfd*	pollfd_array;
+
+	pollfd_array = get_pollfd_array();
+	if (!pollfd_array)
+		return NULL;
+	poll(pollfd_array, static_cast<nfds_t>(get_client_count()), 0);
+	return pollfd_array;
+}
+
 void	Server::process_connections( const t_pollfd& pollfd )
 {
 	int			client_fd;
 
 	if (pollfd.revents | POLLIN)
 	{
-		while(1)
+		while(true)
 		{
 			socklen_t	len;
 			cout << "Server::process_connections: Checking for connections with accept() " << client_fd << endl; // WARNING
@@ -269,37 +322,6 @@ void	Server::process_connections( const t_pollfd& pollfd )
 	}
 }
 
-void	Server::_process_client_pollerr( const t_pollfd& pollfd )
-{
-	remove_client(pollfd.fd);
-	cout << "Server::_process_client_pollerr: removed client fd " << endl; // WARNING
-}
-
-void	Server::_process_client_pollin( const t_pollfd& pollfd )
-{
-	char		buffer[MAX_IN + 1];
-	ssize_t		bytes;
-	Client		*client;
-	
-	client = get_client(pollfd.fd);
-	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
-	buffer[bytes] = '\0';
-	client->append_buff(BUFFIN, string(buffer));
-	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << buffer << endl; // WARNING
-}
-
-void	Server::_process_client_pollout( const t_pollfd& pollfd )
-{
-	ssize_t		bytes;
-	Client		*client;
-	
-	client = get_client(pollfd.fd);
-	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
-	cout << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << endl; // WARNING
-	client->trim_buff(1, static_cast<size_t>(bytes));
-
-	
-}
 
 void	Server::process_clients( const t_pollfd* pollfd_array )
 {
@@ -331,6 +353,21 @@ void	Server::process_clients( const t_pollfd* pollfd_array )
 
 const char*	Server::SocketErrorException::what() const throw()
 {
-	return "Error: creation of server socket() ";
+	return "Error: socket()";
+}
+
+const char*	Server::SetsockoptErrorException::what() const throw()
+{
+	return "Error: setsockopt()";
+}
+
+const char*	Server::BindErrorException::what() const throw()
+{
+	return "Error: bind()";
+}
+
+const char*	Server::ListenErrorException::what() const throw()
+{
+	return "Error: listen()";
 }
 
