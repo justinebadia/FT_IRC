@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 14:07:47 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 14:33:25 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <signal.h> // SIGINT == control-C
 #include "irc_define.hpp"
 #include <signal.h>
+#include <exception>
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -32,8 +33,8 @@
 #include "Message.hpp"
 #include "typedef.hpp"
 
-
-#define PORT 6667 // irc server port number
+#define	HOSTNAME 127.0.0.1	// a.k.a. "localhost" alias
+#define PORT 6667			// irc server port number
  
 class Channel;
 
@@ -55,25 +56,19 @@ private:
 	
 	/*--------------------ATTRIBUTES---------------------*/
 
-	t_socket			_server_socket; // this struct is defined includes/typdef.hpp
+	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr; 
+	const string		_server_name;
 	const unsigned int	_port;
 	const string		_password;
-	const string		_server_name;
 	bool				_exit;
 
 	t_client_list		_client_list;
 	t_command_map		_command_map;
 	t_reply_map			_reply_map;
 
-	std::list<std::pair<Client* , Channel* > >	_database;
-	
-	struct addrinfo		_hints;
-	struct addrinfo*	_res;
-	struct in_addr		_addr;
-	struct sockaddr_in	_address;
+	std::list<std::pair<Client* , Channel* > >	_database; // TO DO
 
-	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
-	
+
 	
 public:
 
@@ -82,27 +77,31 @@ public:
 	
 	/*-----------------------GETTERS----------------------*/
 	
-	static Server&	get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
+	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
 
-	t_socket				get_server_socket( void );
-	const unsigned int		get_server_port( void );
-	const string			get_server_password( void );
-	bool					get_exit_status( void );
+	const t_socket&			get_server_socket( void ) const;
+	const string&			get_server_name( void ) const;
+	const unsigned int		get_server_port( void ) const;
+	const string			get_server_password( void ) const;
+	bool					get_exit_status( void ) const;
+	const int				get_pollfd_fd( void ) const;
 
+	// [Client related getters]
 	const t_client_list&	get_client_list( void );
+	size_t					get_client_count( void );
+
 	Client*					get_client( int fd );
 	Client*					get_client( const string nickname );
-	size_t					get_client_count( void );
-	t_pollfd*				get_pollfd_array( void );
 
-	const string&			get_server_name( void ); //TODO
+	// [Message related getters]
 	t_cmd_function_ptr		get_command_ptr( string name );
 	t_reply_function_ptr	get_reply_ptr( int code );
+	t_pollfd*				get_pollfd_array( void );      // SEB L'A CODEh
 
 	
 	/*-----------------------SETTERS----------------------*/
-	
-	void	set_signal_ctrl_c( const Server& server );
+
+	void	set_signal_ctrl_c( void );
 	void	set_exit_true( int signal ); 
 
 
@@ -112,6 +111,14 @@ public:
 	void	remove_client( const string& nickname );
 	void	init_command_map( void );
 	void	init_reply_map( void );
+
+
+	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
+	
+	class SocketErrorException : public std::exception
+	{
+		public: virtual const char* what() const throw();
+	}
 
 };
 
