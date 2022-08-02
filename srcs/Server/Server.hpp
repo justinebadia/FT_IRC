@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 15:49:35 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:25:32 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "irc_define.hpp"
 #include <signal.h>
 #include <exception>
+#include <iostream>
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -69,12 +70,15 @@ private:
 	std::list<std::pair<Client* , Channel* > >	_database; // TO DO
 
 
+	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
+	
+
+	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
+
 	void	_process_client_pollerr( const t_pollfd& pollfd );
 	void	_process_client_pollin( const t_pollfd& pollfd );
 	void	_process_client_pollout( const t_pollfd& pollfd );
 
-	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
-	
 	
 public:
 
@@ -89,8 +93,11 @@ public:
 	const string&			get_name( void ) const;
 	const unsigned int		get_port( void ) const;
 	const string&			get_password( void ) const;
-	bool					get_exit_status( void );
-	const int				get_pollfd_fd( void ) const;
+	bool					get_exit_status( void ) const;
+
+	t_pollfd&				get_pollfd( void );
+	t_addr&					get_addr( void );
+	const int&				get_fd( void ) const;
 
 	// [Client related getters]
 	const t_client_list&	get_client_list( void );
@@ -102,17 +109,19 @@ public:
 	// [Message related getters]
 	t_cmd_function_ptr		get_command_ptr( string name );
 	t_reply_function_ptr	get_reply_ptr( int code );
-	t_pollfd*				get_pollfd_array( void );      // SEB L'A CODEh
+	t_pollfd*				get_pollfd_array( void );
 
 	
 	/*-----------------------SETTERS----------------------*/
 
+	void	set_fd( const int& fd );
 	void	set_signal_ctrl_c( void );
 	void	set_exit_true( int signal ); 
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
+	void		init_server( void );
 	void		add_client( const Client& client );
 	void		remove_client( const int& fd );
 	void		remove_client( const string& nickname );
@@ -126,6 +135,21 @@ public:
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
 	
 	class SocketErrorException : public std::exception
+	{
+		public: virtual const char* what() const throw();
+	};
+
+	class SetsockoptErrorException : public std::exception
+	{
+		public: virtual const char* what() const throw();
+	};
+	
+	class BindErrorException : public std::exception
+	{
+		public: virtual const char* what() const throw();
+	};
+	
+	class ListenErrorException : public std::exception
 	{
 		public: virtual const char* what() const throw();
 	};
