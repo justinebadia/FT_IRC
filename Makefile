@@ -26,7 +26,7 @@ D_OBJS	:= obj # not used
 INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_MSG) -I$(D_CHAN)
 
 # Files
-MAIN		= 	test_files/test.cpp
+MAIN		= 	test_files/main_loop.cpp
 
 _CLASS_SRCS	=	Client/Client.cpp \
 				Message/Message.cpp \

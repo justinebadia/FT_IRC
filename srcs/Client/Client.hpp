@@ -6,7 +6,11 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/08/02 15:41:10 by jbadia           ###   ########.fr       */
+=======
+/*   Updated: 2022/08/02 15:17:09 by sfournie         ###   ########.fr       */
+>>>>>>> develop
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +67,8 @@ private:
 	
 public:
 
-	Client( t_socket client_socket );					// main constructor
+	Client( int fd );									// main constructor
+	// Client( t_socket client_socket );				// main constructor
 	Client( string nick ); 								// WARNING: TESTING PURPOSE constructor
 
 	Client( const Client& other ); 						// copy constructor
@@ -85,7 +90,7 @@ public:
 	const int&						get_fd( void ) const;
 	short							get_revents( void ) const;
 	short							get_events( void ) const;
-	string&							get_buff( u_int buff_i );
+	const string&					get_buff( u_int buff_i );
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
@@ -100,16 +105,14 @@ public:
 	void	set_pending_user_flags( const int flag );
 	void	set_realname( const string& realname );
 
-	
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void	append_buff( u_int buff_i );
+	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;
 	bool	is_pending( void ) const;
-
-
+	void	trim_buff( u_int buff_i, size_t len );
 };
 
 

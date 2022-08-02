@@ -6,14 +6,11 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:21:32 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/01 17:10:05 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 09:15:39 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
-#ifndef IRC_DEFINE_HPP
-#define IRC_DEFINE_HPP
 
 namespace irc {
 
@@ -40,6 +37,5 @@ namespace irc {
 // Errors
 #define	ERR_ALLOC	1
 
-} // namespace end bracket
-
-#endif
+}
+ // namespace bracket

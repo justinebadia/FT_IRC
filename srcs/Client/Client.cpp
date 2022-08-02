@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 15:43:22 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 16:33:14 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 using namespace irc;
 
-Client::Client( int fd, t_addr addr )
+Client::Client( int fd )
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = true;
 	_pending = 0;
-	_socket.addr = addr;	
+	// _socket.addr = addr;	
 }
 
 Client::Client( string nick )  // WARNING: TESTING PURPOSE constructor
@@ -47,7 +47,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 	_socket_opened = rhs.is_opened();
 	
 	_pending = rhs.is_pending();
-	_socket.addr = rhs.get_addr_copy();
+	// _socket.addr = rhs.get_addr_copy();
 	return *this;
 }
 
@@ -63,7 +63,7 @@ bool	Client::operator==( const Client& rhs) const
 
 /* getters */
 t_pollfd&		Client::get_pollfd ( void ) { return _socket.pollfd; }
-t_addr&		Client::get_addr ( void ) { return _socket.addr; }
+t_addr&			Client::get_addr ( void ) { return _socket.addr; }
 t_addr			Client::get_addr_copy ( void ) const { return _socket.addr; }
 const int&		Client::get_fd ( void ) const { return _socket.pollfd.fd; }
 short			Client::get_events ( void ) const { return (_socket.pollfd.events); }
@@ -75,8 +75,8 @@ const string&	Client::get_source( void ) const { return _nickname; } //TODO
 // t_addr6&		Client::get_addr_ref( void ) { return _socket.addr; }
 
 string	Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
-
-string&			Client::get_buff( u_int buff_i ) 
+ 
+const string&	Client::get_buff( u_int buff_i )
 { 
 	if (buff_i == BUFFIN)
 		return _buff[0];
@@ -93,6 +93,27 @@ void	Client::set_realname( const string& realname ) { _realname = realname; }
 void	Client::set_pending_user_flags( const int flag ) { _pending |= flag; }
 
 /*-----------------------------------UTILS-------------------------------------*/
+
+void	Client::append_buff( u_int buff_i, const string& content )
+{
+	if (buff_i == BUFFIN)
+		_buff[0].append(content);
+	if (buff_i == BUFFOUT)
+		_buff[1].append(content);
+}
+
+void	Client::trim_buff( u_int buff_i, size_t len )
+{
+	string	*buff = NULL;
+
+	if (buff_i == BUFFIN)
+		buff = &buff[0];
+	if (buff_i == BUFFOUT)
+		buff = &buff[1];
+	if (!buff)
+		return ;
+	*buff = buff->substr(0, len);
+}
 
 bool	Client::is_event( int event ) const { return (get_revents() & event); }
 bool	Client::is_opened( void ) const { return (_socket_opened); }
