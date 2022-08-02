@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:39:27 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:21:35 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 09:50:42 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ using std::regex;
 namespace irc
 {
 
-int		error_log( const string & src,const string & msg, int error_code )
+int		error_log( const string& src,const string& msg, int error_code )
 {
 	cerr << "Error " << error_code << " : " << msg << endl;
 	return error_code;
@@ -60,4 +60,5 @@ bool	validate_entry( string regex_format, string entry)
 // 	return array;
 // }
 
-}
+} // namespace irc end bracket
+

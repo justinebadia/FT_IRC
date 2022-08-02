@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:05:21 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:32:02 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace irc
 {
 
-void	cmd_nick( Message & msg );
+void	cmd_nick( Message& msg );
 
 }
 

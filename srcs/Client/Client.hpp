@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:18:20 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:38:19 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 using std::map;
 using std::string;
 
+/*============================================================================*/
 namespace irc {
 
 class Client {
@@ -45,7 +46,12 @@ enum e_pending
 	// ALL_SET = 8  // The pending client is now a regular client 
 };
 
-private:	
+private:
+
+	Client( void ); 									// default constructor
+
+	/*--------------------ATTRIBUTES---------------------*/
+	
 	string		_nickname;
 	string		_username;
 	t_socket	_socket;
@@ -55,35 +61,43 @@ private:
 	
 public:
 
-	Client( int fd, t_addr6 addr ); // main constructor
-	Client( string nick ); // WARNING: TESTING PURPOSE
+	Client( t_socket client_socket );					// main constructor
+	Client( string nick ); 								// WARNING: TESTING PURPOSE constructor
 
-	Client( const Client& other ); // copy constructor
-	Client&	operator=( const Client& other ); // copy operator overload
-	~Client( void ); // destructor
+	Client( const Client& other ); 						// copy constructor
+	Client&	operator=( const Client& other ); 			// copy operator overload
+	~Client( void ); 									// destructor
 	
+
+	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
+
 	bool	operator==( const Client& rhs) const;
 
-	/* Getters */
-	static t_pollfd*				get_pollfd_array ( void );
-	t_pollfd&						get_pollfd ( void );
-	t_addr6&						get_addr ( void );
-	t_addr6							get_addr_copy ( void ) const;
-	const int&						get_fd ( void ) const;
-	short							get_revents ( void ) const;
-	short							get_events ( void ) const;
-	const string&					get_buff ( u_int buff_i );
+
+	/*-----------------------GETTERS----------------------*/
+
+	static t_pollfd*				get_pollfd_array( void );
+	t_pollfd&						get_pollfd( void );
+	t_addr6&						get_addr( void );
+	t_addr6							get_addr_copy( void ) const;
+	const int&						get_fd( void ) const;
+	short							get_revents( void ) const;
+	short							get_events( void ) const;
+	string&							get_buff( u_int buff_i );
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	const string&					get_hostname( void ) const;
 	const string&					get_source( void ) const;
 
-	/* Setters */
+
+	/*-----------------------SETTERS----------------------*/
+
 	void	set_nickname( const string& nickname );
 	void	set_username( const string& username );
 	void	set_pending_user_flags( const int flag );
 
-	/* Utils */
+	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
+
 	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	bool	is_event( int event ) const ;
@@ -92,9 +106,13 @@ public:
 	void	trim_buff( u_int buff_i, size_t len );
 };
 
-std::ostream&	operator<<( std::ostream & o, const Client& obj );
 
-} // namespace irc end scope
+	/*----------------NON-MEMBER-FUNCTIONS----------------*/
+
+	std::ostream&	operator<<( std::ostream & o, const Client& obj );
+
+
+} // namespace irc end bracket
 
 #endif
 

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:05:24 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:32:56 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ using std::string;
 namespace irc
 {
 
-int		error_log( const string & src,const string & msg, int error_code );
+int		error_log( const string& src,const string& msg, int error_code );
 bool	validate_entry( string regex_format, string entry);
 
 }

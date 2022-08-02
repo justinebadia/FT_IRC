@@ -6,19 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 16:58:59 by sfournie         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 10:24:55 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 09:25:59 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +14,26 @@
 
 using namespace irc;
 
-Message::Message( Client* client ) : _client_ptr(client) {  }
+Message::Message( Client* client ) : _client_ptr(client)	// main constructor
+{}
 
-Message::Message( const Message& rhs )
+Message::Message( const Message& rhs )						// copy constructor
 {
 	*this = rhs;
 }
+
+Message::~Message( void )									// destructor
+{}
+
+
+/*-------------OTHER-OPERATOR-OVERLOADS-------------*/
 
 Message&	Message::operator=( const Message& rhs )
 {
 	_message_in		= rhs._message_in;
 	_message_out	= rhs._message_out;
 	_client_ptr		= rhs._client_ptr;
+	
 	return *this;
 }
 
@@ -64,39 +60,53 @@ string		Message::operator[]( int i )
 	return _message_in.substr(start, len);
 }
 
-Message::~Message( void ) {  }
 
-/* getters */
-Client*			Message::get_client_ptr ( void ) const { return _client_ptr; }
-const string&	Message::get_message_in ( void ) const { return _message_in; }
-const string&	Message::get_message_out ( void ) const { return _message_out; }
+/*-----------------------GETTERS----------------------*/
 
-/* setters */
-void	Message::set_client_ptr ( Client* client )
+Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
+
+const string&	Message::get_message_in( void ) const { return _message_in; }
+
+const string&	Message::get_message_out( void ) const { return _message_out; }
+
+
+/*-----------------------SETTERS----------------------*/
+
+void	Message::set_client_ptr( Client* client )
 {
 	_client_ptr = client;
 }
 
-/* utils */
-void	Message::append_out ( const string& str )
+
+/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
+
+void	Message::append_out( const string& str )
 {
 	 _message_out.append(str);
 }
 
-void	Message::append_in ( const string& str )
+void	Message::append_in( const string& str )
 {
 	 _message_in.append(str);
 }
+
+
+/*----------------NON-MEMBER-FUNCTIONS----------------*/
+
 
 std::ostream&	irc::operator<<( std::ostream& o, const Message& obj )
 {
 	o << "-- MESSAGE CONTENT --" << std::endl;
 	o << "Client fd and nickname : "; 
+	
 	if (obj._client_ptr == NULL)
 		o << "NULL";
 	else
 		o << obj._client_ptr->get_fd() << " " << obj._client_ptr->get_nickname();
+	
 	o << std::endl << "message_in : " << obj._message_in << std::endl;
 	o << "message_out : " << obj._message_out;
+
 	return o;
 }
+

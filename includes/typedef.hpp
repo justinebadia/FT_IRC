@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 13:21:49 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:32:36 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ typedef struct	sockaddr_in				t_addr;
 
 typedef struct s_socket
 {
-       t_pollfd        pollfd; // fd, events, revents
-       t_addr6         addr; 
+       t_pollfd			pollfd; // int fd, short events & revents
+       t_addr			addr; 
 }      t_socket;
 
 
