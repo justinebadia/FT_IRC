@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 16:32:21 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:12:22 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,35 +49,35 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(false)
 {
-	int			server_fd;
-	t_addr&		addr = _server_socket.addr;
-	t_pollfd&	pollfd = _server_socket.pollfd;
+	// int			server_fd;
+	// t_addr&		addr = _server_socket.addr;
+	// t_pollfd&	pollfd = _server_socket.pollfd;
 
-	server_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (server_fd == FAIL)
-	{
-		throw Server::SocketErrorException();
-	}
-	int opt; // to store the setsockopt options
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) // attempt to set options on the socket
-	{
-		std::cerr << "Error: setsockopt()" << std::endl;
-	}
-	addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(port);
-	if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0)
-	{
-		std::cerr << "Error: bind()" << std::endl;
-	}
-	fcntl(server_fd, F_SETFL, O_NONBLOCK);
-	if (listen(server_fd, 3) < 0) 
-	{
-		std::cerr << "Error: listen()" << std::endl;
-	}
-	pollfd.fd = server_fd; // WARNING: _set_fd
-	pollfd.events = POLLIN;
-	pollfd.revents = 0;
+	// server_fd = socket(AF_INET, SOCK_STREAM, 0);
+	// if (server_fd == FAIL)
+	// {
+	// 	throw Server::SocketErrorException();
+	// }
+	// int opt; // to store the setsockopt options
+	// if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) // attempt to set options on the socket
+	// {
+	// 	std::cerr << "Error: setsockopt()" << std::endl;
+	// }
+	// addr.sin_family = AF_INET;
+    // addr.sin_addr.s_addr = INADDR_ANY;
+    // addr.sin_port = htons(port);
+	// if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0)
+	// {
+	// 	std::cerr << "Error: bind()" << std::endl;
+	// }
+	// fcntl(server_fd, F_SETFL, O_NONBLOCK);
+	// if (listen(server_fd, 3) < 0) 
+	// {
+	// 	std::cerr << "Error: listen()" << std::endl;
+	// }
+	// pollfd.fd = server_fd; // WARNING: _set_fd
+	// pollfd.events = POLLIN;
+	// pollfd.revents = 0;
 
 	init_server();
 	init_command_map();
@@ -119,7 +119,6 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	else
 		cout << "command " << message[0] << " not found" << endl;
 	client->append_buff(1, message.get_message_out());
-	cout << client->get_nickname() << endl;
 }
 
 void	Server::_process_client_pollout( const t_pollfd& pollfd )
@@ -258,8 +257,9 @@ void	Server::set_exit_true( int signal )
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
 void	Server::init_server( void )
-{
-	if (this->set_fd() = socket(AF_INET6, SOCK_STREAM, 0) == FAIL)	// Step 1:  socket()
+ {
+	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
+	if (this->get_fd() == FAIL)	// Step 1:  socket()
 	{
 		throw Server::SocketErrorException();
 	}
@@ -268,16 +268,16 @@ void	Server::init_server( void )
 	this->get_pollfd().revents = 0;
 
 	int opt; // to store the setsockopt options
-	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, size(opt)) == FAIL) // Step 2: setsockopt()
+	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
 	{
 		throw Server::SetsockoptErrorException();
 	}
 	
-	this->get_addr().sin_family = AF_INET6;
-	this->get_addr().sin_addr = INADDR_ANY;
-	this->get_addr().sin_port = htons(PORT);
+	this->get_addr().sin_family = AF_INET; //change to 6 eventually
+	this->get_addr().sin_addr.s_addr = INADDR_ANY;
+	this->get_addr().sin_port = htons(_port);
 	
-	if (bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr()) == FAIL) // Step 3: bind()
+	if (bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr()) == FAIL)) // Step 3: bind()
 	{
 		throw Server::BindErrorException();
 	}
@@ -287,7 +287,8 @@ void	Server::init_server( void )
 		throw Server::ListenErrorException();
 	}
 
-	fcntl(server_fd, F_SETFL, O_NONBLOCK);
+	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
+	this->get_pollfd().events = POLLIN;
 }
 
 
@@ -346,7 +347,7 @@ t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
 	pollfd_array = get_pollfd_array();
 	if (!pollfd_array)
 		return NULL;
-	poll(pollfd_array, static_cast<nfds_t>(get_client_count()), 0);
+	poll(pollfd_array, static_cast<nfds_t>(get_client_count() + 1), 0);
 	return pollfd_array;
 }
 

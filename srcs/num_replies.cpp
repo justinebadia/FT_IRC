@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/02 16:32:16 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 16:38:15 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void err_nosuchserver( Message& msg)
 	Server &server = Server::get_server();
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 401 " + server.get_server_name() + " :No such server"; //à créer
+	string err_msg = ":" + client.get_hostname() + " 401 " + server.get_name() + " :No such server"; //à créer
 	msg.append_out(err_msg);
 }
 

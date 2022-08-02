@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 16:05:51 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:38:42 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	run_server( Server& server )
 			server.process_clients(&pollfds[1], client_count);
 		}
 	}
-	close(server.get_pollfd_fd());
+	close(server.get_fd());
 }
 
 int	main( int argc, char** argv )
