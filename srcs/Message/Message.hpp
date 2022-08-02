@@ -6,10 +6,10 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:48:05 by tshimoda         ###   ########.fr       */
-/*   Updated: 2022/08/01 17:21:35 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:39:06 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
@@ -45,7 +45,7 @@ private:
 	
 	/*--------------------ATTRIBUTES---------------------*/
 	
-	Message		_empty_object;								// call the default constructor to create an instance on the stack
+	// Message		_empty_object;								// call the default constructor to create an instance on the stack
 	Client*		_client_ptr;
 	string		_message_in;
 	string		_message_out;

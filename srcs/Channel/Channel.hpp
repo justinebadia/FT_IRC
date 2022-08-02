@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 08:42:51 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:39:59 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ public:
 	const string&	get_channel_password( void ) const;
 	list<Client*>	get_channel_clientlist( void );
 	list<string>	get_channel_banlist( void );
-	static int		get_nb_of_channels( void ) const;
+	static int		get_nb_of_channels( void );
 	int				get_nb_of_operators( void ) const;
 
 	/*-----------------------SETTERS----------------------*/

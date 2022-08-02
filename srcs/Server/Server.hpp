@@ -6,8 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 14:22:55 by tshimoda         ###   ########.fr       */
-/*   Updated: 2022/08/02 08:48:23 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:38:04 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +33,7 @@
 #include "Message.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME 127.0.0.1	// a.k.a. "localhost" alias
+#define	HOSTNAME "127.0.0.1"	// a.k.a. "localhost" alias
 #define PORT 6667			// irc server port number
  
 class Channel;
@@ -70,6 +69,12 @@ private:
 	std::list<std::pair<Client* , Channel* > >	_database; // TO DO
 
 
+	void	_process_client_pollerr( const t_pollfd& pollfd );
+	void	_process_client_pollin( const t_pollfd& pollfd );
+	void	_process_client_pollout( const t_pollfd& pollfd );
+
+	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
+	
 	
 public:
 
@@ -108,10 +113,15 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
-	void	add_client( const Client& client );
-	void	remove_client( const string& nickname );
-	void	init_command_map( void );
-	void	init_reply_map( void );
+	void		add_client( const Client& client );
+	void		remove_client( const int& fd );
+	void		remove_client( const string& nickname );
+	void		init_command_map( void );
+	void		init_reply_map( void );
+
+	t_pollfd*	poll_sockets( void );
+	void		process_connections( const t_pollfd& pollfd );
+	void		process_clients( const t_pollfd* pollfd_array );
 
 
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
@@ -119,7 +129,7 @@ public:
 	class SocketErrorException : public std::exception
 	{
 		public: virtual const char* what() const throw();
-	}
+	};
 
 };
 

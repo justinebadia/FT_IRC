@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:46:20 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:38:19 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,16 +96,14 @@ public:
 	void	set_username( const string& username );
 	void	set_pending_user_flags( const int flag );
 
-	
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void	append_buff( u_int buff_i );
+	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;
 	bool	is_pending( void ) const;
-
-
+	void	trim_buff( u_int buff_i, size_t len );
 };
 
 
