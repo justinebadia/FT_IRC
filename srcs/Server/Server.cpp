@@ -6,11 +6,14 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:17:36 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 08:51:50 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp" // including : <string><list><map><vector>
+#include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h> "irc_define.hpp"
+					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
+					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
+
 #include "commands.hpp"
 #include "replies.hpp"
 #include "numeric_replies.hpp"

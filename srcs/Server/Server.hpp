@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/01 17:16:41 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 08:48:23 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ private:
 
 	
 	/*--------------------ATTRIBUTES---------------------*/
+
 	t_socket			_server_socket; // this struct is defined includes/typdef.hpp
 	const unsigned int	_port;
 	const string		_password;
@@ -79,7 +80,7 @@ public:
 	Server( const unsigned int& port, const string password, bool exit );	// main constructor
 	~Server( void );														// default destructor
 	
-	/*----------------------GETTERS----------------------*/
+	/*-----------------------GETTERS----------------------*/
 	
 	static Server&	get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
 
@@ -98,11 +99,12 @@ public:
 	t_cmd_function_ptr		get_command_ptr( string name );
 	t_reply_function_ptr	get_reply_ptr( int code );
 
-	void	set_exit_status( bool true_signal );
-	/*----------------------SETTERS----------------------*/
+	
+	/*-----------------------SETTERS----------------------*/
 	
 	void	set_signal_ctrl_c( const Server& server );
 	void	set_exit_true( int signal ); 
+
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
