@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_temp.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:35:44 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:20:37 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,18 @@ void	cmd_nick( Message& msg )
 
 void cmd_user( Message& msg )
 {
+	Server& server			= Server::get_server();
+	Client& client			= *msg.get_client_ptr();
+
+	if(msg[4].empty()) //checking if there is, at least, 5 parameters
+	{
+		server.get_reply_ptr(ERR_NEEDMOREPARAMS)(msg);
+		return ;
+	}
+	if (!msg[1].empty())
+		client.set_username(msg[1]);
+
+	
 	/*Command: USER -  Parameters: <username> <hostname> <servername> <realname>*/
 	/*split la ligne sur les espaces pour vérifier si param ‹ 5 sinon code 461NEEDMOREPARAM
 	On va find le realname grace au : et on vérifie s'il n'a pas déjà été donné 
