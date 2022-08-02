@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 17:04:37 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:10:07 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:43:39 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int main ( void )
 	Message		msg = Message(server.get_client("Justine_la_pas_ignoree"));
 	
 	cout << "client justine : " << server.get_client("Justine_la_pas_ignoree")->get_nickname() << endl;
-	msg.append_in("NICK Tok");
+	msg.append_in("USER Tok");
 	process_message(msg);
 	// cout << endl << "client justine : " << server.get_client("Justine")->get_nickname() << endl;
 

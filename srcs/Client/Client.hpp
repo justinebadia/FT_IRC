@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:46:20 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:41:10 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ private:
 	
 	string		_nickname;
 	string		_username;
+	string		_hostname;
+	string 		_realname;
 	t_socket	_socket;
 	string		_buff[2]; // 0 == read and 1 == write
 	bool		_socket_opened;
@@ -78,15 +80,16 @@ public:
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
-	t_addr6&						get_addr( void );
-	t_addr6							get_addr_copy( void ) const;
+	t_addr&							get_addr( void );
+	t_addr							get_addr_copy( void ) const;
 	const int&						get_fd( void ) const;
 	short							get_revents( void ) const;
 	short							get_events( void ) const;
 	string&							get_buff( u_int buff_i );
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
-	const string&					get_hostname( void ) const;
+	string							get_hostname( void ) const;
+	const string&					get_realname( void ) const;
 	const string&					get_source( void ) const;
 
 
@@ -95,6 +98,7 @@ public:
 	void	set_nickname( const string& nickname );
 	void	set_username( const string& username );
 	void	set_pending_user_flags( const int flag );
+	void	set_realname( const string& realname );
 
 	
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/

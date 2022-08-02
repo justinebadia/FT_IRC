@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:20:37 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 15:37:55 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ void cmd_user( Message& msg )
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
+	//if (msg[2].compare(0, msg[2].size(), client.get_hostname()) == 0) est ce qu'on check si le hostname est faux ?
+	string input = msg.get_message_in();
+	size_t delim_pos = input.find(":", 0);
+	client.set_realname(input.substr(delim_pos, input.npos));
+	std::cout << client.get_realname() << std::endl;
+	
 
 	
 	/*Command: USER -  Parameters: <username> <hostname> <servername> <realname>*/
@@ -62,7 +68,9 @@ void cmd_user( Message& msg )
 	On vérifie le hostname et le servername ?
 	On checke le username et on le set ? 
 	
-	Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet*/
+	Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet
+	
+	RPL_WELCOME SI TOUT EST CORRECT*/
 
 	return ;
 }
