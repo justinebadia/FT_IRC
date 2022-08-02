@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:12:22 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:45:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+void	set_exit_true( int signal ) // WARNING to be moved
+{
+	(void)signal;
+	Server::get_server().set_exit(true);
+}
+
 Server::Server( void ) : _port(PORT), _password(""){}		// default constructor [PRIVATE]
 
 Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
@@ -45,7 +51,7 @@ Server&	Server::operator=( const Server& other ){}			// copy operator overload [
 
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor
 	: _server_name(HOSTNAME)	// 127.0.0.1 
-	, _port(PORT)				// 6667
+	, _port(port)				// 6667
 	, _password(password)
 	, _exit(false)
 {
@@ -118,7 +124,8 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		command(message);
 	else
 		cout << "command " << message[0] << " not found" << endl;
-	client->append_buff(1, message.get_message_out());
+	client->append_buff(BUFFOUT, message.get_message_out());
+	client->clear_buff(BUFFIN);
 }
 
 void	Server::_process_client_pollout( const t_pollfd& pollfd )
@@ -238,27 +245,26 @@ t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed
 
 /*---------------------------------SETTERS-----------------------------------*/
 
-void	Server::set_fd( const int& fd )
+void	Server::set_fd( int fd )
 {
 	_server_socket.pollfd.fd = fd;
 }
 
-void	Server::set_signal_ctrl_c( void )
+void	Server::set_exit( bool status )
 {
-	// signal(SIGINT, &set_exit_true);
+	_exit = status;
 }
 
-void	Server::set_exit_true( int signal )
+void	Server::set_signal_ctrl_c( void )
 {
-	(void)signal;
-	_exit = true;
+	signal(SIGINT, &set_exit_true);
 }
 
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
 void	Server::init_server( void )
  {
-	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
+	this->set_fd(socket(AF_INET, SOCK_STREAM, 0));
 	if (this->get_fd() == FAIL)	// Step 1:  socket()
 	{
 		throw Server::SocketErrorException();
@@ -275,9 +281,9 @@ void	Server::init_server( void )
 	
 	this->get_addr().sin_family = AF_INET; //change to 6 eventually
 	this->get_addr().sin_addr.s_addr = INADDR_ANY;
-	this->get_addr().sin_port = htons(_port);
+	this->get_addr().sin_port = htons(get_port());
 	
-	if (bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr()) == FAIL)) // Step 3: bind()
+	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr())) == FAIL)) // Step 3: bind()
 	{
 		throw Server::BindErrorException();
 	}

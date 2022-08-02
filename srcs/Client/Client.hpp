@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 16:35:44 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:28:09 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,12 @@ public:
 
 	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
+	void	trim_buff( u_int buff_i, size_t len );
+
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;
 	bool	is_pending( void ) const;
-	void	trim_buff( u_int buff_i, size_t len );
+	
 };
 
 

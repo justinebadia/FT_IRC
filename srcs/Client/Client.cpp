@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 16:33:14 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:29:01 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,14 @@ void	Client::append_buff( u_int buff_i, const string& content )
 		_buff[0].append(content);
 	if (buff_i == BUFFOUT)
 		_buff[1].append(content);
+}
+
+void	Client::clear_buff( u_int buff_i )
+{
+	if (buff_i == BUFFIN)
+		_buff[0].clear();
+	if (buff_i == BUFFOUT)
+		_buff[1].clear();
 }
 
 void	Client::trim_buff( u_int buff_i, size_t len )

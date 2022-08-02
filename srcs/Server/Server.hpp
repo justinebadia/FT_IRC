@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 16:32:25 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:46:03 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,10 @@ public:
 	
 	/*-----------------------SETTERS----------------------*/
 
-	void	set_fd( const int& fd );
+	void	set_fd( int fd );
+	void	set_exit( bool status );
 	void	set_signal_ctrl_c( void );
-	void	set_exit_true( int signal ); 
+	// void	set_exit_true( int signal ); // Moved outside of the class for signal; to be removed
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
@@ -156,6 +157,10 @@ public:
 
 };
 
+
+
 } // namespace irc end bracket
+
+void	set_exit_true( int signal ); // WARNING To be moved
 
 #endif

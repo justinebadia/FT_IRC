@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 16:38:42 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:41:45 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ int	run_server( Server& server )
 			server.process_clients(&pollfds[1], client_count);
 		}
 	}
-	close(server.get_fd());
+	cout << "Leaving with absolute grace" << endl;
+	close(server.get_fd()); // Need a close function
 }
 
 int	main( int argc, char** argv )
@@ -50,6 +51,7 @@ int	main( int argc, char** argv )
 	try 
 	{
 		Server& server = Server::get_server(static_cast<u_int>(std::stoi(string(argv[1]))), argv[2]);
+		server.set_signal_ctrl_c();
 		// check if server did get created
 		run_server(server);
 	}
