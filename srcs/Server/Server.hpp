@@ -6,11 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/08/01 17:21:35 by sfournie         ###   ########.fr       */
-=======
-/*   Updated: 2022/08/02 08:48:23 by tshimoda         ###   ########.fr       */
->>>>>>> 60afaef9007dba05559433204015cf9f95bdf01e
+/*   Updated: 2022/08/02 14:19:24 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +72,10 @@ private:
 	struct in_addr		_addr;
 	struct sockaddr_in	_address;
 
+	void	_process_client_pollerr( const t_pollfd& pollfd );
+	void	_process_client_pollin( const t_pollfd& pollfd );
+	void	_process_client_pollout( const t_pollfd& pollfd );
+
 	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
 	
 	
@@ -112,10 +112,15 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
-	void	add_client( const Client& client );
-	void	remove_client( const string& nickname );
-	void	init_command_map( void );
-	void	init_reply_map( void );
+	void		add_client( const Client& client );
+	void		remove_client( const int& fd );
+	void		remove_client( const string& nickname );
+	void		init_command_map( void );
+	void		init_reply_map( void );
+
+	t_pollfd*	poll_sockets( void );
+	void		process_connections( const t_pollfd& pollfd );
+	void		process_clients( const t_pollfd* pollfd_array );
 
 };
 

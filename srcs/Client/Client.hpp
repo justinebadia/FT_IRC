@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:10:03 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:18:20 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ public:
 	const int&						get_fd ( void ) const;
 	short							get_revents ( void ) const;
 	short							get_events ( void ) const;
-	string&							get_buff ( u_int buff_i );
+	const string&					get_buff ( u_int buff_i );
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	const string&					get_hostname( void ) const;
@@ -84,11 +84,12 @@ public:
 	void	set_pending_user_flags( const int flag );
 
 	/* Utils */
-	void	append_buff( u_int buff_i );
+	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;
 	bool	is_pending( void ) const;
+	void	trim_buff( u_int buff_i, size_t len );
 };
 
 std::ostream&	operator<<( std::ostream & o, const Client& obj );

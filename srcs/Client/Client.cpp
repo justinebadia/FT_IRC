@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/01 17:10:04 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/02 14:15:21 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ const string&	Client::get_username( void ) const { return _username; }
 const string&	Client::get_hostname( void ) const { return _nickname; } //TODO
 const string&	Client::get_source( void ) const { return _nickname; } //TODO
 // t_addr6&		Client::get_addr_ref( void ) { return _socket.addr; }
-string&			Client::get_buff( u_int buff_i ) 
+const string&	Client::get_buff( u_int buff_i )
 { 
 	if (buff_i == BUFFIN)
 		return _buff[0];
@@ -89,6 +89,27 @@ void	Client::set_username( const string& user ) { _username = user; }
 void	Client::set_pending_user_flags( const int flag ) { _pending |= flag; }
 
 /*-----------------------------------UTILS-------------------------------------*/
+
+void	Client::append_buff( u_int buff_i, const string& content )
+{
+	if (buff_i == BUFFIN)
+		_buff[0].append(content);
+	if (buff_i == BUFFOUT)
+		_buff[1].append(content);
+}
+
+void	Client::trim_buff( u_int buff_i, size_t len )
+{
+	string	*buff = NULL;
+
+	if (buff_i == BUFFIN)
+		buff = &buff[0];
+	if (buff_i == BUFFOUT)
+		buff = &buff[1];
+	if (!buff)
+		return ;
+	*buff = buff->substr(0, len);
+}
 
 bool	Client::is_event( int event ) const { return (get_revents() & event); }
 bool	Client::is_opened( void ) const { return (_socket_opened); }
