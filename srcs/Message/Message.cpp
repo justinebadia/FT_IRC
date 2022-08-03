@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:25:59 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/03 13:43:38 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,15 @@ void	Message::append_out( const string& str )
 void	Message::append_in( const string& str )
 {
 	 _message_in.append(str);
+}
+
+string	Message::find_realname( void )
+{
+	string input = get_message_in();
+	size_t delim_pos = input.find(":", 0);
+	string realname = input.substr(delim_pos, input.npos);
+
+	return realname;
 }
 
 

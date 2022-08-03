@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 15:47:19 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:05:22 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:17:34 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,35 +19,23 @@ namespace irc
 {
 
 void run_reply( int code, Message& msg );
+void rpl_welcome( Message& msg );
+/*NICK REPLIES*/
+void err_nonicknamegiven( Message& msg);
+void err_erroneusnickname( Message& msg);
+void err_nicknameinuse( Message& msg);
+void err_nickcollision( Message& msg);
+/*USERS REPLIES*/
+void err_nosuchserver( Message& msg);
+void err_userdisabled( Message& msg );
+void rpl_nousers( Message& msg );
+void rpl_usersstart( Message& msg );
+void rpl_endofusers( Message& msg );
+/*USERS MSG REPLIES*/
+void err_needmoreparams( Message& msg );
+void err_alreadyregistered( Message& msg );
 
-void err_nonicknamegiven( Message & msg);
 
-/*"<client> <nick> :Erroneus nickname"*/
-void err_erroneusnickname( Message & msg);
-
-/*"<client> <nick> :Nickname is already in use"
-WARNING - est ce que client correspond à username?<>*/
-void err_nicknameinuse( Message & msg);
-
-/* "<nick> :Nickname collision KILL"*/
-void err_nickcollision( Message & msg);
-
-/*USER NUM_REPLIES*/
-/*"<server name> :No such server"*/
-void err_nosuchserver( Message & msg);
-
-/* ":USERS has been disabled"*/
-void err_userdisabled( Message & msg );
-void rpl_nousers( Message & msg );
-
-/* WARNING pas fini 
-":UserID   Terminal  Host"*/
-void rpl_usersstart( Message & msg );
-void rpl_endofusers( Message & msg );
-
-/*NUM REPLIES - Users message*/
-void err_needmoreparams( Message & msg );
-void err_alreadyregistered( Message & msg );
 
 }
 

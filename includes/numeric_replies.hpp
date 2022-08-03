@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:49:53 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:17:02 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 // ---- REPLIES
 // -- CLIENT-SERVER				000 - 099
-// #define	RPL_WELCOME				001
+#define	RPL_WELCOME				001
 // #define	RPL_YOURHOST			002
 // #define	RPL_CREATED				003
 // #define	RPL_MYINFO				004
@@ -150,28 +150,5 @@
 // #define ERR_SASLABORTED			906
 // #define ERR_SASLALREADY			907
 // #define RPL_SASLMECHS			908
-
-class Message;
-
-/*NICK REPLIES*/
-void err_nonicknamegiven( Message& msg);
-void err_erroneusnickname( Message& msg);
-void err_nicknameinuse( Message& msg);
-void err_nickcollision( Message& msg);
-/*USERS REPLIES*/
-void err_nosuchserver( Message& msg);
-void err_userdisabled( Message& msg );
-void rpl_nousers( Message& msg );
-void rpl_usersstart( Message& msg );
-void rpl_endofusers( Message& msg );
-/*USERS MSG REPLIES*/
-void err_needmoreparams( Message& msg );
-void err_alreadyregistered( Message& msg );
-
-
-
-
-
-
 
 #endif

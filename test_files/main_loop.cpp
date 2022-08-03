@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:41:45 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:44:03 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,6 @@ int	main( int argc, char** argv )
 		return 1;
 	}
 	
-	
-
-
-
 	// set_signal_ctrl_c();
 	// signal(SIGINT, &
 	return 0;

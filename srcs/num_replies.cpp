@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/02 16:38:15 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/03 15:18:52 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@ void run_reply( int code, Message& msg )
 	return; 
 }
 
+void rpl_welcome( Message& msg )
+{
+	Client& client = *msg.get_client_ptr();
+
+	msg.append_out("001 :Welcome to the Internet Relay Network " + client.get_hostname());
+}
+
 /*NICK NUM_REPLIES*/
 /* ":No nickname given"*/
 void err_nonicknamegiven( Message& msg)
@@ -47,7 +54,7 @@ void err_erroneusnickname( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() +" 432 " + client.get_username() + " " + client.get_nickname() + " :Erroneus nickname";
+	string err_msg = ":" + client.get_hostname() + " 432 " + client.get_username() + " " + client.get_nickname() + " :Erroneus nickname";
 	msg.append_out(err_msg);
 }
 
@@ -57,7 +64,7 @@ void err_nicknameinuse( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 433 " + client.get_username() + " " + client.get_nickname() + " :Nickname is already in use";
+	string err_msg = ":" + client.get_hostname() + " 433 " + client.get_username() + client.get_nickname() + " :Nickname is already in use";
 	msg.append_out(err_msg);
 }
 
@@ -118,6 +125,7 @@ void err_needmoreparams( Message& msg )
 	Client&	client = *msg.get_client_ptr();
 
 	string err_msg = ":" + client.get_hostname() + " 461 " + msg[0] + " :Not enough parameters";
+	msg.append_out(err_msg);
 }
 
 void err_alreadyregistered( Message& msg )
@@ -125,7 +133,9 @@ void err_alreadyregistered( Message& msg )
 	Client&	client = *msg.get_client_ptr();
 
 	string err_msg = ":" + client.get_hostname() + " 462 :You may not reregistered";
+	msg.append_out(err_msg);
 }
+
 //WARNING - est ce qu'on fait 424 ERR_FILEERROR ??
 
 

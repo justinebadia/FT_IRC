@@ -42,7 +42,7 @@ _CLASS_HDRS	=	Client/Client.hpp \
 				
 CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
 
-_UTILS_SRCS	=	commands.cpp \
+_UTILS_SRCS	=	commands_temp.cpp \
 				num_replies.cpp \
 				utils.cpp
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))

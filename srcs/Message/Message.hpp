@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:39:06 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 13:43:12 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ public:
 
 	void	append_in( const string& str );
 	void	append_out( const string& str );
+	string 	find_realname( void );
 
 	friend std::ostream&	operator<<( std::ostream& o, const Message& obj );
 };

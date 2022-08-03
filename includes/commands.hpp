@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:32:02 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 14:36:10 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ namespace irc
 {
 
 void	cmd_nick( Message& msg );
+void	cmd_user( Message& msg );
 
 }
 

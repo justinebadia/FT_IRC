@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_server.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:46:08 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 09:05:20 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:42:53 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include <map>
 #include <list>
 #include <vector>
-
 #define PORT 6666
 
 using std::string;
@@ -88,6 +87,7 @@ int main(int argc, char **argv)
 	{
 		// check for incoming connections
 		new_sock = accept(server_fd, NULL, NULL);
+
 		while (new_sock > 0)
 		{
 			printf("\n new connection with fd=%d\n", new_sock);

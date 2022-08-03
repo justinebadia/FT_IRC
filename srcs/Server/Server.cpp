@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:45:27 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:53:56 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,12 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		command(message);
 	else
 		cout << "command " << message[0] << " not found" << endl;
+	if (client->_pending == 0 && ((!client->get_realname().empty() && !client->get_username().empty()) 
+		&& !client->get_nickname().empty()))
+	{
+		client->_pending = 1;
+		get_reply_ptr(RPL_WELCOME)(message);
+	}
 	client->append_buff(BUFFOUT, message.get_message_out());
 	client->clear_buff(BUFFIN);
 }
@@ -324,6 +330,7 @@ void	Server::remove_client( const int& fd )
 void	Server::init_command_map( void )
 {
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
+	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
 }
@@ -341,7 +348,8 @@ void	Server::init_reply_map( void )
 	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
-
+	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
+	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
 }
