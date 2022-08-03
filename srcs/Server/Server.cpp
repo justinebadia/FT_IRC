@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 15:53:56 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/03 18:27:50 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	Client		*client;
 	
 	client = get_client(pollfd.fd);
+
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
 		return ;
@@ -130,6 +131,11 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		client->_pending = 1;
 		get_reply_ptr(RPL_WELCOME)(message);
 	}
+	// if (client->_pending == 0)
+	// {
+	// 	client->append_buff(BUFFOUT, "001 :Welcome to the Internet Relay Network ");
+	// 	client->_pending = 1;
+	// }
 	client->append_buff(BUFFOUT, message.get_message_out());
 	client->clear_buff(BUFFIN);
 }
@@ -368,7 +374,7 @@ t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
 void	Server::process_connections( const t_pollfd& pollfd )
 {
 	int			client_fd;
-
+	
 	if (pollfd.revents | POLLIN)
 	{
 		while(true)
