@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:32:36 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 16:50:35 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ typedef map<int, t_reply_function_ptr>		t_reply_map;
 
 typedef struct	pollfd					t_pollfd;
 typedef struct	sockaddr_in6			t_addr6;
-typedef struct	sockaddr_in				t_addr;
+//typedef struct	sockaddr_in				t_addr;
 
 
 
 typedef struct s_socket
 {
        t_pollfd			pollfd; // int fd, short events & revents
-       t_addr			addr; 
+       t_addr6			addr6; 
 }      t_socket;
 
 

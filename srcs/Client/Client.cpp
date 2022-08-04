@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:29:01 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 16:49:51 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ bool	Client::operator==( const Client& rhs) const
 }
 
 /* getters */
-t_pollfd&		Client::get_pollfd ( void ) { return _socket.pollfd; }
-t_addr&			Client::get_addr ( void ) { return _socket.addr; }
-t_addr			Client::get_addr_copy ( void ) const { return _socket.addr; }
-const int&		Client::get_fd ( void ) const { return _socket.pollfd.fd; }
-short			Client::get_events ( void ) const { return (_socket.pollfd.events); }
-short			Client::get_revents ( void ) const { return (_socket.pollfd.revents); }
+t_pollfd&		Client::get_pollfd( void ) { return _socket.pollfd; }
+t_addr6&		Client::get_addr6_ref( void ) { return _socket.addr6; }
+t_addr6			Client::get_addr6_copy( void ) const { return _socket.addr6; }
+const int&		Client::get_fd( void ) const { return _socket.pollfd.fd; }
+short			Client::get_events( void ) const { return (_socket.pollfd.events); }
+short			Client::get_revents( void ) const { return (_socket.pollfd.revents); }
 const string&	Client::get_nickname( void ) const { return _nickname; }
 const string&	Client::get_username( void ) const { return _username; }
 const string&	Client::get_realname( void ) const { return _realname; }

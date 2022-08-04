@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:45:27 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 17:02:22 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ const string&			Server::get_password( void ) const { return _password; }
 bool					Server::get_exit_status( void ) const { return _exit; }
 
 t_pollfd&				Server::get_pollfd( void ){ return _server_socket.pollfd; }
-t_addr&					Server::get_addr( void ){ return _server_socket.addr; }
+t_addr6&				Server::get_addr6( void ){ return _server_socket.addr6; }
 const int&				Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
 
 
@@ -264,7 +264,7 @@ void	Server::set_signal_ctrl_c( void )
 
 void	Server::init_server( void )
  {
-	this->set_fd(socket(AF_INET, SOCK_STREAM, 0));
+	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
 	if (this->get_fd() == FAIL)	// Step 1:  socket()
 	{
 		throw Server::SocketErrorException();
@@ -279,11 +279,11 @@ void	Server::init_server( void )
 		throw Server::SetsockoptErrorException();
 	}
 	
-	this->get_addr().sin_family = AF_INET; //change to 6 eventually
-	this->get_addr().sin_addr.s_addr = INADDR_ANY;
-	this->get_addr().sin_port = htons(get_port());
+	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+	this->get_addr6().sin6_addr = in6addr_any;
+	this->get_addr6().sin6_port = htons(get_port());
 	
-	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr(), sizeof(this->get_addr())) == FAIL)) // Step 3: bind()
+	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
 	{
 		throw Server::BindErrorException();
 	}
@@ -366,7 +366,7 @@ void	Server::process_connections( const t_pollfd& pollfd )
 		while(true)
 		{
 			socklen_t	len;
-			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr), &len);
+			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
 			if (client_fd == -1)
 				break;
 			add_client(Client(client_fd));
