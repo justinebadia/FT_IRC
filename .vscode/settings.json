@@ -69,6 +69,7 @@
 		"numeric": "cpp",
 		"__tree": "cpp",
 		"map": "cpp",
-		"span": "cpp"
+		"span": "cpp",
+		"regex": "cpp"
 	}
 }

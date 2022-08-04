@@ -3,26 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:28:09 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 16:47:37 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <iostream>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <iostream>
+#include <string>
+#include <map>
+#include <stdio.h>
+
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <poll.h>
-#include <string>
-#include <map>
+
 #include <list>
 
 #include "irc_define.hpp"
@@ -103,6 +105,7 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
+	void 	execute_commands( void );
 	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	void	trim_buff( u_int buff_i, size_t len );

@@ -3,13 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 17:29:01 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 17:23:38 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../Server/Server.hpp"
+#include "Message.hpp"
 #include "Client.hpp"
 
 using namespace irc;
@@ -93,6 +95,40 @@ void	Client::set_realname( const string& realname ) { _realname = realname; }
 void	Client::set_pending_user_flags( const int flag ) { _pending |= flag; }
 
 /*-----------------------------------UTILS-------------------------------------*/
+
+void	Client::execute_commands( void )
+{
+	size_t start	= 0;
+	size_t last		= 0;
+	size_t next		= 0;
+	size_t len		= _buff[BUFFIN].length();
+	Message	msg(this);
+	t_cmd_function_ptr command;
+
+	std::cout << "BUFFIN : " << _buff[BUFFIN] << " FIND = " << _buff[BUFFIN].find("\r\n", start) << std::endl;
+	while ((next = _buff[BUFFIN].find("\r\n", start)) != string::npos)
+	{
+		msg = Message(this);
+		msg.append_in(_buff[BUFFIN].substr(start, next - start));
+		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
+		command = Server::get_server().get_command_ptr(msg[0]);
+		if (command)
+		{
+			command(msg);
+			this->append_buff(BUFFOUT, msg.get_message_out());
+		}
+		msg.clear_all();
+		start = next + 2;
+		if (start >= len)
+			return ;
+	}
+	return ;
+}
+
+// void	Client::execute_commands( void ) //VRAIMENT PAS SUR !!!
+// {
+
+// }
 
 void	Client::append_buff( u_int buff_i, const string& content )
 {

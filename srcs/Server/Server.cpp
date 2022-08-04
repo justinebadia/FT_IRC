@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 18:27:50 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/04 17:30:46 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,29 +114,30 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << buffer << endl; // WARNING
-
+	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << client->get_buff(BUFFIN) << endl; // WARNING
+	client->execute_commands();
 	/* TO BE REMOVED */
-	t_cmd_function_ptr command;
+	// t_cmd_function_ptr command;
 	Message	message(client);
-	message.append_in(client->get_buff(0));
-	command = get_command_ptr(message[0]);
-	if (command)
-		command(message);
-	else
-		cout << "command " << message[0] << " not found" << endl;
-	if (client->_pending == 0 && ((!client->get_realname().empty() && !client->get_username().empty()) 
-		&& !client->get_nickname().empty()))
+	// message.append_in(client->get_buff(0));
+	// command = get_command_ptr(message[0]);
+	// if (command)
+	// 	command(message);
+	// else
+	// 	cout << "command " << message[0] << " not found" << endl;
+	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
 	{
 		client->_pending = 1;
-		get_reply_ptr(RPL_WELCOME)(message);
+		get_reply_ptr(RPL_WELCOME)(message); //WARNING
+		client->append_buff(BUFFOUT, "\r\n");
+		client->append_buff(BUFFOUT, message.get_message_out());
 	}
-	// if (client->_pending == 0)
+	// if (client->_pending == 0) 
 	// {
 	// 	client->append_buff(BUFFOUT, "001 :Welcome to the Internet Relay Network ");
 	// 	client->_pending = 1;
 	// }
-	client->append_buff(BUFFOUT, message.get_message_out());
+	// client->append_buff(BUFFOUT, message.get_message_out());
 	client->clear_buff(BUFFIN);
 }
 
@@ -150,6 +151,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 		return;
 	cout << "Buff content before sending: " << client->get_buff(1).c_str() << endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
+	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
 	cout << "Buff content after sending: " << client->get_buff(1).c_str() << endl;
 	cout << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << endl; // WARNING
 	// client->trim_buff(1, static_cast<size_t>(bytes));

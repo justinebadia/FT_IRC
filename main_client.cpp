@@ -49,7 +49,11 @@ int main(int argc, char const* argv[])
 	while(1)
 	{
 		if (!input.size())
+        {
 			std::getline(std::cin, input);
+            input.append("\r\n");
+        }
+        
 		res = poll(pollfds, 1, 0);
 		if (res != 0)
 		{

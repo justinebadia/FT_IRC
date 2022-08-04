@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 13:43:38 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/04 16:46:39 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,11 @@ string	Message::find_realname( void )
 	return realname;
 }
 
+void Message::clear_all( void )
+{
+	_message_in.clear();
+	_message_out.clear();
+}
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 
