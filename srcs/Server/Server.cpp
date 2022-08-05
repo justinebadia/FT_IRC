@@ -105,7 +105,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << GREEN <<  "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	client->execute_commands();
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;

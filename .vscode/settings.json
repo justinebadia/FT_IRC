@@ -70,6 +70,13 @@
 		"__tree": "cpp",
 		"map": "cpp",
 		"span": "cpp",
-		"regex": "cpp"
+		"regex": "cpp",
+		"*.tcc": "cpp",
+		"clocale": "cpp",
+		"condition_variable": "cpp",
+		"memory_resource": "cpp",
+		"random": "cpp",
+		"shared_mutex": "cpp",
+		"thread": "cpp"
 	}
 }

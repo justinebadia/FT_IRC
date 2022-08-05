@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/04 16:29:54 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/05 15:59:05 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,14 @@ class Server {
 
 private:
 
-	Server( void );										// default constructor
+	Server( void ) : _database(Database::get_Database());										// default constructor
 	Server( const Server& other );						// copy constructor
 	Server& operator=( const Server& other );			// copy operator overload 
 
 	
 	/*--------------------ATTRIBUTES---------------------*/
 
+	Database&			_database;
 	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
 	const string		_server_name;
 	const unsigned int	_port;
@@ -99,16 +100,8 @@ public:
 	t_addr6&				get_addr6( void );
 	const int&				get_fd( void ) const;
 
-	// [Client related getters]
-	const t_client_list&	get_client_list( void );
-	size_t					get_client_count( void );
-
-	Client*					get_client( int fd );
-	Client*					get_client( const string nickname );
-
 	// [Message related getters]
-	t_cmd_function_ptr		get_command_ptr( string name );
-	t_reply_function_ptr	get_reply_ptr( int code );
+	
 	t_pollfd*				get_pollfd_array( void );
 
 	
@@ -123,9 +116,6 @@ public:
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	void		init_server( void );
-	void		add_client( const Client& client );
-	void		remove_client( const int& fd );
-	void		remove_client( const string& nickname );
 	void		init_command_map( void );
 	void		init_reply_map( void );
 

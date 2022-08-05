@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   typedef.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 16:50:35 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/05 17:30:40 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,14 @@ namespace irc {
 class Client;
 class Message;
 
-typedef list<Client>t_client_list;
-
 typedef	void(*t_cmd_function_ptr)(Message&);
 typedef	void(*t_reply_function_ptr)(Message&);
+
+typedef list<Client>						t_client_list;
+typedef list<Client*>						t_client_ptr_list;
+typedef list<Channel>						t_channel_list;
+typedef list<Channel*>						t_channel_ptr_list;
+typedef map<string, t_client_ptr_list>		t_channel_clients_map;
 
 typedef	pair<string, t_cmd_function_ptr>	t_cmd_pair;
 typedef	pair<int, t_reply_function_ptr>		t_reply_pair;

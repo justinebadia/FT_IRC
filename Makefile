@@ -89,6 +89,6 @@ exe		: test
 test	: _test $(NAME)
 
 _test	:
-		$(eval CFLAGS= -g -Wall -Wextra -Wshadow -Wconversion -Wpedantic -std=c++98)
+		$(eval CFLAGS= -g -Wall -Wextra -Wshadow -Wconversion -Wpedantic)
 
 .PHONY	: all clean fclean re test exe
