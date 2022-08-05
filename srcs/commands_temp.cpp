@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   commands_temp.cpp                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/05 10:30:09 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include <iostream>
 #include "Client.hpp"
@@ -66,6 +56,26 @@ void cmd_user( Message& msg )
 	return ;
 }
 
+void cmd_whois( Message & msg )
+{
+	Client& client			= *msg.get_client_ptr();
+	Server& server			= Server::get_server();
+
+	
+	if (!msg[2].empty())
+	{
+		if (msg[2] != server.get_name())
+			server.get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+		return;
+	}
+	server.get_reply_ptr(RPL_WHOISUSER)(msg);
+	server.get_reply_ptr(RPL_WHOISSERVER)(msg);
+	server.get_reply_ptr(RPL_WHOISOPERATOR)(msg);
+	server.get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
+	server.get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	return;
+}
 
 // void	cmd_join( 
 

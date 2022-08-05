@@ -123,12 +123,6 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
-	// if (client->_pending == 0) 
-	// {
-	// 	client->append_buff(BUFFOUT, "001 :Welcome to the Internet Relay Network ");
-	// 	client->_pending = 1;
-	// }
-	// client->append_buff(BUFFOUT, message.get_message_out());
 	client->clear_buff(BUFFIN);
 }
 
@@ -330,6 +324,8 @@ void	Server::init_command_map( void )
 {
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
+	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
+
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
 }
@@ -348,6 +344,12 @@ void	Server::init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
 	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
+	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));
+	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));
+	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));
+	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
+	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
+
 	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
