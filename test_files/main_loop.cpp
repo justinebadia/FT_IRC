@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 18:11:06 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 10:36:16 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "typedef.hpp"
 #include <string>
 #include <unistd.h>
+#include "../includes/color.hpp"
+
 
 using std::cout;
 using std::cerr;
@@ -40,7 +42,7 @@ int	run_server( Server& server )
 			server.process_clients(&pollfds[1], client_count);
 		}
 	}
-	cout << "Leaving with absolute grace" << endl;
+	cout << GREEN << "Leaving with absolute grace" << RESET << endl;
 	close(server.get_fd()); // Need a close function
 }
 

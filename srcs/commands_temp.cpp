@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_temp.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 15:46:51 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 10:30:09 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	cmd_nick( Message& msg )
 	Server& server			= Server::get_server();
 	Client& client			= *msg.get_client_ptr();
 
-	std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
+	// std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
 		server.get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
@@ -38,7 +38,7 @@ void	cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	std::cout << "Successfully set the nickname to " << msg[1];
+	// std::cout << "Successfully set the nickname to " << msg[1];
 }
 
 void cmd_user( Message& msg )
@@ -57,7 +57,7 @@ void cmd_user( Message& msg )
 	if (msg[4].find(":", 0) >= 0)
 	{
 		client.set_realname(msg.find_realname());
-		std::cout << client.get_realname() << std::endl;
+		// std::cout << client.get_realname() << std::endl;
 
 	}	
 	// On vérifie le hostname et le servername ?

@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 18:29:18 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 17:30:46 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 10:41:29 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/fcntl.h>
+#include "../includes/color.hpp"
+
 
 using namespace irc;
 using std::cout;
@@ -98,7 +100,7 @@ Server::~Server( void )										// default destructor
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
 	remove_client(pollfd.fd);
-	cout << "Server::_process_client_pollerr: removed client fd " << endl; // WARNING
+	cout << GREEN << "Server::_process_client_pollerr: removed client fd " << RESET << endl; // WARNING
 }
 
 void	Server::_process_client_pollin( const t_pollfd& pollfd )
@@ -114,7 +116,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << client->get_buff(BUFFIN) << endl; // WARNING
+	cout << GREEN <<  "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	client->execute_commands();
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;
@@ -149,11 +151,11 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	client = get_client(pollfd.fd);
 	if (client->get_buff(1).size() <= 0)
 		return;
-	cout << "Buff content before sending: " << client->get_buff(1).c_str() << endl;
+	cout << GREEN << "Buff content before sending: " << client->get_buff(1).c_str() << RESET << endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
 	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
-	cout << "Buff content after sending: " << client->get_buff(1).c_str() << endl;
-	cout << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << endl; // WARNING
+	cout << GREEN << "Buff content after sending: " << client->get_buff(1).c_str() << RESET << endl;
+	cout << GREEN << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << RESET << endl; // WARNING
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
@@ -386,7 +388,7 @@ void	Server::process_connections( const t_pollfd& pollfd )
 			if (client_fd == -1)
 				break;
 			add_client(Client(client_fd));
-			cout << "Server::process_connections: Added client with fd " << client_fd << endl; // WARNING
+			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
 		}
 	}
 }

@@ -6,13 +6,15 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 14:36:38 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 17:23:38 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 10:41:04 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server/Server.hpp"
 #include "Message.hpp"
 #include "Client.hpp"
+#include "../includes/color.hpp"
+
 
 using namespace irc;
 
@@ -105,12 +107,12 @@ void	Client::execute_commands( void )
 	Message	msg(this);
 	t_cmd_function_ptr command;
 
-	std::cout << "BUFFIN : " << _buff[BUFFIN] << " FIND = " << _buff[BUFFIN].find("\r\n", start) << std::endl;
+	std::cout << GREEN << "BUFFIN : " << RESET<< _buff[BUFFIN] << GREEN << " FIND = " << _buff[BUFFIN].find("\r\n", start) << RESET << std::endl;
 	while ((next = _buff[BUFFIN].find("\r\n", start)) != string::npos)
 	{
 		msg = Message(this);
 		msg.append_in(_buff[BUFFIN].substr(start, next - start));
-		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
+		//std::cout << "le msg est : " << msg.get_message_in() << std::endl;
 		command = Server::get_server().get_command_ptr(msg[0]);
 		if (command)
 		{

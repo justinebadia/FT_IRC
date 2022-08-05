@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/03 18:17:20 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 10:31:06 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "numeric_replies.hpp"
 #include "Channel/Channel.hpp"
 #include "typedef.hpp"
+#include "../includes/color.hpp"
 
 namespace irc 
 {
@@ -29,7 +30,7 @@ void run_reply( int code, Message& msg )
 	if (reply_ptr)
 		reply_ptr(msg);
 	else
-		std::cout << code << " reply function not found" << std::endl;
+		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
 	return; 
 }
 

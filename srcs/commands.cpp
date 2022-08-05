@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/02 14:39:39 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/05 10:30:13 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	std::cout << "Successfully set the nickname to " << msg[1];
+	// std::cout << "Successfully set the nickname to " << msg[1];
 }
 
 
