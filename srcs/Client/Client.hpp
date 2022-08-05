@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/26 15:11:05 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 16:47:37 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
@@ -83,8 +73,8 @@ public:
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
-	t_addr&							get_addr( void );
-	t_addr							get_addr_copy( void ) const;
+	t_addr6&						get_addr6_ref( void );
+	t_addr6							get_addr6_copy( void ) const;
 	const int&						get_fd( void ) const;
 	short							get_revents( void ) const;
 	short							get_events( void ) const;

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 17:46:03 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/04 16:29:54 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ private:
 	
 	/*--------------------ATTRIBUTES---------------------*/
 
-	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr; 
+	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
 	const string		_server_name;
 	const unsigned int	_port;
 	const string		_password;
@@ -96,7 +96,7 @@ public:
 	bool					get_exit_status( void ) const;
 
 	t_pollfd&				get_pollfd( void );
-	t_addr&					get_addr( void );
+	t_addr6&				get_addr6( void );
 	const int&				get_fd( void ) const;
 
 	// [Client related getters]
