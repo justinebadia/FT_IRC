@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/04 16:29:54 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/06 17:28:44 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,13 @@
 #include <map>
 #include <vector>
 #include <utility>
-#include <signal.h> // SIGINT == control-C
+#include <signal.h>
 #include "irc_define.hpp"
 #include <signal.h>
 #include <exception>
 #include <iostream>
 
 #include <arpa/inet.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -35,7 +34,7 @@
 #include "typedef.hpp"
 
 #define	HOSTNAME "127.0.0.1"	// a.k.a. "localhost" alias
-#define PORT 6667			// irc server port number
+#define PORT 6667
  
 class Channel;
 
@@ -49,6 +48,8 @@ namespace irc {
 class Server {
 
 private:
+
+	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 	Server( void );										// default constructor
 	Server( const Server& other );						// copy constructor
@@ -73,6 +74,16 @@ private:
 	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
 	
 
+public:
+
+	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
+	Server( const unsigned int& port, const string password, bool exit );	// main constructor
+	~Server( void );														// default destructor
+
+
+private:
+
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
 
 	void	_process_client_pollerr( const t_pollfd& pollfd );
@@ -82,9 +93,6 @@ private:
 	
 public:
 
-	Server( const unsigned int& port, const string password, bool exit );	// main constructor
-	~Server( void );														// default destructor
-	
 	/*-----------------------GETTERS----------------------*/
 	
 	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
@@ -117,8 +125,7 @@ public:
 	void	set_fd( int fd );
 	void	set_exit( bool status );
 	void	set_signal_ctrl_c( void );
-	// void	set_exit_true( int signal ); // Moved outside of the class for signal; to be removed
-
+	
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
