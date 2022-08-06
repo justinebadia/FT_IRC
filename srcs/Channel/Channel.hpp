@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/05 17:57:22 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/06 12:14:58 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,54 +29,68 @@ namespace irc {
 
 class Channel {
 
+public:
 
-enum e_permission													// Warning: test
-{
-	OWNER = 1,
-	OPERATOR = 2,
-	REGULAR = 4,
-	BAN = 8
-}
+	/*--------------------TYPEDEF-&-ENUM-------------------*/
+	
+	typedef std::list<std::pair<Client*, e_permission> >			channel_memberlist;
+	typedef std::list<std::pair<Client*, e_permission> >::iterator	iterator;
+
+	enum e_permission
+	{
+		NONE = 0,
+		BAN = 1,
+		REGULAR = 2,
+		OPERATOR = 4,
+		OWNER = 8,
+		// SERVER_OPERATOR = 16 maybe we move this enum in Database class
+	}
+
 
 private:
+
+	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 	Channel( void ); 												// default constructor
 	Channel( const Channel& rhs );									// copy constructor
 	Channel& operator=( const Channel& rhs );	 					// copy operator overload
 
-	/*--------------------ATTRIBUTES---------------------*/
+
+	/*---------------------ATTRIBUTES---------------------*/
 	
-	const string						_name;						// _name for channel name
+	const string						_name;						// channel_name
 	Client*								_owner;
 	bool								_invite_only;
 	bool								_password_required;
 	const string						_password;
-	list<pair<Client*, e_permission>	_memberlist;				// Warning: test
+	channel_memberlist					_memberlist;
 
 	static	int							_nb_of_channels;
 
 
 public:
 
-	Channel( const string& channel_name, Client* channel_owner ); 	// no password constructor
-	Channel( const string& channel_name, Client* channel_owner, const string& channel_password ); // password required constructor
+	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+	
+	Channel( const string& channel_name, Client* channel_owner ); 									// no password constructor
+	Channel( const string& channel_name, Client* channel_owner, const string& channel_password );	// password required constructor
 	~Channel( void );												// destructor
 
-
+	
 	/*-----------------------GETTERS----------------------*/
-
+	
 	const string&						get_name( void ) const;
 	Client*								get_owner( void ) const;
 	bool								get_is_invite_only( void ) const;
 	bool								get_is_password_required( void ) const;
 	string&								get_password( void ) const;
-	list<pair<Client*, e_permission> >	get_memberlist( void );
+	channel_memberlist					get_memberlist( void );
 	e_permission						get_permission( Client* client );
 
-	static int							get_nb_of_channels( void );
+
 
 	/*-----------------------SETTERS----------------------*/
-
+	
 	void	set_invite_only( bool setting );
 	void	set_password( const string& password );
 	int		set_permission( Client* client, e_permission type );
@@ -84,19 +98,23 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	int		add_member( Client* client );
-	int		remove_member( Client* client );
-	int		promote_member( Client* client );
-	int		demote_member( Client* client );
-	int		ban_member( Client* client );
+	void	join_public( Client* client, e_permission type );	// Warning: test, maybe everything will be done in Database
+	void	join_private( Client* client, e_permission type, const string& password );
+	void	add( Client* client, e_permission type );
+	void	kick( Client* source, Client* target );
+	void	ban( Client* source, Client* target );
 
+	bool	is_channel_member( Client* client );
 	bool	is_empty( void );	// if the memberlist is empty, destroy the channel 
+
 
 };
 
 	/*-----------------NON-MEMBER-FUNCTIONS---------------*/
 
 	std::ostream&	operator<<( std::ostream& o, const Channel& obj );
+	
+	static int							get_nb_of_channels(  void );
 
 
 } // namespace irc end bracket
