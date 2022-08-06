@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/06 12:14:58 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/06 18:46:48 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,18 @@ public:
 
 	/*--------------------TYPEDEF-&-ENUM-------------------*/
 	
-	typedef std::list<std::pair<Client*, e_permission> >			channel_memberlist;
-	typedef std::list<std::pair<Client*, e_permission> >::iterator	iterator;
-
 	enum e_permission
 	{
 		NONE = 0,
 		BAN = 1,
 		REGULAR = 2,
 		OPERATOR = 4,
-		OWNER = 8,
+		OWNER = 8
 		// SERVER_OPERATOR = 16 maybe we move this enum in Database class
-	}
+	};
+
+	typedef std::list<std::pair<Client*, e_permission> >			channel_memberlist;
+	typedef std::list<std::pair<Client*, e_permission> >::iterator	iterator;
 
 
 private:

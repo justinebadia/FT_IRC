@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/06 17:15:57 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/06 18:44:22 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void Message::clear_all( void )
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 
-std::ostream&	operator<<( std::ostream& o, const Message& obj )
+std::ostream&	irc::operator<<( std::ostream& o, const Message& obj )
 {
 	o << "-- MESSAGE CONTENT --" << std::endl;
 	o << "Client fd and nickname : "; 
