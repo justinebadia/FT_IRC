@@ -6,7 +6,7 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/05 15:59:05 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 18:18:35 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@
 #include <sys/socket.h>
 
 #include "../Client/Client.hpp"
+#include "Database.hpp"
 #include "Message.hpp"
+#include "MessageManager.hpp"
 #include "typedef.hpp"
 
 #define	HOSTNAME "127.0.0.1"	// a.k.a. "localhost" alias
@@ -46,18 +48,20 @@ using std::pair;
 /*============================================================================*/ 
 namespace irc {
 
+class MessageManager;
+
 class Server {
 
 private:
-
-	Server( void ) : _database(Database::get_Database());										// default constructor
+	Server( void );										// default constructor
 	Server( const Server& other );						// copy constructor
 	Server& operator=( const Server& other );			// copy operator overload 
 
 	
 	/*--------------------ATTRIBUTES---------------------*/
 
-	Database&			_database;
+	Database			_database;
+	MessageManager		_msg_manager;
 	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
 	const string		_server_name;
 	const unsigned int	_port;
@@ -67,9 +71,6 @@ private:
 	t_client_list		_client_list;
 	t_command_map		_command_map;
 	t_reply_map			_reply_map;
-
-	std::list<std::pair<Client* , Channel* > >	_database; // TO DO
-
 
 	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
 	
@@ -93,6 +94,7 @@ public:
 	const t_socket&			get_socket( void ) const;
 	const string&			get_name( void ) const;
 	const unsigned int		get_port( void ) const;
+	Database*		 		get_database( void );
 	const string&			get_password( void ) const;
 	bool					get_exit_status( void ) const;
 
@@ -116,8 +118,6 @@ public:
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	void		init_server( void );
-	void		init_command_map( void );
-	void		init_reply_map( void );
 
 	t_pollfd*	poll_sockets( void );
 	void		process_connections( const t_pollfd& pollfd );

@@ -6,7 +6,7 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/05 17:30:40 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 17:50:28 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ using std::pair;
 namespace irc {
 
 class Client;
+class Channel;
 class Message;
 
 typedef	void(*t_cmd_function_ptr)(Message&);

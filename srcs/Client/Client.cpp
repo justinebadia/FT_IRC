@@ -102,7 +102,7 @@ void	Client::execute_commands( void )
 		msg = Message(this);
 		msg.append_in(_buff[BUFFIN].substr(start, next - start));
 		//std::cout << "le msg est : " << msg.get_message_in() << std::endl;
-		command = Server::get_server().get_command_ptr(msg[0]);
+		// command = Server::get_server().get_command_ptr(msg[0]);
 		if (command)
 		{
 			command(msg);

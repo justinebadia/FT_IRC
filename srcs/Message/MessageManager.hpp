@@ -6,16 +6,15 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/05 16:01:18 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 18:25:31 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef MESSAGE_HPP
-#define MESSAGE_HPP
+#ifndef MESSAGE_MANAGER_HPP
+#define MESSAGE_MANAGER_HPP
 
 #include "Message.hpp"
-#include "Server.hpp"
 #include "Client.hpp"
 #include "Database.hpp"
 #include "irc_define.hpp"
@@ -28,18 +27,18 @@ using std::string;
 /*============================================================================*/
 namespace irc {
 
+class Message;
+
 class MessageManager {
 
 private:
-
-	class Message;
+	
 
 	/*--------------PROHIBITED-CONSTRUCTORS--------------*/
 	MessageManager( const MessageManager& rhs ) {  };
 	MessageManager& operator=( const MessageManager& rhs ) {  };	
 	
 	/*--------------------ATTRIBUTES---------------------*/
-	Server*			_server;
 	Database*		_database;
 	t_command_map	_command_map;
 	t_reply_map		_reply_map;
@@ -50,7 +49,7 @@ private:
 public:
 
 	MessageManager( void );	
-	MessageManager( Server* server );	// main constructor
+	MessageManager( Database* database );	// main constructor
 	~MessageManager( void );			// destructor
 	
 
@@ -59,6 +58,9 @@ public:
 	t_reply_function_ptr	get_reply_ptr( int code );
 
 	/*-----------------------SETTERS----------------------*/
+	// void	set_server( Server* server );
+	void	set_database( Database* database );
+
 
 };
 

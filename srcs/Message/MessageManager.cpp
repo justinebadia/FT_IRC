@@ -1,126 +1,101 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Message.cpp                                        :+:      :+:    :+:   */
+/*   MessageManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 16:46:39 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/07 18:24:56 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Message.hpp"
+#include "MessageManager.hpp"
+#include "commands.hpp"
+#include "numeric_replies.hpp"
+#include "replies.hpp"
+#include "typedef.hpp"
 
 using namespace irc;
 
-Message::Message( Client* client ) : _client_ptr(client)	// main constructor
-{}
-
-Message::Message( const Message& rhs )						// copy constructor
+MessageManager::MessageManager( void ) : _database(NULL)// main constructor
 {
-	*this = rhs;
+	_init_command_map();
+	_init_reply_map();
 }
 
-Message::~Message( void )									// destructor
-{}
-
-
-/*-------------OTHER-OPERATOR-OVERLOADS-------------*/
-
-Message&	Message::operator=( const Message& rhs )
+MessageManager::MessageManager( Database* database ) : _database(database)	// copy constructor
 {
-	_message_in		= rhs._message_in;
-	_message_out	= rhs._message_out;
-	_client_ptr		= rhs._client_ptr;
+	_init_command_map();
+	_init_reply_map();
+}
+
+MessageManager::~MessageManager( void )									// destructor
+{
+	_reply_map.clear();
+	_command_map.clear();
+}
+
+/*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
+
+void	MessageManager::_init_command_map( void )
+{
+	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
+	_command_map.insert(std::make_pair(string("USER"), cmd_user));
+	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
+
+}
+
+void	MessageManager::_init_reply_map( void )
+{
+	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));
+	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));
+	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));
+	// _reply_map.insert(std::make_pair(ERR_NICKCOLLISION, err_nickcollision));
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));
+	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));
+	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));
+	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));
+	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));
+	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
+	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
+	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
 	
-	return *this;
+	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
+
 }
-
-string		Message::operator[]( int i )
-{
-	size_t start	= 0;
-	size_t last		= 0;
-	size_t next		= 0;
-	size_t len		= _message_in.length();
-
-	while (i-- >= 0)
-	{   
-		next = _message_in.find(MSG_DELIMITER, last);
-		if (next == string::npos)
-		{
-			if (i > 0)
-				return "";
-			next = _message_in.length();
-		} 
-		start = last;
-		len = next - last;
-		last = next + 1;
-	}
-	return _message_in.substr(start, len);
-}
-
 
 /*-----------------------GETTERS----------------------*/
 
-Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
-
-const string&	Message::get_message_in( void ) const { return _message_in; }
-
-const string&	Message::get_message_out( void ) const { return _message_out; }
-
-
 /*-----------------------SETTERS----------------------*/
 
-void	Message::set_client_ptr( Client* client )
+void	MessageManager::set_database( Database* database )
 {
-	_client_ptr = client;
+	_database = database;
 }
-
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-void	Message::append_out( const string& str )
+t_cmd_function_ptr		MessageManager::get_command_ptr( string name )
 {
-	 _message_out.append(str);
+	t_command_map::iterator it;
+
+	for (it = _command_map.begin(); it != _command_map.end(); it++)
+	{
+		if ((*it).first == name)
+			return (*it).second;
+	}
+	return NULL;
 }
 
-void	Message::append_in( const string& str )
+t_reply_function_ptr	MessageManager::get_reply_ptr( int code )
 {
-	 _message_in.append(str);
+	t_reply_map::iterator it;
+
+	for (it = _reply_map.begin(); it != _reply_map.end(); it++)
+	{
+		if ((*it).first == code)
+			return (*it).second;
+	}
+	return NULL;
 }
-
-string	Message::find_realname( void )
-{
-	string input = get_message_in();
-	size_t delim_pos = input.find(":", 0);
-	string realname = input.substr(delim_pos, input.npos);
-
-	return realname;
-}
-
-void Message::clear_all( void )
-{
-	_message_in.clear();
-	_message_out.clear();
-}
-
-/*----------------NON-MEMBER-FUNCTIONS----------------*/
-
-
-std::ostream&	irc::operator<<( std::ostream& o, const Message& obj )
-{
-	o << "-- MESSAGE CONTENT --" << std::endl;
-	o << "Client fd and nickname : "; 
-	
-	if (obj._client_ptr == NULL)
-		o << "NULL";
-	else
-		o << obj._client_ptr->get_fd() << " " << obj._client_ptr->get_nickname();
-	
-	o << std::endl << "message_in : " << obj._message_in << std::endl;
-	o << "message_out : " << obj._message_out;
-
-	return o;
-}
-

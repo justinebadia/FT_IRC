@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 14:39:59 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/07 17:48:22 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 #include <iostream>
 #include <list>
 #include <string>
-
-class Client; 
+#include "Client.hpp"
 
 using std::string;
 using std::list;

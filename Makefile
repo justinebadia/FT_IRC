@@ -21,36 +21,43 @@ D_CLI	:= $(D_SRCS)/Client
 D_SERV	:= $(D_SRCS)/Server
 D_MSG	:= $(D_SRCS)/Message
 D_CHAN	:= $(D_SRCS)/Channel
+D_DB	:= $(D_SRCS)/Database
 D_OBJS	:= obj # not used
 
-INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_MSG) -I$(D_CHAN)
+INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_MSG) -I$(D_CHAN) -I$(D_DB)
 
 # Files
 MAIN		= 	test_files/main_loop.cpp
 
-_CLASS_SRCS	=	Client/Client.cpp \
+_CLASS_SRCS	=	Channel/Channel.cpp \
+				Client/Client.cpp \
 				Message/Message.cpp \
-				Server/Server.cpp 
-				# Channel/Channel.cpp
+				Message/MessageManager.cpp \
+				Server/Server.cpp
 				
 CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
 
-_CLASS_HDRS	=	Client/Client.hpp \
-				Server/Server.hpp \
-				Message/Message.hpp 
-				# Channel/Channel.hpp
+_CLASS_HDRS	=	Channel/Channel.hpp \
+				Client/Client.hpp \
+				Message/Message.hpp \
+				Message/MessageManager.hpp \
+				Server/Server.hpp
+				
 				
 CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
 
 _UTILS_SRCS	=	commands_temp.cpp \
 				num_replies.cpp \
+				regex_test.cpp \
 				utils.cpp
+
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))
 
 _UTILS_HDRS =	color.hpp \
 				commands.hpp \
 				irc_define.hpp \
 				numeric_replies.hpp \
+				replies.hpp \
 				typedef.hpp \
 				utils.hpp 
 

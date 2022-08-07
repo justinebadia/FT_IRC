@@ -3,20 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 08:45:24 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/07 17:47:02 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp" // includes <iostream><list><string>
 
 using namespace irc;
+using std::string;
 
-Channel::Channel( void ){} // default constructor [PRIVATE]
+Channel::Channel( void ) : _password_required(false), _channel_password(string()) {} // default constructor [PRIVATE]
 
-Channel::Channel( const Channel& other ){ *this = other; } // copy constructor [PRIVATE]
+Channel::Channel( const Channel& other ) : _password_required(false), _channel_password(string()) 
+{ 
+	*this = other; 
+} // copy constructor [PRIVATE]
 
 Channel& Channel::operator=( const Channel& other ){} // copy operator overload [PRIVATE]
 
