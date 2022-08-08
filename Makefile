@@ -90,12 +90,15 @@ fclean	: clean
 
 re		: fclean all
 
-exe		: test
-		# $(shell ./$(NAME))
+server	: test
+		# $(shell ./$(NAME) 6667 pass)
+
+client	: 
+		# $(shell clang++ main_client.cpp -o client ; ./client)
 
 test	: _test $(NAME)
 
 _test	:
 		$(eval CFLAGS= -g -Wall -Wextra -Wshadow -Wconversion -Wpedantic)
 
-.PHONY	: all clean fclean re test exe
+.PHONY	: all clean fclean re test server client

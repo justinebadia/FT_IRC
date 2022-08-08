@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 10:45:10 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 10:54:58 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,8 @@ void	CommandManager::execute_commands( Client& client )
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		//std::cout << "le msg est : " << msg.get_message_in() << std::endl;
-		// command = Server::get_server().get_command_ptr(msg[0]);
+		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
+		command = get_command_ptr(msg[0]);
 		if (command)
 		{
 			command(msg);
