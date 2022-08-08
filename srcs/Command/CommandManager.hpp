@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 14:26:12 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 17:24:56 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ public:
 
 	/*------------------COMMANDS-FUNCTIONS----------------*/
 	static void	execute_commands( Client& client );
+	static void cmd_join( Message& msg );
 	static void	cmd_nick( Message& msg );
+	static void cmd_privmsg( Message& msg );
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
 	static void cmd_ping( Message& msg );

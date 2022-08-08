@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/04 16:29:54 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/08 14:04:35 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,28 @@ public:
 	Client*					get_client( const int& fd );
 	Client*					get_client( const string& nickname );
 	t_client_ptr_list		get_clients_in_channel( const string& chan_name );
+	t_client_ptr_list		get_clients_in_channel( Channel* channel );
 	Channel*				get_channel( const string& chan_name );
-	// Channel*				get_channel( const Client* client );	
+	Channel*				get_channel( const Client* client );
+	size_t					get_channel_count( void );
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	void		init_Database( void );
-	void		add_client( const Client& client );
-	int			add_client_to_channel( Client* client, string chan_name );
-	void		remove_client( const int& fd );
-	void		remove_client( const string& nickname );
-	void		remove_channel( const string& chan_name );
+	int			add_client_list( const Client& client );		// NEW renamed
+	int			add_channel_list( const Channel& channel );		// NEW
+															
+	bool		is_client_listed( const Client& client );		// NEW
+	bool		is_client_listed( const int& fd );				// NEW
+	bool		is_client_listed( const string& nickname );		// NEW
+	bool		is_channel_listed( const Channel& channel );	// NEW
+	bool		is_channel_listed( const string& chan_name );	// NEW
+
+	int			add_client_to_channel( Client* client, const string& chan_name );
+	int			add_client_to_channel( Client* client, Channel* channel );
+	void		remove_client_list( const int& fd );
+	void		remove_client_list( const string& nickname );
+	void		remove_channel_list( const string& chan_name );
 	void		remove_client_from_channel( const string& nickname, const string& chan_name );
 	void		remove_client_from_all_channels( const string& nickname );
 	void		remove_all_clients_from_channel( const string& chan_name );

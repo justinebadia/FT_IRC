@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:21:32 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/02 09:15:39 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 16:02:32 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ namespace irc {
 #define BUFFOUT	1
 
 // REGEX
-#define REGEX_NICKNAME		"^(?![&#:$])((?![.,*?!@]).)*$"
-#define	REGEX_CHANNEL		"NOT_DONE"
+#define REGEX_NICKNAME		"^(?![&#:$])((?![.,*?!@]).)*$" // WARNING 9 characters maximum not done
+#define	REGEX_CHANNEL		"*" // WARNING not done
 
 // Errors
 #define	ERR_ALLOC	1

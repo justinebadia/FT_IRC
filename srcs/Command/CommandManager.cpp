@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/08/08 14:59:25 by jbadia           ###   ########.fr       */
+=======
+/*   Updated: 2022/08/08 16:08:50 by sfournie         ###   ########.fr       */
+>>>>>>> develop
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandManager.hpp"
 #include "Server.hpp"
+#include "irc_define.hpp"
 #include "numeric_replies.hpp"
 #include "replies.hpp"
 #include "typedef.hpp"
@@ -154,6 +159,51 @@ void	CommandManager::execute_commands( Client& client )
 	return ;
 }
 
+void CommandManager::cmd_join( Message& msg )
+{
+	t_client_ptr_list	chan_memberlist;
+	Channel* 			channel;
+	if (msg[1].empty())
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return;
+	}
+	if (_database->get_channel_count() >= MAX_CHANNELS)
+	{
+		run_reply(ERR_TOOMANYCHANNELS, msg);
+		return;
+	}
+	channel = _database->get_channel(msg[1]);
+	chan_memberlist = _database->get_clients_in_channel(channel);
+	if (!channel)
+	{
+		_database->add_channel_list(Channel(msg[1], msg.get_client_ptr()));
+		run_reply(RPL_TOPIC, msg);
+		return;
+	}
+	if (chan_memberlist.size() >= MAX_CLIENT_PER_CHAN)
+	{
+		run_reply(ERR_CHANNELISFULL, msg);
+		return;
+	}
+	if (channel->is_banned(msg.get_client_ptr()))
+	{
+		run_reply(ERR_BANNEDFROMCHAN, msg);
+		return ;
+	}
+	if (channel->get_is_invite_only())
+	{
+		run_reply(ERR_INVITEONLYCHAN, msg);
+		return ;
+	}
+	_database->add_client_to_channel(msg.get_client_ptr(), channel);
+	run_reply(RPL_TOPIC, msg);
+	// WARNING ERR_BADCHANMASK
+	// ERR_BADCHANMASK
+	// ERR_NOSUCHCHANNEL??
+	return;
+}
+
 void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
@@ -171,6 +221,24 @@ void	CommandManager::cmd_nick( Message& msg )
 	client.set_nickname(msg[1]);
 	std::cout << GREEN "Successfully set the nickname to " << msg[1] << RESET << std::endl;
 }
+
+// void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
+// {
+// 	t_client_ptr_list	chan_memberlist;
+// 	Channel* 			channel;
+// 	if (msg[1].empty())
+// 	{
+// 		// run_reply(ERR_NORECIPIENT, msg);
+// 		return;
+// 	}
+// 	channel = _database->get_channel(msg[1]);
+// 	if (channel)
+// 	{
+// 		chan_memberlist // WE'RE HERE
+// 	}
+	
+// 	return;
+// }
 
 void	CommandManager::cmd_user( Message& msg )
 {
@@ -233,4 +301,6 @@ void CommandManager::cmd_quit( Message& msg )
 	}
 
 }
+
+
 

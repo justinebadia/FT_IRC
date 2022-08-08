@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 10:09:17 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 16:09:26 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,16 @@ Channel::Channel( const Channel& other ) : _password_required(false), _password(
 	*this = other; 
 } // copy constructor [PRIVATE]
 
-Channel& Channel::operator=( const Channel& other ){}							// copy operator overload [PRIVATE]
+Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
+{
+	_name = rhs.get_name();
+	_owner = rhs.get_owner();
+	_invite_only = rhs.get_is_invite_only();
+	_password_required = rhs.get_is_password_required();
+	// _password = rhs.get_password();
+
+	return *this;
+}							
 
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
@@ -34,8 +43,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _password_required(false)
 	, _password(NULL)
 {
-	add(channel_owner, OWNER);
-
+	add(channel_owner);
 }
 
 Channel::Channel( const string& channel_name, Client* channel_owner, const string& channel_password ) // password required constructor
@@ -49,6 +57,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 
 Channel::~Channel( void ) // destructor
 {
+
 }
 
 
@@ -58,26 +67,26 @@ const string&		Channel::get_name( void ) const { return _name; }
 
 Client*				Channel::get_owner( void ) const { return _owner; } 
 
-bool				Channel::get_is_invite_only( void ) const { return _invite_only; }
+bool				Channel::get_is_invite_only( void ) const { return _invite_only; } 
 
-bool				Channel::get_is_password_required( void ) const { return _password_required; }
+bool				Channel::get_is_password_required( void ) const { return _password_required; } 
 
 string&				Channel::get_password( void ) { return _password; }
 
-Channel::channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
+t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 
-Channel::e_permission		Channel::get_permission( Client* client )
-{
-	iterator it = _memberlist.begin();
-	iterator ite = _memberlist.end();
+// Channel::e_permission		Channel::get_permission( Client* client )
+// {
+// 	iterator it = _banlist.begin();
+// 	iterator ite = _banlist.end();
 
-	for (; it != ite; it++)
-	{
-		if ((*it).first == client)					// pair's first == Client*	
-			return (*it).second;					// pair's second ==  e_permission
-	}
-	return (e_permission)FAIL;						// Didn't find the Client in the channel_memberlist
-}
+// 	for (; it != ite; it++)
+// 	{
+// 		if ((*it).first == client)					// pair's first == Client*	
+// 			return (*it).second;					// pair's second ==  e_permission
+// 	}
+// 	return (e_permission)FAIL;						// Didn't find the Client in the channel_banlist
+// }
 
 
 
@@ -94,33 +103,33 @@ void	Channel::set_password( const string& password )
 		_password = password;
 }
 
-int		Channel::set_permission( Client* client, e_permission type )
-{	
-	iterator it = _memberlist.begin();
-	iterator ite = _memberlist.end();
+// int		Channel::set_permission( Client* client, e_permission type )
+// {	
+// 	iterator it = _banlist.begin();
+// 	iterator ite = _banlist.end();
 
-	for (; it != ite; it++)
-	{
-		if ((*it).first == client)					// pair's first == Client*
-			(*it).second = type;					// pair's second == e_permission
-		return SUCCESS;
-	}
-	return FAIL;
-}
+// 	for (; it != ite; it++)
+// 	{
+// 		if ((*it).first == client)					// pair's first == Client*
+// 			(*it).second = type;					// pair's second == e_permission
+// 		return SUCCESS;
+// 	}
+// 	return FAIL;
+// }
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-void	Channel::join_public( Client* client, e_permission type )
+void	Channel::join_public( Client* client )
 {
 	if (this->_invite_only == true)
 	{
 		std::cout << "invite only" << std::endl;
 		return ;
 	}
-	this->add(client, type);
+	this->add(client);
 }
 
-void	Channel::join_private( Client* client, e_permission type, const string& password )
+void	Channel::join_private( Client* client, const string& password )
 {
 	if (this->_invite_only == true)
 	{
@@ -133,60 +142,67 @@ void	Channel::join_private( Client* client, e_permission type, const string& pas
 		std::cout << "wrong password" << std::endl;
 		return ;
 	}
-	this->add(client, type);
+	this->add(client);
 }
 
-void	Channel::add( Client* client, e_permission type )
+void	Channel::add( Client* client )
 {
-	if (this->is_channel_member(client) == false)
-		_memberlist.push_back(std::make_pair(client, type));
+	if (this->is_banned(client) == false)
+		_banlist.push_back(client);
 }
 
-void	Channel::kick( Client* source, Client* target )
+// void	Channel::kick( Client* source, Client* target )
+// {
+// 	if ( this->is_operator(source) == true )
+// 	{
+// 		if (this->get_permission(source) < this->get_permission(target))
+// 		{
+// 			std::cout << "don't have the permission to kick" << std::endl;
+// 	 		return ;
+// 		}
+// 	}
+// }
+
+// void	Channel::ban( Client* source, Client* target )
+// {
+// 	if ( this->is_operator(source) == true )
+// 	{
+// 		if (this->get_permission(source) < this->get_permission(target))
+// 		{
+// 			std::cout << "don't have the permission to ban" << std::endl;
+// 	 		return ;
+// 		}
+// 	}
+// }
+
+bool	Channel::is_operator( Client* member )
 {
-	if (this->is_channel_member(source) == true && this->is_channel_member(target) == true)
-	{
-		if (this->get_permission(source) < this->get_permission(target))
-		{
-			std::cout << "don't have the permission to kick" << std::endl;
-	 		return ;
-		}
-	}
+	if (member == this->get_owner())
+		return true;
+	return false;
 }
 
-void	Channel::ban( Client* source, Client* target )
+bool	Channel::is_banned( Client* member )
 {
-	if (this->is_channel_member(source) == true && this->is_channel_member(target) == true)
-	{
-		if (this->get_permission(source) < this->get_permission(target))
-		{
-			std::cout << "don't have the permission to ban" << std::endl;
-	 		return ;
-		}
-	}
-}
-
-bool	Channel::is_channel_member( Client* member )
-{
-	iterator it = _memberlist.begin();
-	iterator ite = _memberlist.end();
+	iterator it = _banlist.begin();
+	iterator ite = _banlist.end();
 	
 	for (; it != ite; it++)
 	{
-		if ((*it).first == member)
+		if ((*it) == member)
 		{
-			std::cout << "member already in this channel_memberlist" << std::endl;
+			std::cout << "member already in this channel_banlist" << std::endl;
 			return true ;
 		}
 	}
 	return false;
 }
 
-bool	Channel::is_empty( void )
-{
-	if (_memberlist.size() == 0)
-		return true;
-}
+// bool	Channel::is_empty( void )
+// {
+// 	if (_banlist.size() == 0)
+// 		return true;
+// }
 
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/

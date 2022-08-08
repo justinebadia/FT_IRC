@@ -85,7 +85,22 @@ t_client_ptr_list	Database::get_clients_in_channel( const string& chan_name )
 	it = _channel_clients_list_map.find(chan_name);
 	if (it != _channel_clients_list_map.end())
 		return (*it).second;
-	return t_client_ptr_list();
+	return t_client_ptr_list();	// return une liste vide
+}
+
+t_client_ptr_list	Database::get_clients_in_channel( Channel* channel )
+{
+	t_client_ptr_list				clients_in_channel_list;
+	t_channel_clients_map::iterator it;
+	t_client_list::iterator			it_client;
+
+	if (channel)
+	{
+		it = _channel_clients_list_map.find(channel->get_name());
+		if (it != _channel_clients_list_map.end())
+			return (*it).second;
+	}
+	return t_client_ptr_list();	// return une liste vide
 }
 
 Channel*	Database::get_channel( const string& chan_name )
@@ -100,6 +115,9 @@ Channel*	Database::get_channel( const string& chan_name )
 	return NULL;
 }
 
+size_t		Database::get_channel_count( void ) { return _channel_list.size(); }
+
+
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
 void	Database::init_Database( void )
@@ -107,12 +125,94 @@ void	Database::init_Database( void )
 
 }
 
-void	Database::add_client( const Client& client )
+int	Database::add_client_list( const Client& client )
 {
-	_client_list.push_back(client);
+	if (is_client_listed(client) == false)
+	{
+		_client_list.push_back(client);
+		return SUCCESS;
+	}
+	return FAIL;	//client already in the client_list
 }
 
-int		Database::add_client_to_channel( Client* client, string chan_name )
+int	Database::add_channel_list( const Channel& channel )
+{
+	if (is_channel_listed(channel) == false)
+	{
+		_channel_list.push_back(channel);
+		_channel_clients_list_map.insert(std::make_pair(channel.get_name(), t_client_ptr_list()));
+		return SUCCESS;
+	}
+	return FAIL; //channel already in the channel_list
+}
+
+bool	Database::is_client_listed( const Client& client )
+{
+	t_client_list::iterator it = _client_list.begin();
+	t_client_list::iterator ite = _client_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).get_fd() == client.get_fd())
+			return true;
+	}
+	return false;
+}
+
+bool	Database::is_client_listed( const int& fd )
+{
+	t_client_list::iterator it = _client_list.begin();
+	t_client_list::iterator ite = _client_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).get_fd() == fd)
+			return true;
+	}
+	return false;
+}
+
+bool	Database::is_client_listed( const string& nickname )
+{
+	t_client_list::iterator it = _client_list.begin();
+	t_client_list::iterator ite = _client_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).get_nickname() == nickname)
+			return true;
+	}
+	return false;
+}
+
+bool	Database::is_channel_listed( const Channel& channel )
+{
+	t_channel_list::iterator it = _channel_list.begin();
+	t_channel_list::iterator ite = _channel_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).get_name() == channel.get_name())
+			return true;
+	}
+	return false;
+}
+
+bool	Database::is_channel_listed( const string& chan_name )
+{
+	t_channel_list::iterator it = _channel_list.begin();
+	t_channel_list::iterator ite = _channel_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).get_name() == chan_name)
+			return true;
+	}
+	return false;
+}
+
+
+int		Database::add_client_to_channel( Client* client, const string& chan_name )
 {
 	t_channel_clients_map::iterator	it;
 	t_client_ptr_list*				client_list;
@@ -128,8 +228,28 @@ int		Database::add_client_to_channel( Client* client, string chan_name )
 	return -1;
 }
 
+int		Database::add_client_to_channel( Client* client, Channel* channel )
+{
+	t_channel_clients_map::iterator	it;
+	t_client_ptr_list*				client_list;
 
-void	Database::remove_client( const string& nickname )
+	if (!channel)
+		return -1; // WARNING return not used. Might not be useful
+	it = _channel_clients_list_map.find(channel->get_name());
+	if (it != _channel_clients_list_map.end())
+	{
+		client_list = &(*it).second;
+		if (std::find(client_list->begin(), client_list->end(), client) == client_list->end())
+			client_list->push_front(client);
+		return 0;
+	}
+	return -1;
+}
+
+
+
+
+void	Database::remove_client_list( const string& nickname )
 {
 	Client* c;
 
@@ -140,7 +260,9 @@ void	Database::remove_client( const string& nickname )
 	remove_client_from_all_channels(c->get_nickname());//WARNING: nee//WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
-void	Database::remove_client( const int& fd )
+
+
+void	Database::remove_client_list( const int& fd )
 {
 	Client* c;
 
@@ -153,11 +275,20 @@ void	Database::remove_client( const int& fd )
 	remove_client_from_all_channels(c->get_nickname());//WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
-void	Database::remove_channel( const string& chan_name)
+
+
+void	Database::remove_channel_list( const string& chan_name)
 {
-	remove_all_clients_from_channel(chan_name);
+	if (is_channel_listed(chan_name) == true)
+	{
+
+	}
+
+	//remove_all_clients_from_channel(chan_name);
 	// WARNING : need to do more stuff when we'll be further
 }
+
+
 
 void	Database::remove_client_from_channel( const string& nickname, const string& chan_name )
 {
@@ -175,6 +306,8 @@ void	Database::remove_client_from_channel( const string& nickname, const string&
 	}
 }
 
+
+
 void	Database::remove_client_from_all_channels( const string& nickname )
 {
 	t_channel_clients_map::iterator	it;
@@ -185,9 +318,13 @@ void	Database::remove_client_from_all_channels( const string& nickname )
 	}
 }
 
+
+
 void	Database::remove_all_clients_from_channel( const string& chan_name )
 {
 	_channel_clients_list_map.erase(chan_name);
 }
 
+
 };
+

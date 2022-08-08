@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 10:06:26 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 16:09:31 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <map>
 #include <string>
 #include "Client.hpp"
+#include "typedef.hpp"
 
 using std::string;
 using std::list;
@@ -32,46 +33,41 @@ public:
 
 	/*--------------------TYPEDEF-&-ENUM-------------------*/
 	
-	enum e_permission
+	enum e_permission									// Usage-> Channel::OWNER, not sure
 	{
-		NONE = 0,
-		BAN = 1,
-		REGULAR = 2,
-		OPERATOR = 4,
-		OWNER = 8
-		// SERVER_OPERATOR = 16 maybe we move this enum in Database class
+		BAN = 0,
+		REGULAR = 1,
+		CHANOP = 2,
+		OWNER = 4
 	};
-
-	typedef std::list<std::pair<Client*, e_permission> >			channel_memberlist;
-	typedef std::list<std::pair<Client*, e_permission> >::iterator	iterator;
-
+	typedef t_client_ptr_list::iterator	iterator;
 
 private:
 
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
-	Channel( void ); 												// default constructor
-	Channel( const Channel& rhs );									// copy constructor
-	Channel& operator=( const Channel& rhs );	 					// copy operator overload
-
+	
 
 	/*---------------------ATTRIBUTES---------------------*/
 	
-	const string						_name;						// channel_name
+	string								_name;						// channel_name
 	Client*								_owner;
 	bool								_invite_only;
 	bool								_password_required;
 	string								_password;
-	channel_memberlist					_memberlist;
+	t_client_ptr_list					_banlist;
 
 
 public:
 
 	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 	
+	Channel( void ); 												// default constructor
 	Channel( const string& channel_name, Client* channel_owner ); 									// no password constructor
 	Channel( const string& channel_name, Client* channel_owner, const string& channel_password );	// password required constructor
+	Channel( const Channel& rhs );									// copy constructor
 	~Channel( void );												// destructor
+	Channel& operator=( const Channel& rhs );	 					// copy operator overload
 
 	
 	/*-----------------------GETTERS----------------------*/
@@ -81,7 +77,7 @@ public:
 	bool								get_is_invite_only( void ) const;
 	bool								get_is_password_required( void ) const;
 	string&								get_password( void );
-	channel_memberlist					get_memberlist( void );
+	t_client_ptr_list					get_banlist( void );
 	e_permission						get_permission( Client* client );
 
 
@@ -95,15 +91,14 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void	join_public( Client* client, e_permission type );	// Warning: test, maybe everything will be done in Database
-	void	join_private( Client* client, e_permission type, const string& password );
-	void	add( Client* client, e_permission type );
-	void	kick( Client* source, Client* target );
-	void	ban( Client* source, Client* target );
+	void	join_public( Client* client );	// Warning: test, maybe everything will be done in Database
+	void	join_private( Client* client, const string& password );
+	void	add( Client* client );
+	// void	kick( Client* source, Client* target );
+	// void	ban( Client* source, Client* target );
 
-	bool	is_channel_member( Client* client );
-	bool	is_empty( void );	// if the memberlist is empty, destroy the channel 
-
+	bool	is_operator( Client* member );
+	bool	is_banned( Client* client );
 
 };
 
