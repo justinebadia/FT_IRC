@@ -72,20 +72,16 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
+	{
+		_disconnect_client(pollfd.fd);
 		return ;
+	}
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	CommandManager::execute_commands(*client);
-	/* TO BE REMOVED */
-	// t_cmd_function_ptr command;
+
 	Message	message(client);
-	// message.append_in(client->get_buff(0));
-	// command = get_command_ptr(message[0]);
-	// if (command)
-	// 	command(message);
-	// else
-	// 	cout << "command " << message[0] << " not found" << endl;
 	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
 	{
 		client->_pending = 1;
@@ -99,9 +95,11 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 void	Server::_process_client_pollout( const t_pollfd& pollfd )
 {
 	ssize_t		bytes;
-	Client		*client;
+	Client*		client;
 	
 	client = _database.get_client(pollfd.fd);
+	if (!client)
+		return ;
 	if (client->get_buff(1).size() <= 0)
 		return;
 	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
@@ -110,6 +108,11 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
+void	Server::_disconnect_client( const int& fd )
+{
+	_database.remove_client(fd);
+	close(fd);
+}
 
 /*---------------------------------GETTERS-----------------------------------*/
 
@@ -286,7 +289,6 @@ void	Server::process_clients( const t_pollfd* pollfd_array, size_t size )
 		}
 	}
 }
-
 
 /*-------------------------NESTED-CLASS-EXCEPTIONS--------------------------*/
 

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 10:23:27 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 13:49:36 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ private:
 	void	_process_client_pollerr( const t_pollfd& pollfd );
 	void	_process_client_pollin( const t_pollfd& pollfd );
 	void	_process_client_pollout( const t_pollfd& pollfd );
+	void	_disconnect_client( const int& fd );
 
 	
 public:

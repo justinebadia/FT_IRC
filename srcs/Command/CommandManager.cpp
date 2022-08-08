@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 12:48:40 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 13:41:43 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,12 +204,12 @@ void CommandManager::cmd_whois( Message & msg )
 			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
 		return;
 	}
-	// get_reply_ptr(RPL_WHOISUSER)(msg);
-	// get_reply_ptr(RPL_WHOISSERVER)(msg);
-	// get_reply_ptr(RPL_WHOISOPERATOR)(msg);
-	// get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	get_reply_ptr(RPL_WHOISUSER)(msg);
+	get_reply_ptr(RPL_WHOISSERVER)(msg);
+	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
+	get_reply_ptr(RPL_WHOISCHANNELS)(msg);
 	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
-	// get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
 	return;
 }
 

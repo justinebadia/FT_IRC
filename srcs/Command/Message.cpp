@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 12:48:51 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:55:18 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,6 @@ string		Message::operator[]( int i )					// scope operator overload
 		} 
 		len = next - last;
 		start = last;
-		
-		std::cout << _message_in.substr(start, len) << std::endl;
 		last = next + 1;
 		i--;
 	}
