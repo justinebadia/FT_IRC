@@ -76,7 +76,11 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+<<<<<<< HEAD
 	MessageManager::execute_commands(*client);
+=======
+	client->execute_commands();
+>>>>>>> develop
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;
 	Message	message(client);
@@ -93,12 +97,6 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
-	// if (client->_pending == 0) 
-	// {
-	// 	client->append_buff(BUFFOUT, "001 :Welcome to the Internet Relay Network ");
-	// 	client->_pending = 1;
-	// }
-	// client->append_buff(BUFFOUT, message.get_message_out());
 	client->clear_buff(BUFFIN);
 }
 
@@ -110,11 +108,19 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	client = _database.get_client(pollfd.fd);
 	if (client->get_buff(1).size() <= 0)
 		return;
+<<<<<<< HEAD
 	cout << GREEN << "Buff content before sending: " << client->get_buff(1).c_str() << RESET << endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
 	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
 	cout << GREEN << "Buff content after sending: " << client->get_buff(1).c_str() << RESET << endl;
 	cout << GREEN << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << RESET << endl; // WARNING
+=======
+	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
+	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
+	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
+	cout << GREEN << "Buff content after sending: " << client->get_buff(1).c_str() << RESET <<endl;
+	cout << GREEN <<"Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << RESET << endl; // WARNING
+>>>>>>> develop
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/03 15:17:02 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/05 18:20:17 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@
 // #define	RPL_WHOREPLY			352
 // #define	RPL_ENDOFWHO			315
 // #define	RPL_WHOISREGNICK		307
-// #define	RPL_WHOISUSER			311
-// #define	RPL_WHOISSERVER			312
-// #define	RPL_WHOISOPERATOR		313
-// #define	RPL_WHOWASUSER			314
-// #define	RPL_WHOISIDLE			317
-// #define	RPL_ENDOFWHOIS			318
-// #define	RPL_WHOISCHANNELS		319
+#define	RPL_WHOISUSER			311
+#define	RPL_WHOISSERVER			312
+#define	RPL_WHOISOPERATOR		313
+#define	RPL_WHOWASUSER			314
+//#define	RPL_WHOISIDLE			317
+#define	RPL_ENDOFWHOIS			318
+#define	RPL_WHOISCHANNELS		319
 // #define	RPL_WHOISSPECIAL		320
 #define	RPL_LISTSTART			321
 #define	RPL_LIST				322

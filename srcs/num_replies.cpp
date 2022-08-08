@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/07 21:42:36 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/08 10:17:12 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,50 @@ void rpl_welcome( Message& msg )
 	Client& client = *msg.get_client_ptr();
 
 	msg.append_out("001 :Welcome to the Internet Relay Network " + client.get_hostname());
+}
+
+void rpl_whoisuser( Message& msg)
+{
+	Client& client = *msg.get_client_ptr();
+
+	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname() + "\r\n");
+
+}
+
+void rpl_whoisserver(Message& msg )
+{
+	Client& client = *msg.get_client_ptr();
+	Server&	server = Server::get_server();
+
+
+	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name()+ "\r\n");
+}
+
+void rpl_whoisoperator( Message& msg )
+{
+	Client& client = *msg.get_client_ptr();
+	Server&	server = Server::get_server();
+
+	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator"+ "\r\n");
+}
+
+void rpl_endofwhois( Message& msg )
+{
+	Client& client = *msg.get_client_ptr();
+	
+	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list"+ "\r\n");
+}
+
+void rpl_whoischannels( Message& msg )
+{
+	Client& client = *msg.get_client_ptr();
+
+	//if client est chanop
+		//msg.append_out("319 " + client.get_nickname() + " :@channel"get_name()");
+	//
+	//else
+		//msg.append_out("319 " + client.get_nickname() + " :");
+
 }
 
 /*NICK NUM_REPLIES*/
@@ -82,10 +126,10 @@ void err_nickcollision( Message& msg)
 /*"<server name> :No such server"*/
 void err_nosuchserver( Message& msg)
 {
-	Server &server = Server::get_server();
+	Server&	server = Server::get_server();
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 401 " + server.get_name() + " :No such server"; //à créer
+	string err_msg = ":" + client.get_hostname() + " 402 " + server.get_name() + " :No such server";
 	msg.append_out(err_msg);
 }
 
