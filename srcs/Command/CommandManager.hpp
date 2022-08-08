@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 17:24:56 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 17:53:13 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ public:
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
 	static void cmd_ping( Message& msg );
+	//static void send_to_all(std::string notification, Message& msg);
 	static void cmd_quit( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/

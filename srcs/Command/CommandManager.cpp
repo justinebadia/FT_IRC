@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/08/08 14:59:25 by jbadia           ###   ########.fr       */
-=======
-/*   Updated: 2022/08/08 16:08:50 by sfournie         ###   ########.fr       */
->>>>>>> develop
+/*   Updated: 2022/08/08 17:53:14 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,13 +281,25 @@ void CommandManager::cmd_ping( Message& msg )
 	return;
 }
 
+// void CommandManager::send_to_all(std::string notification, Message& msg)
+// {
+// 	std::list<irc::Client>::const_iterator it = _database->get_client_list().begin();
+// 	std::list<irc::Client>::const_iterator ite = _database->get_client_list().end();
+
+// 	for (; it != ite; it++)
+// 	{
+// 		_database->get_client()
+// 		//->append_buff(BUFFOUT, notification);
+// 	}
+// }
+
 void CommandManager::cmd_quit( Message& msg )
 {
 	Client& client	= *msg.get_client_ptr();
-
 	if (!msg[1].empty())
 	{
 		msg.append_out(":" + client.get_hostname() + " QUIT " + msg[1]);
+		//send_to_all(":" + client.get_hostname() + " QUIT " + msg[1], msg);
 		//send msg to all in channel or server ?
 	}
 	else
