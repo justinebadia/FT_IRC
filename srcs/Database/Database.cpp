@@ -88,6 +88,21 @@ t_client_ptr_list	Database::get_clients_in_channel( const string& chan_name )
 	return t_client_ptr_list();	// return une liste vide
 }
 
+t_client_ptr_list	Database::get_clients_in_channel( Channel* channel )
+{
+	t_client_ptr_list				clients_in_channel_list;
+	t_channel_clients_map::iterator it;
+	t_client_list::iterator			it_client;
+
+	if (channel)
+	{
+		it = _channel_clients_list_map.find(channel->get_name());
+		if (it != _channel_clients_list_map.end())
+			return (*it).second;
+	}
+	return t_client_ptr_list();	// return une liste vide
+}
+
 Channel*	Database::get_channel( const string& chan_name )
 {
 	t_channel_list::iterator it;
@@ -99,6 +114,8 @@ Channel*	Database::get_channel( const string& chan_name )
 	}
 	return NULL;
 }
+
+size_t		Database::get_channel_count( void ) { return _channel_list.size(); }
 
 
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
@@ -123,6 +140,7 @@ int	Database::add_channel_list( const Channel& channel )
 	if (is_channel_listed(channel) == false)
 	{
 		_channel_list.push_back(channel);
+		_channel_clients_list_map.insert(std::make_pair(channel.get_name(), t_client_ptr_list()));
 		return SUCCESS;
 	}
 	return FAIL; //channel already in the channel_list
@@ -194,7 +212,7 @@ bool	Database::is_channel_listed( const string& chan_name )
 }
 
 
-int		Database::add_client_to_channel( Client* client, string chan_name )
+int		Database::add_client_to_channel( Client* client, const string& chan_name )
 {
 	t_channel_clients_map::iterator	it;
 	t_client_ptr_list*				client_list;
@@ -210,10 +228,28 @@ int		Database::add_client_to_channel( Client* client, string chan_name )
 	return -1;
 }
 
+int		Database::add_client_to_channel( Client* client, Channel* channel )
+{
+	t_channel_clients_map::iterator	it;
+	t_client_ptr_list*				client_list;
+
+	if (!channel)
+		return -1; // WARNING return not used. Might not be useful
+	it = _channel_clients_list_map.find(channel->get_name());
+	if (it != _channel_clients_list_map.end())
+	{
+		client_list = &(*it).second;
+		if (std::find(client_list->begin(), client_list->end(), client) == client_list->end())
+			client_list->push_front(client);
+		return 0;
+	}
+	return -1;
+}
 
 
 
-void	Database::remove_client( const string& nickname )
+
+void	Database::remove_client_list( const string& nickname )
 {
 	Client* c;
 
@@ -226,7 +262,7 @@ void	Database::remove_client( const string& nickname )
 
 
 
-void	Database::remove_client( const int& fd )
+void	Database::remove_client_list( const int& fd )
 {
 	Client* c;
 
@@ -241,7 +277,7 @@ void	Database::remove_client( const int& fd )
 
 
 
-void	Database::remove_channel( const string& chan_name)
+void	Database::remove_channel_list( const string& chan_name)
 {
 	if (is_channel_listed(chan_name) == true)
 	{

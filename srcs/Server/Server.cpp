@@ -58,7 +58,7 @@ Server::~Server( void )										// default destructor
 
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
-	_database.remove_client(pollfd.fd);
+	_database.remove_client_list(pollfd.fd);
 	cout << GREEN << "Server::_process_client_pollerr: removed client fd " << RESET << endl; // WARNING
 }
 
@@ -110,7 +110,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 
 void	Server::_disconnect_client( const int& fd )
 {
-	_database.remove_client(fd);
+	_database.remove_client_list(fd);
 	close(fd);
 }
 
@@ -262,7 +262,7 @@ void	Server::process_connections( const t_pollfd& pollfd )
 			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
 			if (client_fd == -1)
 				break;
-			_database.add_client(Client(client_fd));
+			_database.add_client_list(Client(client_fd));
 			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
 		}
 	}

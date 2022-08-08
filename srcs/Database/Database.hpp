@@ -57,8 +57,10 @@ public:
 	Client*					get_client( const int& fd );
 	Client*					get_client( const string& nickname );
 	t_client_ptr_list		get_clients_in_channel( const string& chan_name );
+	t_client_ptr_list		get_clients_in_channel( Channel* channel );
 	Channel*				get_channel( const string& chan_name );
-	Channel*				get_channel( const Client* client );	
+	Channel*				get_channel( const Client* client );
+	size_t					get_channel_count( void );
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
@@ -71,15 +73,12 @@ public:
 	bool		is_client_listed( const string& nickname );		// NEW
 	bool		is_channel_listed( const Channel& channel );	// NEW
 	bool		is_channel_listed( const string& chan_name );	// NEW
-	
-	int			remove_client_list( const int& fd );			// NEW
-	int			remove_client_list( const strin& nickname );	// NEW
-	int			remove_channel_list( const string& chan_name );	// NEW
 
-	int			add_client_to_channel( Client* client, string chan_name );
-	void		remove_client( const int& fd );
-	void		remove_client( const string& nickname );
-	void		remove_channel( const string& chan_name );
+	int			add_client_to_channel( Client* client, const string& chan_name );
+	int			add_client_to_channel( Client* client, Channel* channel );
+	void		remove_client_list( const int& fd );
+	void		remove_client_list( const string& nickname );
+	void		remove_channel_list( const string& chan_name );
 	void		remove_client_from_channel( const string& nickname, const string& chan_name );
 	void		remove_client_from_all_channels( const string& nickname );
 	void		remove_all_clients_from_channel( const string& chan_name );
