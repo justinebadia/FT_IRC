@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 13:49:05 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 14:13:00 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,12 @@ void CommandManager::rpl_whoischannels( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	//if client est chanop
-		//msg.append_out("319 " + client.get_nickname() + " :@channel"get_name()");
-	//
-	//else
-		//msg.append_out("319 " + client.get_nickname() + " :");
-
+	//if client est dans channel
+		//if client est chanop
+			//msg.append_out("319 " + client.get_nickname() + " :@channel"get_name()");
+		//
+		//else
+			//msg.append_out("319 " + client.get_nickname() + " :");
 }
 
 /*NICK NUM_REPLIES*/

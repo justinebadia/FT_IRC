@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 13:59:26 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 14:59:25 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
 	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
-
+	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 
 }
 
@@ -169,7 +169,7 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	std::cout << "Successfully set the nickname to " << msg[1] << std::endl;
+	std::cout << GREEN "Successfully set the nickname to " << msg[1] << RESET << std::endl;
 }
 
 void	CommandManager::cmd_user( Message& msg )
@@ -183,19 +183,13 @@ void	CommandManager::cmd_user( Message& msg )
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
-	//if (msg[2].compare(0, msg[2].size(), client.get_hostname()) == 0) est ce qu'on check si le hostname est faux ?
 	if (msg[4].find(":", 0) >= 0)
 		client.set_realname(msg.find_realname());
-	// On vérifie le hostname et le servername ?
-	// Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet
-	
 	return ;
 }
 
 void CommandManager::cmd_whois( Message & msg )
 {
-	Client& client			= *msg.get_client_ptr();
-	
 	if (!msg[2].empty())
 	{
 		if (msg[2] != _server->get_name())
@@ -205,7 +199,7 @@ void CommandManager::cmd_whois( Message & msg )
 	run_reply(RPL_WHOISUSER, msg);
 	run_reply(RPL_WHOISSERVER, msg);
 	run_reply(RPL_WHOISOPERATOR, msg);
-	//get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	//get_reply_ptr(RPL_WHOISCHANNELS)(msg); WARNING A FAIRE
 	run_reply(RPL_ENDOFWHOIS, msg); //signifie que c'est la fin de la querry WHOIS
 
 	return;
@@ -218,10 +212,25 @@ void CommandManager::cmd_ping( Message& msg )
 	else if (msg[1] != _server->get_name())
 			run_reply(ERR_NOSUCHSERVER, msg);
 	else
-		msg.append_out(":127.0.0.1 PONG 127.0.0.1 :");
+		msg.append_out(":127.0.0.1 PONG " + msg.get_client_ptr()->get_nickname() + " :127.0.0.1");
 		
 	return;
 }
 
+void CommandManager::cmd_quit( Message& msg )
+{
+	Client& client	= *msg.get_client_ptr();
 
+	if (!msg[1].empty())
+	{
+		msg.append_out(":" + client.get_hostname() + " QUIT " + msg[1]);
+		//send msg to all in channel or server ?
+	}
+	else
+	{
+		msg.append_out(":" + client.get_hostname() + " QUIT");
+		//send mesg to all in channel or server ?
+	}
+
+}
 
