@@ -6,7 +6,7 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/07 18:25:31 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 22:14:25 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,43 +28,49 @@ using std::string;
 namespace irc {
 
 class Message;
+class Server;
+
 
 class MessageManager {
 
 private:
-	
-
+	friend class Server;
 	/*--------------PROHIBITED-CONSTRUCTORS--------------*/
 	MessageManager( const MessageManager& rhs ) {  };
-	MessageManager& operator=( const MessageManager& rhs ) {  };	
-	
-	/*--------------------ATTRIBUTES---------------------*/
-	Database*		_database;
-	t_command_map	_command_map;
-	t_reply_map		_reply_map;
-
-	void	_init_command_map( void );
-	void	_init_reply_map( void );
-	
-public:
-
+	MessageManager& operator=( const MessageManager& rhs ) {  };
 	MessageManager( void );	
 	MessageManager( Database* database );	// main constructor
 	~MessageManager( void );			// destructor
 	
+	/*--------------------ATTRIBUTES---------------------*/
+	static Server*			_server;
+	static Database*		_database;
+	static t_command_map	_command_map;
+	static t_reply_map		_reply_map;
+
+	static void	_init_command_map( void );
+	static void	_init_reply_map( void );
+	
+public:
 
 	/*-----------------------GETTERS----------------------*/
-	t_cmd_function_ptr		get_command_ptr( string name );
-	t_reply_function_ptr	get_reply_ptr( int code );
+	static	t_cmd_function_ptr		get_command_ptr( string name );
+	static	t_reply_function_ptr	get_reply_ptr( int code );
 
 	/*-----------------------SETTERS----------------------*/
-	// void	set_server( Server* server );
-	void	set_database( Database* database );
+	static void	set_server( Server* server );
+	static void	set_database( Database* database );
 
+	/*------------------COMMANDS-FUNCTIONS----------------*/
+	static void	execute_commands( Client& client );
+	static void	cmd_nick( Message& msg );
+	static void	cmd_user( Message& msg );
+
+	/*------------------REPLIES-FUNCTIONS-----------------*/
+	static void run_reply( int code, Message& msg );
 
 };
 
-	/*----------------NON-MEMBER-FUNCTIONS----------------*/
 	
 
 } // namespace irc end bracket

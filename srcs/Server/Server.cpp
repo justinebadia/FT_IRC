@@ -6,7 +6,7 @@
 					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
 
-#include "commands.hpp"
+// #include "commands.hpp"
 #include "replies.hpp"
 #include "numeric_replies.hpp"
 #include "typedef.hpp"
@@ -47,7 +47,6 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _exit(false)
 {
 	init_server();
-	_msg_manager.set_database(&_database);
 }
 
 Server::~Server( void )										// default destructor
@@ -74,8 +73,8 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
-	client->execute_commands();
+	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+	MessageManager::execute_commands(*client);
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;
 	Message	message(client);
@@ -88,7 +87,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
 	{
 		client->_pending = 1;
-		_msg_manager.get_reply_ptr(RPL_WELCOME)(message); //WARNING
+		MessageManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
 		client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
@@ -181,6 +180,28 @@ void	Server::set_signal_ctrl_c( void )
 
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
+int	Server::run_server( void )
+{
+	t_pollfd*	pollfds;
+	size_t		client_count;
+	int			i;
+
+	while (get_exit_status() == false)
+	{
+		client_count = _database.get_client_count();
+		pollfds = poll_sockets();
+		if (pollfds == NULL)
+			continue;
+		process_connections(pollfds[0]);
+		if (client_count > 0)
+		{
+			process_clients(&pollfds[1], client_count);
+		}
+	}
+	cout << GREEN << "Leaving with absolute grace" << RESET << endl;
+	close(get_fd()); // Need a close function
+}
+
 void	Server::init_server( void )
  {
 	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
@@ -212,6 +233,10 @@ void	Server::init_server( void )
 		throw Server::ListenErrorException();
 	}
 
+	MessageManager::_init_command_map();
+	MessageManager::_init_reply_map();
+	MessageManager::set_server(this);
+	MessageManager::set_database(&_database);
 	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
 	this->get_pollfd().events = POLLIN;
 }

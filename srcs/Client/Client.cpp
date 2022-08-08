@@ -69,7 +69,16 @@ const string&	Client::get_source( void ) const { return _nickname; } //TODO
 
 string	Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
  
-const string&	Client::get_buff( u_int buff_i )
+string&	Client::get_buff( u_int buff_i )
+{ 
+	if (buff_i == BUFFIN)
+		return _buff[0];
+	if (buff_i == BUFFOUT)
+		return _buff[1];
+	return _buff[0];
+}
+
+const string&	Client::get_buff( u_int buff_i ) const
 { 
 	if (buff_i == BUFFIN)
 		return _buff[0];
@@ -86,40 +95,6 @@ void	Client::set_realname( const string& realname ) { _realname = realname; }
 void	Client::set_pending_user_flags( const int flag ) { _pending |= flag; }
 
 /*-----------------------------------UTILS-------------------------------------*/
-
-void	Client::execute_commands( void )
-{
-	size_t start	= 0;
-	size_t last		= 0;
-	size_t next		= 0;
-	size_t len		= _buff[BUFFIN].length();
-	Message	msg(this);
-	t_cmd_function_ptr command;
-
-	std::cout << GREEN << "BUFFIN : " << RESET<< _buff[BUFFIN] << GREEN << " FIND = " << _buff[BUFFIN].find("\r\n", start) << RESET << std::endl;
-	while ((next = _buff[BUFFIN].find("\r\n", start)) != string::npos)
-	{
-		msg = Message(this);
-		msg.append_in(_buff[BUFFIN].substr(start, next - start));
-		//std::cout << "le msg est : " << msg.get_message_in() << std::endl;
-		// command = Server::get_server().get_command_ptr(msg[0]);
-		if (command)
-		{
-			command(msg);
-			this->append_buff(BUFFOUT, msg.get_message_out());
-		}
-		msg.clear_all();
-		start = next + 2;
-		if (start >= len)
-			return ;
-	}
-	return ;
-}
-
-// void	Client::execute_commands( void ) //VRAIMENT PAS SUR !!!
-// {
-
-// }
 
 void	Client::append_buff( u_int buff_i, const string& content )
 {

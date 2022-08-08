@@ -6,7 +6,7 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/07 18:18:35 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 22:10:13 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ private:
 	/*--------------------ATTRIBUTES---------------------*/
 
 	Database			_database;
-	MessageManager		_msg_manager;
 	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
 	const string		_server_name;
 	const unsigned int	_port;
@@ -117,6 +116,7 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
+	int			run_server( void );
 	void		init_server( void );
 
 	t_pollfd*	poll_sockets( void );

@@ -78,7 +78,8 @@ public:
 	const int&						get_fd( void ) const;
 	short							get_revents( void ) const;
 	short							get_events( void ) const;
-	const string&					get_buff( u_int buff_i );
+	string&							get_buff( u_int buff_i );
+	const string&					get_buff( u_int buff_i ) const;
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
@@ -95,7 +96,6 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void 	execute_commands( void );
 	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
 	void	trim_buff( u_int buff_i, size_t len );

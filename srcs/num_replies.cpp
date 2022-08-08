@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/05 10:31:06 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/07 21:42:36 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,18 @@
 namespace irc 
 {
 
-void run_reply( int code, Message& msg )
-{
-	Server&	server = Server::get_server();
-	t_reply_function_ptr reply_ptr;
+// void run_reply( int code, Message& msg )
+// {
+// 	Server&	server = Server::get_server();
+// 	t_reply_function_ptr reply_ptr;
 
-	reply_ptr = server.get_reply_ptr(code);
-	if (reply_ptr)
-		reply_ptr(msg);
-	else
-		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-	return; 
-}
+// 	reply_ptr = server.get_reply_ptr(code);
+// 	if (reply_ptr)
+// 		reply_ptr(msg);
+// 	else
+// 		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
+// 	return; 
+// }
 
 void rpl_welcome( Message& msg )
 {

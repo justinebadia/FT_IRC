@@ -6,7 +6,7 @@
 /*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/07 17:47:02 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/07 21:58:20 by fousse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ Channel::Channel( const string& channel_name, Client* channel_owner ) // public-
 	, _nb_of_operators(1)
 
 {
-	Channel::_nb_of_channels++;
 }
 
 Channel::Channel( const string& channel_name, Client* channel_owner, const string& channel_password ) // private-channel (PASSWORD) constructor
@@ -42,12 +41,10 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _channel_password(channel_password)
 	, _nb_of_operators(1)
 {
-	Channel::_nb_of_channels++;
 }
 
 Channel::~Channel( void ) // destructor
 {
-	Channel::_nb_of_channels--;
 }
 
 

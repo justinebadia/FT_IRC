@@ -31,6 +31,7 @@ MAIN		= 	test_files/main_loop.cpp
 
 _CLASS_SRCS	=	Channel/Channel.cpp \
 				Client/Client.cpp \
+				Database/Database.cpp \
 				Message/Message.cpp \
 				Message/MessageManager.cpp \
 				Server/Server.cpp
@@ -39,6 +40,7 @@ CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
 
 _CLASS_HDRS	=	Channel/Channel.hpp \
 				Client/Client.hpp \
+				Database/Database.hpp \
 				Message/Message.hpp \
 				Message/MessageManager.hpp \
 				Server/Server.hpp
@@ -46,9 +48,7 @@ _CLASS_HDRS	=	Channel/Channel.hpp \
 				
 CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
 
-_UTILS_SRCS	=	commands_temp.cpp \
-				num_replies.cpp \
-				regex_test.cpp \
+_UTILS_SRCS	=	num_replies.cpp \
 				utils.cpp
 
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))

@@ -26,9 +26,6 @@ Database::Database( const Database& other ) // copy constructor [PRIVATE]
 
 Database&	Database::operator=( const Database& other ) // copy operator overload [PRIVATE]
 {
-	this->_client_list = other._client_list;
-	this->_channel_list = other._channel_list;
-	this->_channel_clients_list_map = other._channel_clients_list_map;
 }	
 
 
@@ -44,11 +41,11 @@ Database::~Database( void )										// default destructor
 
 /*---------------------------------GETTERS-----------------------------------*/
 
-Database&	Database::get_Database( void ) // singleton
-{
-	static Database singleton(void); // static singleton declared on the stack, call the main constructor
-	return singleton;
-}
+// Database&	Database::get_Database( void ) // singleton
+// {
+// 	static Database singleton(void); // static singleton declared on the stack, call the main constructor
+// 	return singleton;
+// }
 
 // [Client related getters]
 const t_client_list&	Database::get_client_list( void ) { return _client_list; }
@@ -124,7 +121,7 @@ int		Database::add_client_to_channel( Client* client, string chan_name )
 	if (it != _channel_clients_list_map.end())
 	{
 		client_list = &(*it).second;
-		if (std::find(client_list->begin(), client_list->end(), &client) == client_list->end())
+		if (std::find(client_list->begin(), client_list->end(), client) == client_list->end())
 			client_list->push_front(client);
 		return 0;
 	}
