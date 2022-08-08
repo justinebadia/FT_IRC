@@ -6,7 +6,11 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/08/08 11:37:31 by jbadia           ###   ########.fr       */
+=======
+/*   Updated: 2022/08/08 11:25:35 by sfournie         ###   ########.fr       */
+>>>>>>> develop
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +26,7 @@
 namespace irc 
 {
 
+<<<<<<< HEAD
 void	CommandManager::run_reply( int code, Message& msg )
 {
 	t_reply_function_ptr reply_ptr;
@@ -35,6 +40,8 @@ void	CommandManager::run_reply( int code, Message& msg )
 }
 
 
+=======
+>>>>>>> develop
 void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();

@@ -107,8 +107,6 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
 	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
-	cout << GREEN << "Buff content after sending: " << client->get_buff(1).c_str() << RESET <<endl;
-	cout << GREEN <<"Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << RESET << endl; // WARNING
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 

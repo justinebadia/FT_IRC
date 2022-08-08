@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 12:13:32 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 13:10:04 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,21 @@ string		Message::operator[]( int i )					// scope operator overload
 	size_t next		= 0;
 	size_t len		= _message_in.length();
 
-	while (i-- >= 0)
+	while (i >= 0)
 	{   
 		next = _message_in.find(MSG_DELIMITER, last);
 		if (next == string::npos)
 		{
 			if (i > 0)
-				return "";
+			{
+				return string("");
+			}
 			next = _message_in.length();
 		} 
-		start = last;
 		len = next - last;
+		start = last;
 		last = next + 1;
+		i--;
 	}
 	return _message_in.substr(start, len);
 }

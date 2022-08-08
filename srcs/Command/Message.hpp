@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/06 17:10:59 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/08 11:42:58 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ public:
 	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
 
 	bool	operator==( const Message& rhs ) const;
-	string	operator[]( int rhs);
+	string	operator[]( int rhs );
 
 	/*-----------------------GETTERS----------------------*/
 

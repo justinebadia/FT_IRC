@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 12:16:48 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 13:09:33 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include "utils.hpp"
 
 using namespace irc;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 Server*			CommandManager::_server = NULL;
 Database*		CommandManager::_database = NULL;
@@ -152,7 +155,6 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 
-	// std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
 		get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
@@ -164,7 +166,7 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	// std::cout << "Successfully set the nickname to " << msg[1];
+	std::cout << "Successfully set the nickname to " << msg[1] << std::endl;
 }
 
 void	CommandManager::cmd_user( Message& msg )
