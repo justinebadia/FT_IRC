@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 10:54:58 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 13:59:26 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include "utils.hpp"
 
 using namespace irc;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 Server*			CommandManager::_server = NULL;
 Database*		CommandManager::_database = NULL;
@@ -51,6 +54,8 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
+	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
+
 
 }
 
@@ -73,6 +78,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
+	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));
 	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
@@ -129,12 +135,11 @@ void	CommandManager::execute_commands( Client& client )
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
-	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << GREEN << " FIND = " << buffin.find("\r\n", start) << RESET << std::endl;
+	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -153,19 +158,18 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 
-	// std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
-		get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
+		run_reply(ERR_ERRONEUSNICKNAME, msg);
 		return;
 	}
 	if ( _database->get_client( msg[1] ) )
 	{
-		get_reply_ptr(ERR_NICKNAMEINUSE)(msg);
+		run_reply(ERR_NICKNAMEINUSE, msg);
 		return;
 	}
 	client.set_nickname(msg[1]);
-	// std::cout << "Successfully set the nickname to " << msg[1];
+	std::cout << "Successfully set the nickname to " << msg[1] << std::endl;
 }
 
 void	CommandManager::cmd_user( Message& msg )
@@ -174,18 +178,14 @@ void	CommandManager::cmd_user( Message& msg )
 
 	if(msg[4].empty()) //checking if there is, at least, 5 parameters
 	{
-		get_reply_ptr(ERR_NEEDMOREPARAMS)(msg);
+		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
 	//if (msg[2].compare(0, msg[2].size(), client.get_hostname()) == 0) est ce qu'on check si le hostname est faux ?
 	if (msg[4].find(":", 0) >= 0)
-	{
 		client.set_realname(msg.find_realname());
-		// std::cout << client.get_realname() << std::endl;
-
-	}	
 	// On vérifie le hostname et le servername ?
 	// Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet
 	
@@ -202,26 +202,26 @@ void CommandManager::cmd_whois( Message & msg )
 			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
 		return;
 	}
-	get_reply_ptr(RPL_WHOISUSER)(msg);
-	get_reply_ptr(RPL_WHOISSERVER)(msg);
-	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
-	get_reply_ptr(RPL_WHOISCHANNELS)(msg);
-	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
-	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	run_reply(RPL_WHOISUSER, msg);
+	run_reply(RPL_WHOISSERVER, msg);
+	run_reply(RPL_WHOISOPERATOR, msg);
+	//get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	run_reply(RPL_ENDOFWHOIS, msg); //signifie que c'est la fin de la querry WHOIS
+
 	return;
 }
 
-/*------------------REPLIES-FUNCTIONS-----------------*/
-void	CommandManager::run_reply( int code, Message& msg )
+void CommandManager::cmd_ping( Message& msg )
 {
-	t_reply_function_ptr reply_ptr;
-
-	reply_ptr = get_reply_ptr(code);
-	if (reply_ptr)
-		reply_ptr(msg);
+	if (msg[1].empty())
+			run_reply(ERR_NOORIGIN, msg);
+	else if (msg[1] != _server->get_name())
+			run_reply(ERR_NOSUCHSERVER, msg);
 	else
-		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-	return; 
+		msg.append_out(":127.0.0.1 PONG 127.0.0.1 :");
+		
+	return;
 }
+
 
 

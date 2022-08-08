@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 10:35:46 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 13:49:05 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,21 @@
 namespace irc 
 {
 
-// void run_reply( int code, Message& msg )
-// {
-// 	Server&	server = Server::get_server();
-// 	t_reply_function_ptr reply_ptr;
+void	CommandManager::run_reply( int code, Message& msg )
+{
+	t_reply_function_ptr reply_ptr;
 
-// 	reply_ptr = server.get_reply_ptr(code);
-// 	if (reply_ptr)
-// 		reply_ptr(msg);
-// 	else
-// 		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-// 	return; 
-// }
+	reply_ptr = get_reply_ptr(code);
+	if (reply_ptr)
+	{
+		reply_ptr(msg);
+		msg.append_out("\r\n");
+	}
+	else
+		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
+	return; 
+}
+
 
 void CommandManager::rpl_welcome( Message& msg )
 {
@@ -46,32 +49,29 @@ void CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname() + "\r\n");
+	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname());
 
 }
 
 void CommandManager::rpl_whoisserver(Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
-	Server&	server = Server::get_server();
-
-
-	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name()+ "\r\n");
+	
+	msg.append_out("312 : " + client.get_nickname() + " " + _server->get_name());
 }
 
 void CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
-	Server&	server = Server::get_server();
 
-	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator"+ "\r\n");
+	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator");
 }
 
 void CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list"+ "\r\n");
+	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list");
 }
 
 void CommandManager::rpl_whoischannels( Message& msg )
@@ -152,9 +152,7 @@ void CommandManager::rpl_nousers( Message& msg )
 /* WARNING pas fini 
 ":UserID   Terminal  Host"*/
 void CommandManager::rpl_usersstart( Message& msg )
-{
-	Server &server = Server::get_server();
-	
+{	
 	string err_msg = "392 "; //à créer
 }
 
@@ -182,11 +180,10 @@ void CommandManager::err_alreadyregistered( Message& msg )
 	msg.append_out(err_msg);
 }
 
-//WARNING - est ce qu'on fait 424 ERR_FILEERROR ??
-
-
-// reply_function = server.get_reply_map().find(RPL_LISTSTART);
-// reply_function(msg);
+void CommandManager::err_noorigin( Message& msg )
+{
+	msg.append_out("409 :No origin specified");
+}
 
 } // namespace irc end bracket
 

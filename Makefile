@@ -54,7 +54,6 @@ _UTILS_SRCS	=	Command/num_replies.cpp \
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))
 
 _UTILS_HDRS =	color.hpp \
-				commands.hpp \
 				irc_define.hpp \
 				numeric_replies.hpp \
 				replies.hpp \
