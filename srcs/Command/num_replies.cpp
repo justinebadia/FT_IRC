@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 10:35:46 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 11:37:31 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,18 @@
 namespace irc 
 {
 
-// void run_reply( int code, Message& msg )
-// {
-// 	Server&	server = Server::get_server();
-// 	t_reply_function_ptr reply_ptr;
+void	CommandManager::run_reply( int code, Message& msg )
+{
+	t_reply_function_ptr reply_ptr;
 
-// 	reply_ptr = server.get_reply_ptr(code);
-// 	if (reply_ptr)
-// 		reply_ptr(msg);
-// 	else
-// 		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-// 	return; 
-// }
+	reply_ptr = get_reply_ptr(code);
+	if (reply_ptr)
+		reply_ptr(msg);
+	else
+		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
+	return; 
+}
+
 
 void CommandManager::rpl_welcome( Message& msg )
 {
@@ -46,7 +46,7 @@ void CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname() + "\r\n");
+	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname());
 
 }
 
@@ -56,7 +56,7 @@ void CommandManager::rpl_whoisserver(Message& msg )
 	Server&	server = Server::get_server();
 
 
-	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name()+ "\r\n");
+	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name());
 }
 
 void CommandManager::rpl_whoisoperator( Message& msg )
@@ -64,14 +64,14 @@ void CommandManager::rpl_whoisoperator( Message& msg )
 	Client& client = *msg.get_client_ptr();
 	Server&	server = Server::get_server();
 
-	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator"+ "\r\n");
+	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator");
 }
 
 void CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list"+ "\r\n");
+	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list");
 }
 
 void CommandManager::rpl_whoischannels( Message& msg )

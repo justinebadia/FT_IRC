@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 10:54:58 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:16:48 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,12 +129,11 @@ void	CommandManager::execute_commands( Client& client )
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
-	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << GREEN << " FIND = " << buffin.find("\r\n", start) << RESET << std::endl;
+	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -181,11 +180,7 @@ void	CommandManager::cmd_user( Message& msg )
 		client.set_username(msg[1]);
 	//if (msg[2].compare(0, msg[2].size(), client.get_hostname()) == 0) est ce qu'on check si le hostname est faux ?
 	if (msg[4].find(":", 0) >= 0)
-	{
 		client.set_realname(msg.find_realname());
-		// std::cout << client.get_realname() << std::endl;
-
-	}	
 	// On vérifie le hostname et le servername ?
 	// Est ce qu'on doit afficher le timestamp ?? Ou on l'affiche quand le msg est buildé au complet
 	
@@ -196,32 +191,24 @@ void CommandManager::cmd_whois( Message & msg )
 {
 	Client& client			= *msg.get_client_ptr();
 	
-	if (!msg[2].empty())
-	{
-		if (msg[2] != _server->get_name())
-			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
-		return;
-	}
+	// if (!msg[2].empty())
+	// {
+	// 	if (msg[2] != _server->get_name())
+	// 		get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+	// 	return;
+	// }
 	get_reply_ptr(RPL_WHOISUSER)(msg);
+	msg.append_out("\n\r");
 	get_reply_ptr(RPL_WHOISSERVER)(msg);
+	msg.append_out("\n\r");
 	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
-	get_reply_ptr(RPL_WHOISCHANNELS)(msg);
-	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
+	msg.append_out("\n\r");
+	//get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	//msg.append_out("\n\r");
 	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+
 	return;
 }
 
-/*------------------REPLIES-FUNCTIONS-----------------*/
-void	CommandManager::run_reply( int code, Message& msg )
-{
-	t_reply_function_ptr reply_ptr;
-
-	reply_ptr = get_reply_ptr(code);
-	if (reply_ptr)
-		reply_ptr(msg);
-	else
-		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-	return; 
-}
 
 
