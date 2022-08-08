@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/05 18:20:17 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 13:25:48 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@
 #define	ERR_CANNOTSENDTOCHAN	404
 #define	ERR_TOOMANYCHANNELS		405
 // #define	ERR_WASNOSUCHNICK		406
-// #define	ERR_NOORIGIN			409
+#define	ERR_NOORIGIN			409
 // #define	ERR_INPUTTOOLONG		417
 // #define	ERR_UNKNOWNCOMMAND		421
 // #define	ERR_NOMOTD				422

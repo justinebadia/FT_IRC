@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 13:09:33 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 13:48:20 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
+	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
+
 
 }
 
@@ -76,6 +78,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
+	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));
 	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
@@ -157,12 +160,12 @@ void	CommandManager::cmd_nick( Message& msg )
 
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
-		get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
+		run_reply(ERR_ERRONEUSNICKNAME, msg);
 		return;
 	}
 	if ( _database->get_client( msg[1] ) )
 	{
-		get_reply_ptr(ERR_NICKNAMEINUSE)(msg);
+		run_reply(ERR_NICKNAMEINUSE, msg);
 		return;
 	}
 	client.set_nickname(msg[1]);
@@ -175,7 +178,7 @@ void	CommandManager::cmd_user( Message& msg )
 
 	if(msg[4].empty()) //checking if there is, at least, 5 parameters
 	{
-		get_reply_ptr(ERR_NEEDMOREPARAMS)(msg);
+		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
 	if (!msg[1].empty())
@@ -193,22 +196,34 @@ void CommandManager::cmd_whois( Message & msg )
 {
 	Client& client			= *msg.get_client_ptr();
 	
-	// if (!msg[2].empty())
-	// {
-	// 	if (msg[2] != _server->get_name())
-	// 		get_reply_ptr(ERR_NOSUCHSERVER)(msg);
-	// 	return;
-	// }
-	get_reply_ptr(RPL_WHOISUSER)(msg);
+	if (!msg[2].empty())
+	{
+		if (msg[2] != _server->get_name())
+			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+		return;
+	}
+	run_reply(RPL_WHOISUSER, msg);
 	msg.append_out("\n\r");
-	get_reply_ptr(RPL_WHOISSERVER)(msg);
+	run_reply(RPL_WHOISSERVER, msg);
 	msg.append_out("\n\r");
-	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
+	run_reply(RPL_WHOISOPERATOR, msg);
 	msg.append_out("\n\r");
 	//get_reply_ptr(RPL_WHOISCHANNELS)(msg);
 	//msg.append_out("\n\r");
-	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	run_reply(RPL_ENDOFWHOIS, msg); //signifie que c'est la fin de la querry WHOIS
 
+	return;
+}
+
+void CommandManager::cmd_ping( Message& msg )
+{
+	if (msg[1].empty())
+			run_reply(ERR_NOORIGIN, msg);
+	else if (msg[1] != _server->get_name())
+			run_reply(ERR_NOSUCHSERVER, msg);
+	else
+		msg.append_out(":127.0.0.1 PONG 127.0.0.1 :");
+		
 	return;
 }
 

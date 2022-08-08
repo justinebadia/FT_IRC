@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 10:33:29 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 13:28:48 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ public:
 	static void	cmd_nick( Message& msg );
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
+	static void cmd_ping( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
 	static void run_reply( int code, Message& msg );
@@ -83,12 +84,15 @@ public:
 	/*USERS REPLIES*/
 	static void err_nosuchserver( Message& msg);
 	static void err_userdisabled( Message& msg );
+	/*WHOIS REPLIES*/
 	static void rpl_nousers( Message& msg );
 	static void rpl_usersstart( Message& msg );
 	static void rpl_endofusers( Message& msg );
 	/*USERS MSG REPLIES*/
 	static void err_needmoreparams( Message& msg );
 	static void err_alreadyregistered( Message& msg );
+	/*PING replies*/
+	static void err_noorigin( Message& msg );
 
 };
 

@@ -6,11 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/08/08 11:37:31 by jbadia           ###   ########.fr       */
-=======
-/*   Updated: 2022/08/08 11:25:35 by sfournie         ###   ########.fr       */
->>>>>>> develop
+/*   Updated: 2022/08/08 13:49:05 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +22,22 @@
 namespace irc 
 {
 
-<<<<<<< HEAD
 void	CommandManager::run_reply( int code, Message& msg )
 {
 	t_reply_function_ptr reply_ptr;
 
 	reply_ptr = get_reply_ptr(code);
 	if (reply_ptr)
+	{
 		reply_ptr(msg);
+		msg.append_out("\r\n");
+	}
 	else
 		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
 	return; 
 }
 
 
-=======
->>>>>>> develop
 void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
@@ -60,16 +56,13 @@ void CommandManager::rpl_whoisuser( Message& msg)
 void CommandManager::rpl_whoisserver(Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
-	Server&	server = Server::get_server();
-
-
-	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name());
+	
+	msg.append_out("312 : " + client.get_nickname() + " " + _server->get_name());
 }
 
 void CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
-	Server&	server = Server::get_server();
 
 	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator");
 }
@@ -159,9 +152,7 @@ void CommandManager::rpl_nousers( Message& msg )
 /* WARNING pas fini 
 ":UserID   Terminal  Host"*/
 void CommandManager::rpl_usersstart( Message& msg )
-{
-	Server &server = Server::get_server();
-	
+{	
 	string err_msg = "392 "; //à créer
 }
 
@@ -189,11 +180,10 @@ void CommandManager::err_alreadyregistered( Message& msg )
 	msg.append_out(err_msg);
 }
 
-//WARNING - est ce qu'on fait 424 ERR_FILEERROR ??
-
-
-// reply_function = server.get_reply_map().find(RPL_LISTSTART);
-// reply_function(msg);
+void CommandManager::err_noorigin( Message& msg )
+{
+	msg.append_out("409 :No origin specified");
+}
 
 } // namespace irc end bracket
 
