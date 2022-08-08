@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 10:54:58 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:48:40 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include "utils.hpp"
 
 using namespace irc;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 Server*			CommandManager::_server = NULL;
 Database*		CommandManager::_database = NULL;
@@ -129,12 +132,12 @@ void	CommandManager::execute_commands( Client& client )
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
-	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << GREEN << " FIND = " << buffin.find("\r\n", start) << RESET << std::endl;
+	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << GREEN << " FIND = " << buffin.find("\r\n", start) << RESET << std::endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		std::cout << "le msg est : " << msg.get_message_in() << std::endl;
+		// std::cout << "le msg est : " << msg.get_message_in() << std::endl;
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -153,7 +156,6 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 
-	// std::cout << "in cmd_nick msg1 : " << msg[1] << std::endl;
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
 		get_reply_ptr(ERR_ERRONEUSNICKNAME)(msg);
@@ -165,7 +167,7 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	// std::cout << "Successfully set the nickname to " << msg[1];
+	std::cout << "Successfully set the nickname to " << msg[1] << std::endl;
 }
 
 void	CommandManager::cmd_user( Message& msg )
@@ -180,7 +182,7 @@ void	CommandManager::cmd_user( Message& msg )
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
 	//if (msg[2].compare(0, msg[2].size(), client.get_hostname()) == 0) est ce qu'on check si le hostname est faux ?
-	if (msg[4].find(":", 0) >= 0)
+	if (msg[4].find(":", 0) != string::npos)
 	{
 		client.set_realname(msg.find_realname());
 		// std::cout << client.get_realname() << std::endl;
@@ -202,12 +204,12 @@ void CommandManager::cmd_whois( Message & msg )
 			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
 		return;
 	}
-	get_reply_ptr(RPL_WHOISUSER)(msg);
-	get_reply_ptr(RPL_WHOISSERVER)(msg);
-	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
-	get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	// get_reply_ptr(RPL_WHOISUSER)(msg);
+	// get_reply_ptr(RPL_WHOISSERVER)(msg);
+	// get_reply_ptr(RPL_WHOISOPERATOR)(msg);
+	// get_reply_ptr(RPL_WHOISCHANNELS)(msg);
 	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
-	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	// get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
 	return;
 }
 

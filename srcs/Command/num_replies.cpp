@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 10:35:46 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 11:25:35 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,6 @@
 
 namespace irc 
 {
-
-// void run_reply( int code, Message& msg )
-// {
-// 	Server&	server = Server::get_server();
-// 	t_reply_function_ptr reply_ptr;
-
-// 	reply_ptr = server.get_reply_ptr(code);
-// 	if (reply_ptr)
-// 		reply_ptr(msg);
-// 	else
-// 		std::cout << GREEN << code << " reply function not found" << RESET << std::endl;
-// 	return; 
-// }
 
 void CommandManager::rpl_welcome( Message& msg )
 {
