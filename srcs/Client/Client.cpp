@@ -75,7 +75,7 @@ const int&		Client::get_fd( void ) const { return _socket.pollfd.fd; }
 short			Client::get_events( void ) const { return (_socket.pollfd.events); }
 short			Client::get_revents( void ) const { return (_socket.pollfd.revents); }
 
-const string&	Client::get_buff( u_int buff_i )
+string&			Client::get_buff( u_int buff_i )
 { 
 	if (buff_i == BUFFIN)
 		return _buff[0];
