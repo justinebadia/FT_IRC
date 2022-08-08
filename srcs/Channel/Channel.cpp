@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 10:09:17 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 11:35:22 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 
 Channel::~Channel( void ) // destructor
 {
+
 }
 
 
