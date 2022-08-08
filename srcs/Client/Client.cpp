@@ -1,4 +1,3 @@
-
 #include "../Server/Server.hpp"
 #include "Message.hpp"
 #include "Client.hpp"
@@ -7,7 +6,9 @@
 
 using namespace irc;
 
-Client::Client( int fd )
+/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
+Client::Client( int fd )		// main constructor
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
@@ -49,26 +50,31 @@ Client::~Client( void ) // destructor
 	// freeaddrinfo( reinterpret_cast<struct addrinfo*>(&get_addr()) );
 }
 
+
+/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
+
 bool	Client::operator==( const Client& rhs) const
 {
 	return this->get_nickname() == rhs.get_nickname();
 }
 
-/* getters */
+
+/*-----------------------GETTERS----------------------*/
+
+const string&	Client::get_nickname( void ) const { return _nickname; }
+const string&	Client::get_username( void ) const { return _username; }
+string			Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
+const string&	Client::get_realname( void ) const { return _realname; }
+
+// where is t_pollfd*	Client::get_pollfd_array( void ) ???
 t_pollfd&		Client::get_pollfd( void ) { return _socket.pollfd; }
 t_addr6&		Client::get_addr6_ref( void ) { return _socket.addr6; }
 t_addr6			Client::get_addr6_copy( void ) const { return _socket.addr6; }
+
 const int&		Client::get_fd( void ) const { return _socket.pollfd.fd; }
 short			Client::get_events( void ) const { return (_socket.pollfd.events); }
 short			Client::get_revents( void ) const { return (_socket.pollfd.revents); }
-const string&	Client::get_nickname( void ) const { return _nickname; }
-const string&	Client::get_username( void ) const { return _username; }
-const string&	Client::get_realname( void ) const { return _realname; }
-const string&	Client::get_source( void ) const { return _nickname; } //TODO
-// t_addr6&		Client::get_addr_ref( void ) { return _socket.addr; }
 
-string	Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
- 
 const string&	Client::get_buff( u_int buff_i )
 { 
 	if (buff_i == BUFFIN)
@@ -78,14 +84,26 @@ const string&	Client::get_buff( u_int buff_i )
 	return _buff[0];
 }
 
-/*----------------------------------SETTERS------------------------------------*/
+const string&	Client::get_source( void ) const { return _nickname; }
 
-void	Client::set_nickname( const string& nick ) { _nickname = nick; }
-void	Client::set_username( const string& user ) { _username = user; }
+
+/*-----------------------SETTERS----------------------*/
+
+void	Client::set_nickname( const string& nickname ) { _nickname = nickname; }
+void	Client::set_username( const string& username ) { _username = username; }
+//void	Client::set_hostname( const string& hostname ) { _hostname = hostname; }
 void	Client::set_realname( const string& realname ) { _realname = realname; }
-void	Client::set_pending_user_flags( const int flag ) { _pending |= flag; }
 
-/*-----------------------------------UTILS-------------------------------------*/
+void	Client::set_pending_user_flags( const int flag ) 
+{
+	this->_pending |= flag;
+
+	if (this->_pending & NICK_SET && this->_pending & USER_SET && this->_pending & PASS_SET)
+		this->_pending |= COMPLETE;
+}
+
+
+/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
 void	Client::execute_commands( void )
 {
@@ -115,11 +133,6 @@ void	Client::execute_commands( void )
 	}
 	return ;
 }
-
-// void	Client::execute_commands( void ) //VRAIMENT PAS SUR !!!
-// {
-
-// }
 
 void	Client::append_buff( u_int buff_i, const string& content )
 {
@@ -152,9 +165,14 @@ void	Client::trim_buff( u_int buff_i, size_t len )
 
 bool	Client::is_event( int event ) const { return (get_revents() & event); }
 bool	Client::is_opened( void ) const { return (_socket_opened); }
-bool	Client::is_pending( void ) const { return _pending == (NICK_SET | USER_SET | PASS_SET); } // returns true if ALL THREE IS SET
+bool	Client::is_pending( void ) const { return _pending == (NICK_SET | USER_SET | PASS_SET); } 
+// or { return  _pending == COMPLETE; }
+
+
+/*----------------NON-MEMBER-FUNCTIONS----------------*/
 
 std::ostream&	irc::operator<<( std::ostream& o, const Client & obj )
 {
 	return o << obj.get_nickname();
 }
+

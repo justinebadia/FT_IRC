@@ -1,18 +1,13 @@
-
-#include <iostream>
-#include <netdb.h>
-#include <poll.h>
 #include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h><exception><iostream> "irc_define.hpp"
 					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
 
+#include <poll.h>
+#include <unistd.h>
+#include <sys/fcntl.h>
 #include "commands.hpp"
 #include "replies.hpp"
 #include "numeric_replies.hpp"
-#include "typedef.hpp"
-#include <iostream>
-#include <unistd.h>
-#include <sys/fcntl.h>
 #include "../includes/color.hpp"
 
 
@@ -21,11 +16,15 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-void	set_exit_true( int signal ) // WARNING to be moved
+/*WARNING: move set_exit_true() in a different file*/
+void	set_exit_true( int signal ) 
 {
 	(void)signal;
 	Server::get_server().set_exit(true);
-}
+} /*/
+
+
+/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 Server::Server( void ) : _port(PORT), _password(""){}		// default constructor [PRIVATE]
 
@@ -40,12 +39,18 @@ Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
 Server&	Server::operator=( const Server& other ){}			// copy operator overload [PRIVATE]
 
 
+/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor
 	: _server_name(HOSTNAME)	// 127.0.0.1 
 	, _port(port)				// 6667
 	, _password(password)
 	, _exit(false)
 {
+	init_server();
+	init_command_map();
+	init_reply_map();
+
 	// int			server_fd;
 	// t_addr&		addr = _server_socket.addr;
 	// t_pollfd&	pollfd = _server_socket.pollfd;
@@ -75,14 +80,11 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	// pollfd.fd = server_fd; // WARNING: _set_fd
 	// pollfd.events = POLLIN;
 	// pollfd.revents = 0;
-
-	init_server();
-	init_command_map();
-	init_reply_map();
 }
 
 Server::~Server( void )										// default destructor
 {}
+
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
 
@@ -105,7 +107,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		return ;
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << GREEN <<  "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	client->execute_commands();
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;
@@ -142,6 +144,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
+
 /*---------------------------------GETTERS-----------------------------------*/
 
 Server&				Server::get_server( const unsigned int& port, const string password, bool exit ) // singleton
@@ -164,7 +167,6 @@ const int&				Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
 // [Client related getters]
 
 const t_client_list&	Server::get_client_list( void ) { return _client_list; }
-
 size_t					Server::get_client_count( void ) { return _client_list.size(); }
 
 Client*					Server::get_client( int fd )
