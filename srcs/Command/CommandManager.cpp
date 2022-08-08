@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 13:57:45 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/08 13:59:26 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,13 +203,9 @@ void CommandManager::cmd_whois( Message & msg )
 		return;
 	}
 	run_reply(RPL_WHOISUSER, msg);
-	msg.append_out("\n\r");
 	run_reply(RPL_WHOISSERVER, msg);
-	msg.append_out("\n\r");
 	run_reply(RPL_WHOISOPERATOR, msg);
-	msg.append_out("\n\r");
 	//get_reply_ptr(RPL_WHOISCHANNELS)(msg);
-	//msg.append_out("\n\r");
 	run_reply(RPL_ENDOFWHOIS, msg); //signifie que c'est la fin de la querry WHOIS
 
 	return;

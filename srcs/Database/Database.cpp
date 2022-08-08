@@ -148,6 +148,8 @@ void	Database::remove_client( const int& fd )
 	if (c == NULL)
 		return;
 	_client_list.remove(*c);
+	cout << "client fd " << fd << " has been removed from the database" << endl;
+	// close(fd);
 	remove_client_from_all_channels(c->get_nickname());//WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
