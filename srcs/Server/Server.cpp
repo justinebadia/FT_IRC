@@ -76,7 +76,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
-	MessageManager::execute_commands(*client);
+	CommandManager::execute_commands(*client);
 	/* TO BE REMOVED */
 	// t_cmd_function_ptr command;
 	Message	message(client);
@@ -89,7 +89,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
 	{
 		client->_pending = 1;
-		MessageManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
+		CommandManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
 		client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
@@ -230,10 +230,10 @@ void	Server::init_server( void )
 		throw Server::ListenErrorException();
 	}
 
-	MessageManager::_init_command_map();
-	MessageManager::_init_reply_map();
-	MessageManager::set_server(this);
-	MessageManager::set_database(&_database);
+	CommandManager::_init_command_map();
+	CommandManager::_init_reply_map();
+	CommandManager::set_server(this);
+	CommandManager::set_database(&_database);
 	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
 	this->get_pollfd().events = POLLIN;
 }

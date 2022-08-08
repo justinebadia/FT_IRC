@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 09:59:11 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 10:23:27 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 #include "../Client/Client.hpp"
 #include "Database.hpp"
 #include "Message.hpp"
-#include "MessageManager.hpp"
+#include "CommandManager.hpp"
 #include "typedef.hpp"
 
 #define	HOSTNAME "127.0.0.1"	// a.k.a. "localhost" alias
@@ -47,7 +47,7 @@ using std::pair;
 /*============================================================================*/ 
 namespace irc {
 
-class MessageManager;
+class CommandManager;
 
 class Server {
 

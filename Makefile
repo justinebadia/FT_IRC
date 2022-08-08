@@ -19,12 +19,12 @@ D_SRCS	:= $(D_MAKE)srcs
 D_INCS	:= $(D_MAKE)includes
 D_CLI	:= $(D_SRCS)/Client
 D_SERV	:= $(D_SRCS)/Server
-D_MSG	:= $(D_SRCS)/Message
+D_CMD	:= $(D_SRCS)/Command
 D_CHAN	:= $(D_SRCS)/Channel
 D_DB	:= $(D_SRCS)/Database
 D_OBJS	:= obj # not used
 
-INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_MSG) -I$(D_CHAN) -I$(D_DB)
+INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_CMD) -I$(D_CHAN) -I$(D_DB)
 
 # Files
 MAIN		= 	test_files/main_loop.cpp
@@ -32,8 +32,8 @@ MAIN		= 	test_files/main_loop.cpp
 _CLASS_SRCS	=	Channel/Channel.cpp \
 				Client/Client.cpp \
 				Database/Database.cpp \
-				Message/Message.cpp \
-				Message/MessageManager.cpp \
+				Command/Message.cpp \
+				Command/CommandManager.cpp \
 				Server/Server.cpp
 				
 CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
@@ -41,14 +41,14 @@ CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
 _CLASS_HDRS	=	Channel/Channel.hpp \
 				Client/Client.hpp \
 				Database/Database.hpp \
-				Message/Message.hpp \
-				Message/MessageManager.hpp \
+				Command/Message.hpp \
+				Command/CommandManager.hpp \
 				Server/Server.hpp
 				
 				
 CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
 
-_UTILS_SRCS	=	num_replies.cpp \
+_UTILS_SRCS	=	Command/num_replies.cpp \
 				utils.cpp
 
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))

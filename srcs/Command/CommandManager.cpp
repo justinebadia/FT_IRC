@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageManager.cpp                                 :+:      :+:    :+:   */
+/*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/07 22:17:11 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/08 10:45:10 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "MessageManager.hpp"
+#include "CommandManager.hpp"
 #include "Server.hpp"
 #include "numeric_replies.hpp"
 #include "replies.hpp"
@@ -20,25 +20,25 @@
 
 using namespace irc;
 
-Server*			MessageManager::_server = NULL;
-Database*		MessageManager::_database = NULL;
-t_command_map	MessageManager::_command_map = t_command_map();
-t_reply_map		MessageManager::_reply_map = t_reply_map();
+Server*			CommandManager::_server = NULL;
+Database*		CommandManager::_database = NULL;
+t_command_map	CommandManager::_command_map = t_command_map();
+t_reply_map		CommandManager::_reply_map = t_reply_map();
 
-MessageManager::MessageManager( void ) // main constructor
+CommandManager::CommandManager( void ) // main constructor
 {
 	_init_command_map();
 	_init_reply_map();
 }
 
-MessageManager::MessageManager( Database* database )	// copy constructor
+CommandManager::CommandManager( Database* database )	// copy constructor
 {
 	_init_command_map();
 	_init_reply_map();
 	set_database(database);
 }
 
-MessageManager::~MessageManager( void )									// destructor
+CommandManager::~CommandManager( void )									// destructor
 {
 	_reply_map.clear();
 	_command_map.clear();
@@ -46,15 +46,15 @@ MessageManager::~MessageManager( void )									// destructor
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
 
-void	MessageManager::_init_command_map( void )
+void	CommandManager::_init_command_map( void )
 {
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
-	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
+	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
 
 }
 
-void	MessageManager::_init_reply_map( void )
+void	CommandManager::_init_reply_map( void )
 {
 	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));
 	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));
@@ -68,6 +68,11 @@ void	MessageManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
 	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
+	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));
+	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));
+	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));
+	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
+	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
 	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
@@ -75,7 +80,7 @@ void	MessageManager::_init_reply_map( void )
 
 /*-----------------------GETTERS----------------------*/
 
-t_cmd_function_ptr		MessageManager::get_command_ptr( string name )
+t_cmd_function_ptr		CommandManager::get_command_ptr( string name )
 {
 	t_command_map::iterator it;
 
@@ -87,7 +92,7 @@ t_cmd_function_ptr		MessageManager::get_command_ptr( string name )
 	return NULL;
 }
 
-t_reply_function_ptr	MessageManager::get_reply_ptr( int code )
+t_reply_function_ptr	CommandManager::get_reply_ptr( int code )
 {
 	t_reply_map::iterator it;
 
@@ -101,19 +106,19 @@ t_reply_function_ptr	MessageManager::get_reply_ptr( int code )
 
 /*-----------------------SETTERS----------------------*/
 
-void	MessageManager::set_server( Server* server )
+void	CommandManager::set_server( Server* server )
 {
 	_server = server;
 }
 
-void	MessageManager::set_database( Database* database )
+void	CommandManager::set_database( Database* database )
 {
 	_database = database;
 }
 
 /*---------------COMMANDS-FUNCTIONS---------------*/
 
-void	MessageManager::execute_commands( Client& client )
+void	CommandManager::execute_commands( Client& client )
 {
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
@@ -144,7 +149,7 @@ void	MessageManager::execute_commands( Client& client )
 	return ;
 }
 
-void	MessageManager::cmd_nick( Message& msg )
+void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 
@@ -163,7 +168,7 @@ void	MessageManager::cmd_nick( Message& msg )
 	// std::cout << "Successfully set the nickname to " << msg[1];
 }
 
-void	MessageManager::cmd_user( Message& msg )
+void	CommandManager::cmd_user( Message& msg )
 {
 	Client& client			= *msg.get_client_ptr();
 
@@ -187,8 +192,27 @@ void	MessageManager::cmd_user( Message& msg )
 	return ;
 }
 
+void CommandManager::cmd_whois( Message & msg )
+{
+	Client& client			= *msg.get_client_ptr();
+	
+	if (!msg[2].empty())
+	{
+		if (msg[2] != _server->get_name())
+			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+		return;
+	}
+	get_reply_ptr(RPL_WHOISUSER)(msg);
+	get_reply_ptr(RPL_WHOISSERVER)(msg);
+	get_reply_ptr(RPL_WHOISOPERATOR)(msg);
+	get_reply_ptr(RPL_WHOISCHANNELS)(msg);
+	//msg.append_out(client.get_nickname() + " " + client.get_hostname() + "\nircname: " + client.get_realname() + "\nserver: " + server.get_name());
+	get_reply_ptr(RPL_ENDOFWHOIS)(msg); //signifie que c'est la fin de la querry WHOIS
+	return;
+}
+
 /*------------------REPLIES-FUNCTIONS-----------------*/
-void	MessageManager::run_reply( int code, Message& msg )
+void	CommandManager::run_reply( int code, Message& msg )
 {
 	t_reply_function_ptr reply_ptr;
 

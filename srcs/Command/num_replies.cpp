@@ -6,16 +6,17 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 10:17:12 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/08 10:35:46 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include "Message/Message.hpp"
+#include "Message.hpp"
 #include "Server.hpp"
 #include "numeric_replies.hpp"
-#include "Channel/Channel.hpp"
+#include "../Channel/Channel.hpp"
 #include "typedef.hpp"
+#include "CommandManager.hpp"
 #include "../includes/color.hpp"
 
 namespace irc 
@@ -34,14 +35,14 @@ namespace irc
 // 	return; 
 // }
 
-void rpl_welcome( Message& msg )
+void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
 	msg.append_out("001 :Welcome to the Internet Relay Network " + client.get_hostname());
 }
 
-void rpl_whoisuser( Message& msg)
+void CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
 
@@ -49,7 +50,7 @@ void rpl_whoisuser( Message& msg)
 
 }
 
-void rpl_whoisserver(Message& msg )
+void CommandManager::rpl_whoisserver(Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	Server&	server = Server::get_server();
@@ -58,7 +59,7 @@ void rpl_whoisserver(Message& msg )
 	msg.append_out("312 : " + client.get_nickname() + " " + server.get_name()+ "\r\n");
 }
 
-void rpl_whoisoperator( Message& msg )
+void CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	Server&	server = Server::get_server();
@@ -66,14 +67,14 @@ void rpl_whoisoperator( Message& msg )
 	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator"+ "\r\n");
 }
 
-void rpl_endofwhois( Message& msg )
+void CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
 	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list"+ "\r\n");
 }
 
-void rpl_whoischannels( Message& msg )
+void CommandManager::rpl_whoischannels( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
@@ -87,7 +88,7 @@ void rpl_whoischannels( Message& msg )
 
 /*NICK NUM_REPLIES*/
 /* ":No nickname given"*/
-void err_nonicknamegiven( Message& msg)
+void CommandManager::err_nonicknamegiven( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -95,7 +96,7 @@ void err_nonicknamegiven( Message& msg)
 }
 
 /*"<client> <nick> :Erroneus nickname"*/
-void err_erroneusnickname( Message& msg)
+void CommandManager::err_erroneusnickname( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -105,7 +106,7 @@ void err_erroneusnickname( Message& msg)
 
 /*"<client> <nick> :Nickname is already in use"
 WARNING - est ce que client correspond à username?<>*/
-void err_nicknameinuse( Message& msg)
+void CommandManager::err_nicknameinuse( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -114,7 +115,7 @@ void err_nicknameinuse( Message& msg)
 }
 
 /* "<nick> :Nickname collision KILL"*/
-void err_nickcollision( Message& msg)
+void CommandManager::err_nickcollision( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -124,7 +125,7 @@ void err_nickcollision( Message& msg)
 
 /*USER NUM_REPLIES*/
 /*"<server name> :No such server"*/
-void err_nosuchserver( Message& msg)
+void CommandManager::err_nosuchserver( Message& msg)
 {
 	Server&	server = Server::get_server();
 	Client&	client = *msg.get_client_ptr();
@@ -134,14 +135,14 @@ void err_nosuchserver( Message& msg)
 }
 
 /* ":USERS has been disabled"*/
-void err_userdisabled( Message& msg )
+void CommandManager::err_userdisabled( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
 	msg.append_out(":" + client.get_hostname() + " 446 :USERS has been disabled");
 }
 
-void rpl_nousers( Message& msg )
+void CommandManager::rpl_nousers( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -150,14 +151,14 @@ void rpl_nousers( Message& msg )
 
 /* WARNING pas fini 
 ":UserID   Terminal  Host"*/
-void rpl_usersstart( Message& msg )
+void CommandManager::rpl_usersstart( Message& msg )
 {
 	Server &server = Server::get_server();
 	
 	string err_msg = "392 "; //à créer
 }
 
-void rpl_endofusers( Message& msg )
+void CommandManager::rpl_endofusers( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -165,7 +166,7 @@ void rpl_endofusers( Message& msg )
 }
 
 /*NUM REPLIES - Users message*/
-void err_needmoreparams( Message& msg )
+void CommandManager::err_needmoreparams( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
@@ -173,7 +174,7 @@ void err_needmoreparams( Message& msg )
 	msg.append_out(err_msg);
 }
 
-void err_alreadyregistered( Message& msg )
+void CommandManager::err_alreadyregistered( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageManager.hpp                                 :+:      :+:    :+:   */
+/*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/07 22:14:25 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/08 10:33:29 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef MESSAGE_MANAGER_HPP
-#define MESSAGE_MANAGER_HPP
+#ifndef COMMAND_MANAGER_HPP
+#define COMMAND_MANAGER_HPP
 
 #include "Message.hpp"
 #include "Client.hpp"
@@ -31,16 +31,16 @@ class Message;
 class Server;
 
 
-class MessageManager {
+class CommandManager {
 
 private:
 	friend class Server;
 	/*--------------PROHIBITED-CONSTRUCTORS--------------*/
-	MessageManager( const MessageManager& rhs ) {  };
-	MessageManager& operator=( const MessageManager& rhs ) {  };
-	MessageManager( void );	
-	MessageManager( Database* database );	// main constructor
-	~MessageManager( void );			// destructor
+	CommandManager( const CommandManager& rhs ) {  };
+	CommandManager& operator=( const CommandManager& rhs ) {  };
+	CommandManager( void );	
+	CommandManager( Database* database );	// main constructor
+	~CommandManager( void );			// destructor
 	
 	/*--------------------ATTRIBUTES---------------------*/
 	static Server*			_server;
@@ -65,9 +65,30 @@ public:
 	static void	execute_commands( Client& client );
 	static void	cmd_nick( Message& msg );
 	static void	cmd_user( Message& msg );
+	static void	cmd_whois( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
 	static void run_reply( int code, Message& msg );
+	static void rpl_welcome( Message& msg );
+	static void rpl_whoisuser( Message& msg );
+	static void rpl_whoisserver(Message& msg );
+	static void rpl_whoisoperator(Message& msg );
+	static void rpl_endofwhois( Message& msg );
+	static void rpl_whoischannels( Message& msg );
+	/*NICK REPLIES*/
+	static void err_nonicknamegiven( Message& msg);
+	static void err_erroneusnickname( Message& msg);
+	static void err_nicknameinuse( Message& msg);
+	static void err_nickcollision( Message& msg);
+	/*USERS REPLIES*/
+	static void err_nosuchserver( Message& msg);
+	static void err_userdisabled( Message& msg );
+	static void rpl_nousers( Message& msg );
+	static void rpl_usersstart( Message& msg );
+	static void rpl_endofusers( Message& msg );
+	/*USERS MSG REPLIES*/
+	static void err_needmoreparams( Message& msg );
+	static void err_alreadyregistered( Message& msg );
 
 };
 
