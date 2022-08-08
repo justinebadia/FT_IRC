@@ -1,18 +1,13 @@
-
-#include <iostream>
-#include <netdb.h>
-#include <poll.h>
 #include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h><exception><iostream> "irc_define.hpp"
 					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
 
+#include <poll.h>
+#include <unistd.h>
+#include <sys/fcntl.h>
 // #include "commands.hpp"
 #include "replies.hpp"
 #include "numeric_replies.hpp"
-#include "typedef.hpp"
-#include <iostream>
-#include <unistd.h>
-#include <sys/fcntl.h>
 #include "../includes/color.hpp"
 
 
@@ -21,11 +16,15 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-void	set_exit_true( int signal ) // WARNING to be moved
+/*WARNING: move set_exit_true() in a different file*/
+void	set_exit_true( int signal ) 
 {
 	(void)signal;
 	Server::get_server().set_exit(true);
-}
+} /*/
+
+
+/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 Server::Server( void ) : _port(PORT), _password("") {}		// default constructor [PRIVATE]
 
@@ -40,6 +39,8 @@ Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
 Server&	Server::operator=( const Server& other ){}			// copy operator overload [PRIVATE]
 
 
+/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor
 	: _server_name(HOSTNAME)	// 127.0.0.1 
 	, _port(port)				// 6667
@@ -51,6 +52,7 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 
 Server::~Server( void )										// default destructor
 {}
+
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
 
@@ -115,6 +117,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	cout << GREEN << "Server::_process_client_pollout: sent " << bytes << " bytes to fd " << pollfd.fd << ": " << client->get_buff(1).substr(0, bytes) << RESET << endl; // WARNING
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
+
 
 /*---------------------------------GETTERS-----------------------------------*/
 

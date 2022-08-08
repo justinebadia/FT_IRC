@@ -1,16 +1,12 @@
-
-
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+#include <iostream>
+#include <map>
+#include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <iostream>
-#include <string>
-#include <map>
-#include <stdio.h>
 
-#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <poll.h>
@@ -30,17 +26,26 @@ class Client {
 
 friend class Server; // WARNING: TESTING PURPOSE
 
-enum e_pending
-{
-	NICK_SET = 1,
-	USER_SET = 2,
-	PASS_SET = 4
-	// ALL_SET = 8  // The pending client is now a regular client 
-};
+public:
+
+	/*--------------------TYPEDEF-&-ENUM-------------------*/
+	
+	enum e_pending
+	{
+		NONE_SET = 0,
+		NICK_SET = 1,
+		USER_SET = 2,
+		PASS_SET = 4,
+		COMPLETE = 8  // The pending client is now a regular client 
+	};
+
 
 private:
 
+	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
+
 	Client( void ); 									// default constructor
+
 
 	/*--------------------ATTRIBUTES---------------------*/
 	
@@ -48,12 +53,16 @@ private:
 	string		_username;
 	string		_hostname;
 	string 		_realname;
+	
 	t_socket	_socket;
 	string		_buff[2]; // 0 == read and 1 == write
 	bool		_socket_opened;
-	int			_pending; //in registration
+	int			_pending;
 	
+
 public:
+
+	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
 	Client( int fd );									// main constructor
 	// Client( t_socket client_socket );				// main constructor
@@ -71,19 +80,21 @@ public:
 
 	/*-----------------------GETTERS----------------------*/
 
-	static t_pollfd*				get_pollfd_array( void );
-	t_pollfd&						get_pollfd( void );
-	t_addr6&						get_addr6_ref( void );
-	t_addr6							get_addr6_copy( void ) const;
-	const int&						get_fd( void ) const;
-	short							get_revents( void ) const;
-	short							get_events( void ) const;
-	string&							get_buff( u_int buff_i );
-	const string&					get_buff( u_int buff_i ) const;
 	const string&					get_nickname( void ) const;
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
 	const string&					get_realname( void ) const;
+
+	static t_pollfd*				get_pollfd_array( void );
+	t_pollfd&						get_pollfd( void );
+	t_addr6&						get_addr6_ref( void );
+	t_addr6							get_addr6_copy( void ) const;
+	
+	const int&						get_fd( void ) const;
+	short							get_events( void ) const;
+	short							get_revents( void ) const;
+	
+	string&							get_buff( u_int buff_i );
 	const string&					get_source( void ) const;
 
 
@@ -91,8 +102,11 @@ public:
 
 	void	set_nickname( const string& nickname );
 	void	set_username( const string& username );
-	void	set_pending_user_flags( const int flag );
+	//void	set_hostname( const string& hostname );
 	void	set_realname( const string& realname );
+
+	void	set_pending_user_flags( const int flag );
+
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
@@ -104,8 +118,8 @@ public:
 	bool	is_opened( void ) const;
 	bool	is_pending( void ) const;
 	
-};
 
+};
 
 	/*----------------NON-MEMBER-FUNCTIONS----------------*/
 

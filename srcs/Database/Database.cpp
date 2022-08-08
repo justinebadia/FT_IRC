@@ -94,7 +94,7 @@ Channel*	Database::get_channel( const string& chan_name )
 
 	for (it = _channel_list.begin(); it != _channel_list.end(); it++)
 	{
-		if ((*it).get_channel_name() == chan_name)
+		if ((*it).get_name() == chan_name)
 			return &(*it);
 	}
 	return NULL;

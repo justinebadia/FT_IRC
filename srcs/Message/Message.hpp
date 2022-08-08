@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/04 16:46:42 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/06 17:10:59 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ namespace irc {
 class Message {
 
 private:
+	
+	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 	Message( void ) : _client_ptr( NULL ) {  };				// default constructor [PRIVATE]
 	
+
 	/*--------------------ATTRIBUTES---------------------*/
 	
 	// Message		_empty_object;								// call the default constructor to create an instance on the stack
@@ -52,6 +55,8 @@ private:
 	
 public:
 
+	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+	
 	Message( Client* client_ptr );							// main constructor
 	Message( const Message& rhs );							// copy constructor
 	Message& operator=( const Message& rhs );				// copy operator overload
@@ -60,7 +65,7 @@ public:
 
 	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
 
-	bool	operator==( const Message& rhs) const;
+	bool	operator==( const Message& rhs ) const;
 	string	operator[]( int rhs);
 
 	/*-----------------------GETTERS----------------------*/
