@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 17:53:14 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 13:47:11 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
 	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
+	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 
 }
@@ -173,8 +174,10 @@ void CommandManager::cmd_join( Message& msg )
 	chan_memberlist = _database->get_clients_in_channel(channel);
 	if (!channel)
 	{
-		_database->add_channel_list(Channel(msg[1], msg.get_client_ptr()));
-		run_reply(RPL_TOPIC, msg);
+		string name = msg[1];
+		Channel channel(name, msg.get_client_ptr());
+		_database->add_channel_list(channel);
+		//run_reply(RPL_TOPIC, msg);
 		return;
 	}
 	if (chan_memberlist.size() >= MAX_CLIENT_PER_CHAN)
@@ -193,7 +196,7 @@ void CommandManager::cmd_join( Message& msg )
 		return ;
 	}
 	_database->add_client_to_channel(msg.get_client_ptr(), channel);
-	run_reply(RPL_TOPIC, msg);
+	//run_reply(RPL_TOPIC, msg);
 	// WARNING ERR_BADCHANMASK
 	// ERR_BADCHANMASK
 	// ERR_NOSUCHCHANNEL??
@@ -281,33 +284,21 @@ void CommandManager::cmd_ping( Message& msg )
 	return;
 }
 
-// void CommandManager::send_to_all(std::string notification, Message& msg)
-// {
-// 	std::list<irc::Client>::const_iterator it = _database->get_client_list().begin();
-// 	std::list<irc::Client>::const_iterator ite = _database->get_client_list().end();
-
-// 	for (; it != ite; it++)
-// 	{
-// 		_database->get_client()
-// 		//->append_buff(BUFFOUT, notification);
-// 	}
-// }
 
 void CommandManager::cmd_quit( Message& msg )
 {
-	Client& client	= *msg.get_client_ptr();
-	if (!msg[1].empty())
-	{
-		msg.append_out(":" + client.get_hostname() + " QUIT " + msg[1]);
-		//send_to_all(":" + client.get_hostname() + " QUIT " + msg[1], msg);
-		//send msg to all in channel or server ?
-	}
-	else
-	{
-		msg.append_out(":" + client.get_hostname() + " QUIT");
-		//send mesg to all in channel or server ?
-	}
+	string				nickname;
+	Client*				client	= msg.get_client_ptr();
+	t_channel_ptr_list	chan_list = _database->get_channel_list_of_client(client);
 
+	if (!client)
+		return;
+	nickname = string(client->get_nickname());
+	_database->remove_client_list(client);
+	if (!msg[1].empty())
+		send_to_channels(chan_list, "PRIVMSG " + nickname + " :QUIT:" + msg[1]);	
+	else
+		send_to_channels(chan_list, "PRIVMSG " + nickname + " :QUIT ");
 }
 
 

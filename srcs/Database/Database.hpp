@@ -61,6 +61,7 @@ public:
 	Channel*				get_channel( const string& chan_name );
 	Channel*				get_channel( const Client* client );
 	size_t					get_channel_count( void );
+	t_channel_ptr_list		get_channel_list_of_client( Client* client );
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
@@ -78,10 +79,12 @@ public:
 	int			add_client_to_channel( Client* client, Channel* channel );
 	void		remove_client_list( const int& fd );
 	void		remove_client_list( const string& nickname );
+	void		remove_client_list( Client* client );
 	void		remove_channel_list( const string& chan_name );
 	void		remove_client_from_channel( const string& nickname, const string& chan_name );
 	void		remove_client_from_all_channels( const string& nickname );
 	void		remove_all_clients_from_channel( const string& chan_name );
+
 
 	
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 11:42:58 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/09 11:26:16 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ private:
 	
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
-	Message( void ) : _client_ptr( NULL ) {  };				// default constructor [PRIVATE]
 	
 
 	/*--------------------ATTRIBUTES---------------------*/
@@ -57,6 +56,7 @@ public:
 
 	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 	
+	Message( void ) : _client_ptr( NULL ) {  };				// default constructor
 	Message( Client* client_ptr );							// main constructor
 	Message( const Message& rhs );							// copy constructor
 	Message& operator=( const Message& rhs );				// copy operator overload

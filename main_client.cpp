@@ -51,6 +51,8 @@ int main(int argc, char const* argv[])
 		if (!input.size())
         {
 			std::getline(std::cin, input);
+            if (!input.compare("EXIT"))
+                break;
             input.append("\r\n");
         }
         

@@ -118,6 +118,23 @@ Channel*	Database::get_channel( const string& chan_name )
 size_t		Database::get_channel_count( void ) { return _channel_list.size(); }
 
 
+t_channel_ptr_list	Database::get_channel_list_of_client( Client *client )
+{
+	t_channel_clients_map::iterator it;
+	t_channel_ptr_list list_of_client_chan;
+	Channel *channel;
+
+	for(it =_channel_clients_list_map.begin(); it != _channel_clients_list_map.end(); it++)
+	{
+		channel = get_channel((*it).first);
+		if (channel && std::find((*it).second.begin(), (*it).second.end(), client) != (*it).second.end())
+			list_of_client_chan.push_back(channel);
+	}
+	return (list_of_client_chan);
+}
+
+
+
 /*--------------------------OTHER-MEMBER-FUNCTIONS---------------------------*/
 
 void	Database::init_Database( void )
@@ -137,6 +154,7 @@ int	Database::add_client_list( const Client& client )
 
 int	Database::add_channel_list( const Channel& channel )
 {
+	cout << "in add channel_list" << endl;
 	if (is_channel_listed(channel) == false)
 	{
 		_channel_list.push_back(channel);
@@ -260,8 +278,6 @@ void	Database::remove_client_list( const string& nickname )
 	remove_client_from_all_channels(c->get_nickname());//WARNING: nee//WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
-
-
 void	Database::remove_client_list( const int& fd )
 {
 	Client* c;
@@ -275,7 +291,13 @@ void	Database::remove_client_list( const int& fd )
 	remove_client_from_all_channels(c->get_nickname());//WARNING: need a more complete removal (banlist, links with channels, etc.)
 }
 
-
+void	Database::remove_client_list( Client* client )
+{
+	if (client == NULL)
+		return;
+	remove_client_from_all_channels(client->get_nickname());//WARNING: nee//WARNING: need a more complete removal (banlist, links with channels, etc.)
+	_client_list.remove(*client);
+}
 
 void	Database::remove_channel_list( const string& chan_name)
 {

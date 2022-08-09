@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 17:53:13 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 11:54:51 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ public:
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
 	static void cmd_ping( Message& msg );
-	//static void send_to_all(std::string notification, Message& msg);
 	static void cmd_quit( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
@@ -97,6 +96,10 @@ public:
 	static void err_alreadyregistered( Message& msg );
 	/*PING replies*/
 	static void err_noorigin( Message& msg );
+
+	/*------------------COMMANDS_UTILS------------------*/
+	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
+	static void send_to_channels(t_channel_ptr_list list_of_chan, string output);
 
 };
 

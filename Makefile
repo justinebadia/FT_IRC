@@ -34,6 +34,8 @@ _CLASS_SRCS	=	Channel/Channel.cpp \
 				Database/Database.cpp \
 				Command/Message.cpp \
 				Command/CommandManager.cpp \
+				Command/utils_commands.cpp\
+				Command/num_replies.cpp \
 				Server/Server.cpp
 				
 CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
@@ -48,8 +50,7 @@ _CLASS_HDRS	=	Channel/Channel.hpp \
 				
 CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
 
-_UTILS_SRCS	=	Command/num_replies.cpp \
-				utils.cpp
+_UTILS_SRCS	=	utils.cpp
 
 UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))
 

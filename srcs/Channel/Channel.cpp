@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 16:09:26 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/09 13:32:08 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _owner(channel_owner)
 	, _invite_only(false)
 	, _password_required(false)
-	, _password(NULL)
+	, _password(string())
 {
 	add(channel_owner);
 }
