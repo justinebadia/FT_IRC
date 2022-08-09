@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 16:09:31 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/09 14:36:04 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,12 @@ public:
 	~Channel( void );												// destructor
 	Channel& operator=( const Channel& rhs );	 					// copy operator overload
 
-	
+
+	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
+
+	bool	operator==( const Channel& rhs) const;
+
+
 	/*-----------------------GETTERS----------------------*/
 	
 	const string&						get_name( void ) const;

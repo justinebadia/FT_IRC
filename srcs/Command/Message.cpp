@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 13:59:19 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 15:43:46 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,18 @@ string		Message::operator[]( int i )					// scope operator overload
 Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
 const string&	Message::get_message_in( void ) const { return _message_in; }
 const string&	Message::get_message_out( void ) const { return _message_out; }
+
+string			Message::get_colon( void )
+{ 
+	size_t pos;
+ 
+	pos = _message_in.find(":", 0);
+	if (pos == string::npos)
+	{
+			return string("");
+	}
+	return _message_in.substr(pos + 1);
+}
 
 
 /*-----------------------SETTERS----------------------*/

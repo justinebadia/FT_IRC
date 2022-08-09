@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 13:49:36 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/09 14:32:20 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ private:
 	t_command_map		_command_map;
 	t_reply_map			_reply_map;
 
+	static int			log_level;
+
 	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
 	
 
@@ -131,6 +133,8 @@ public:
 	t_pollfd*	poll_sockets( void );
 	void		process_connections( const t_pollfd& pollfd );
 	void		process_clients( const t_pollfd* pollfd_array, size_t size );
+
+	static void	log( const string& msg );
 
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
 	

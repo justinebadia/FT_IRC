@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/08 14:13:00 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 16:59:09 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("001 :Welcome to the Internet Relay Network " + client.get_hostname());
+	msg.append_out("001 " + msg.get_client_ptr()->get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
 }
 
 void CommandManager::rpl_whoisuser( Message& msg)

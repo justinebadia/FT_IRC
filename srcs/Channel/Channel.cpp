@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/09 13:32:08 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 14:36:49 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,15 @@ Channel::~Channel( void ) // destructor
 
 }
 
+
+/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
+
+bool	Channel::operator==( const Channel& rhs) const
+{
+	if (get_name() == rhs.get_name())
+		return true;
+	return false;
+}
 
 /*-----------------------GETTERS----------------------*/
 

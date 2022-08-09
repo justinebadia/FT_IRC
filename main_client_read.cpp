@@ -42,19 +42,19 @@ int main(int argc, char const* argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
+
 	pollfds[0].fd = sock;
 	pollfds[0].events = POLLIN | POLLOUT;
 	int res;
+	if (!input.size())
+	{
+		std::getline(std::cin, input);
+		input.append("\r\n");
+		if (send(pollfds[0].fd, input.c_str(), input.size(), 0))
+			input.clear();
+	}
 	while(1)
 	{
-		if (!input.size())
-        {
-			std::getline(std::cin, input);
-            if (!input.compare("EXIT"))
-                break;
-            input.append("\r\n");
-        }
-        
 		res = poll(pollfds, 1, 0);
 		if (res != 0)
 		{
@@ -63,11 +63,6 @@ int main(int argc, char const* argv[])
 				valread = read(pollfds[0].fd, buffer, 1024);
 				if (valread > 0)
 					printf("\nRead : %s\n", buffer);
-			}
-			if (pollfds[0].revents & POLLOUT && input.size())
-			{
-				if (send(pollfds[0].fd, input.c_str(), input.size(), MSG_DONTWAIT))
-					input.clear();
 			}
 		}
 	}

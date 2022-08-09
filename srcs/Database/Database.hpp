@@ -53,6 +53,7 @@ public:
 
 	// [Client related getters]
 	const t_client_list&	get_client_list( void );
+	const t_client_ptr_list	get_client_ptr_list( void );
 	size_t					get_client_count( void );
 	Client*					get_client( const int& fd );
 	Client*					get_client( const string& nickname );
@@ -74,6 +75,7 @@ public:
 	bool		is_client_listed( const string& nickname );		// NEW
 	bool		is_channel_listed( const Channel& channel );	// NEW
 	bool		is_channel_listed( const string& chan_name );	// NEW
+	bool		is_channel_empty( Channel* channel );
 
 	int			add_client_to_channel( Client* client, const string& chan_name );
 	int			add_client_to_channel( Client* client, Channel* channel );
@@ -84,6 +86,8 @@ public:
 	void		remove_client_from_channel( const string& nickname, const string& chan_name );
 	void		remove_client_from_all_channels( const string& nickname );
 	void		remove_all_clients_from_channel( const string& chan_name );
+
+	void		clean_database( void );
 
 
 	

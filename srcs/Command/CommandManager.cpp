@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/09 13:47:11 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/09 18:14:55 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
+	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
 
 }
 
@@ -138,10 +139,15 @@ void	CommandManager::execute_commands( Client& client )
 	t_cmd_function_ptr command;
 
 	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
+	cout << endl << "Buffin string as ascii : ";
+	for (int i=0; i<buffin.length(); i++)
+    	cout << std::hex << (int)buffin[i];
+	cout << endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
+		Server::log("did find \\r\\n");
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -160,6 +166,7 @@ void CommandManager::cmd_join( Message& msg )
 {
 	t_client_ptr_list	chan_memberlist;
 	Channel* 			channel;
+	
 	if (msg[1].empty())
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
@@ -174,9 +181,8 @@ void CommandManager::cmd_join( Message& msg )
 	chan_memberlist = _database->get_clients_in_channel(channel);
 	if (!channel)
 	{
-		string name = msg[1];
-		Channel channel(name, msg.get_client_ptr());
-		_database->add_channel_list(channel);
+		_database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
+		_database->add_client_to_channel(msg.get_client_ptr(), _database->get_channel(msg[1]));
 		//run_reply(RPL_TOPIC, msg);
 		return;
 	}
@@ -218,26 +224,42 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
-	std::cout << GREEN "Successfully set the nickname to " << msg[1] << RESET << std::endl;
+	Server::log(string() + GREEN + "Successfully set the nickname to " + msg[1] + RESET);
 }
 
-// void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
-// {
-// 	t_client_ptr_list	chan_memberlist;
-// 	Channel* 			channel;
-// 	if (msg[1].empty())
-// 	{
-// 		// run_reply(ERR_NORECIPIENT, msg);
-// 		return;
-// 	}
-// 	channel = _database->get_channel(msg[1]);
-// 	if (channel)
-// 	{
-// 		chan_memberlist // WE'RE HERE
-// 	}
+void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
+{
+	t_client_ptr_list	chan_memberlist;
+	Channel* 			channel;
+	Client*				client;
+	string				prefix;
+
+	if (msg[1].empty())
+	{
+		// run_reply(ERR_NORECIPIENT, msg);
+		return;
+	}
+	if (msg[1][0] == '#' || msg[1][0] == '&')
+	{
+		channel = _database->get_channel(msg[1]);
+		if (channel)
+		{
+			chan_memberlist = _database->get_clients_in_channel(channel);
+			send_to_clients(chan_memberlist, ":" + msg.get_client_ptr()->get_nickname() + " PRIVMSG " + channel->get_name() + " :" + msg.get_colon() + "\n");
+		}
+	}
+	else
+	{
+		client = _database->get_client(msg[1]);
+		if (client)
+		{
+			prefix = string(msg.get_client_ptr()->get_nickname() + "!" + msg.get_client_ptr()->get_username() + "@10.11.7.5");
+			client->append_buff(BUFFOUT, ":" + prefix + " PRIVMSG " + client->get_nickname() + " :" + msg.get_colon() + "\n");
+		}
+	}
 	
-// 	return;
-// }
+	return;
+}
 
 void	CommandManager::cmd_user( Message& msg )
 {
@@ -295,10 +317,11 @@ void CommandManager::cmd_quit( Message& msg )
 		return;
 	nickname = string(client->get_nickname());
 	_database->remove_client_list(client);
+	cout << "Amount of channels client is in : " << chan_list.size() << endl;
 	if (!msg[1].empty())
-		send_to_channels(chan_list, "PRIVMSG " + nickname + " :QUIT:" + msg[1]);	
+		send_to_channels(chan_list, client->get_nickname() + " PRIVMSG " + nickname + " :QUIT:" + msg[1] + "\n");	
 	else
-		send_to_channels(chan_list, "PRIVMSG " + nickname + " :QUIT ");
+		send_to_channels(chan_list, "PRIVMSG " + nickname + " :QUIT \n");
 }
 
 

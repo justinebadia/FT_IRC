@@ -16,6 +16,8 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+int Server::log_level = 1;
+
 /*WARNING: move set_exit_true() in a different file*/
 void	set_exit_true( int signal ) 
 {
@@ -78,6 +80,12 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	}
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
+	// if (!client->get_nickname().compare("operator"))
+	// {
+	// 	CommandManager::send_to_clients(_database.get_client_ptr_list(), client->get_buff(BUFFIN) + "\r\n");
+	// 	client->clear_buff(BUFFIN);
+	// 	return;
+	// }
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	CommandManager::execute_commands(*client);
 
@@ -104,7 +112,8 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 		return;
 	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
-	client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
+	if (bytes > 0)
+		client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
@@ -287,7 +296,14 @@ void	Server::process_clients( const t_pollfd* pollfd_array, size_t size )
 		{
 			_process_client_pollout(pollfd_array[i]);
 		}
+		_database.clean_database();
 	}
+}
+
+void	Server::log( const string& msg )
+{
+	if (log_level == 1)
+		cout << msg << endl;
 }
 
 /*-------------------------NESTED-CLASS-EXCEPTIONS--------------------------*/
