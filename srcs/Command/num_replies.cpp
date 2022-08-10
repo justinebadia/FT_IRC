@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/10 13:41:25 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/10 18:01:47 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(client.get_prefix() + "001 " + msg.get_client_ptr()->get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
+	msg.append_out(": 001 " + client.get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
 }
 
 void CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname());
+	msg.append_out(": 311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname());
 
 }
 
@@ -57,21 +57,21 @@ void CommandManager::rpl_whoisserver(Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out("312 : " + client.get_nickname() + " " + _server->get_name());
+	msg.append_out(": 312 : " + client.get_nickname() + " " + _server->get_name());
 }
 
 void CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("313 : " + client.get_nickname() + " :is an IRC operator");
+	msg.append_out(": 313 : " + client.get_nickname() + " :is an IRC operator");
 }
 
 void CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out("318 : " + client.get_nickname() + " :End of WHOIS list");
+	msg.append_out(": 318 : " + client.get_nickname() + " :End of WHOIS list");
 }
 
 void CommandManager::rpl_whoischannels( Message& msg )
@@ -92,7 +92,7 @@ void CommandManager::err_nonicknamegiven( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	msg.append_out(":" + client.get_hostname() + " 431 :No nickname given");
+	msg.append_out(": 431 :No nickname given");
 }
 
 /*"<client> <nick> :Erroneus nickname"*/
@@ -100,7 +100,7 @@ void CommandManager::err_erroneusnickname( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 432 " + client.get_username() + " " + client.get_nickname() + " :Erroneus nickname";
+	string err_msg = ": 432 " + client.get_nickname() + " " + msg[1] + " :Erroneus nickname";
 	msg.append_out(err_msg);
 }
 
@@ -110,7 +110,7 @@ void CommandManager::err_nicknameinuse( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 433 " + client.get_username() + client.get_nickname() + " :Nickname is already in use";
+	string err_msg = ": 433 " + client.get_nickname() + " " + msg[1] + " :Nickname is already in use";
 	msg.append_out(err_msg);
 }
 
@@ -119,7 +119,7 @@ void CommandManager::err_nickcollision( Message& msg)
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 436 " + client.get_nickname() + " :Nickname collision KILL";
+	string err_msg = ": 436 " + client.get_nickname() + " :Nickname collision KILL";
 	msg.append_out(err_msg);
 }
 
@@ -130,7 +130,7 @@ void CommandManager::err_nosuchserver( Message& msg)
 	Server&	server = Server::get_server();
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 402 " + server.get_name() + " :No such server";
+	string err_msg = ": 402 " + msg[1] + " :No such server";
 	msg.append_out(err_msg);
 }
 
@@ -153,7 +153,7 @@ void CommandManager::rpl_nousers( Message& msg )
 ":UserID   Terminal  Host"*/
 void CommandManager::rpl_usersstart( Message& msg )
 {	
-	string err_msg = "392 "; //à créer
+	string err_msg = "392 "; // WARNING todo à créer
 }
 
 void CommandManager::rpl_endofusers( Message& msg )
@@ -168,7 +168,7 @@ void CommandManager::err_needmoreparams( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 461 " + msg[0] + " :Not enough parameters";
+	string err_msg = ": 461 " + msg[0] + " :Not enough parameters";
 	msg.append_out(err_msg);
 }
 
@@ -176,23 +176,23 @@ void CommandManager::err_alreadyregistered( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 462 :You may not reregistered";
+	string err_msg = ":" + client.get_hostname() + " 462 :You may not reregister";
 	msg.append_out(err_msg);
 }
 
 void CommandManager::err_noorigin( Message& msg )
 {
-	msg.append_out("409 :No origin specified");
+	msg.append_out(": 409 :No origin specified");
 }
 
 void CommandManager::rpl_topic( Message& msg )
 {
-	msg.append_out("332 :" + msg[1] + ":" + "_database->get_channel(msg[1])->get_topic())");
+	msg.append_out(": 332 " + msg.get_client_ptr()->get_nickname() + " " + msg[1] + " :"+ _database->get_channel(msg[1])->get_topic());
 }
 
 void CommandManager::rpl_notopic ( Message& msg )
 {
-	msg.append_out("331 :" + msg[1] + ":No topic is set");
+	msg.append_out(": 331 :" + msg[1] + ":No topic is set");
 }
 } // namespace irc end bracket
 
