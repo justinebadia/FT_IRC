@@ -103,7 +103,7 @@ public:
 
 	void	set_nickname( const string& nickname );
 	void	set_username( const string& username );
-	//void	set_hostname( const string& hostname );
+	void	set_hostname( const string& hostname );
 	void	set_realname( const string& realname );
 
 	void	set_registration_flags( const e_registration& flag );
