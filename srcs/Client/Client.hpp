@@ -84,6 +84,7 @@ public:
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
 	const string&					get_realname( void ) const;
+	string							get_prefix( void );
 	int								get_registration_flags( void ) const;
 
 	static t_pollfd*				get_pollfd_array( void );

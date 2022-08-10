@@ -64,8 +64,15 @@ bool	Client::operator==( const Client& rhs) const
 
 const string&	Client::get_nickname( void ) const { return _nickname; }
 const string&	Client::get_username( void ) const { return _username; }
-string			Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
+string			Client::get_hostname( void ) const {return _hostname; } 
 const string&	Client::get_realname( void ) const { return _realname; }
+
+string Client::get_prefix( void ) 
+{ 
+	return (":" + get_nickname() + "!" + get_username() + "@" + get_hostname() + " ");
+}
+
+
 int				Client::get_registration_flags( void ) const { return _registration; }
 
 // where is t_pollfd*	Client::get_pollfd_array( void ) ???

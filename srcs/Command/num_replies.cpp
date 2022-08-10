@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/09 16:59:09 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 13:41:25 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Message.hpp"
 #include "Server.hpp"
+#include "Database.hpp"
 #include "numeric_replies.hpp"
 #include "../Channel/Channel.hpp"
 #include "typedef.hpp"
@@ -37,12 +38,11 @@ void	CommandManager::run_reply( int code, Message& msg )
 	return; 
 }
 
-
 void CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out("001 " + msg.get_client_ptr()->get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
+	msg.append_out(client.get_prefix() + "001 " + msg.get_client_ptr()->get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
 }
 
 void CommandManager::rpl_whoisuser( Message& msg)
@@ -185,5 +185,14 @@ void CommandManager::err_noorigin( Message& msg )
 	msg.append_out("409 :No origin specified");
 }
 
+void CommandManager::rpl_topic( Message& msg )
+{
+	msg.append_out("332 :" + msg[1] + ":" + "_database->get_channel(msg[1])->get_topic())");
+}
+
+void CommandManager::rpl_notopic ( Message& msg )
+{
+	msg.append_out("331 :" + msg[1] + ":No topic is set");
+}
 } // namespace irc end bracket
 

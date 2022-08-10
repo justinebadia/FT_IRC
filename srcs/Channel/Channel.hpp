@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/09 14:36:04 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:34:25 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ private:
 	bool								_invite_only;
 	bool								_password_required;
 	string								_password;
+	string 								_topic;
 	t_client_ptr_list					_banlist;
 
 
@@ -84,6 +85,7 @@ public:
 	string&								get_password( void );
 	t_client_ptr_list					get_banlist( void );
 	e_permission						get_permission( Client* client );
+	string&								get_topic( void );
 
 
 
