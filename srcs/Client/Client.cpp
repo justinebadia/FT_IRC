@@ -35,6 +35,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 {
 	set_nickname(rhs.get_nickname());
 	set_username(rhs.get_username());
+	set_hostname(rhs.get_hostname());
 	
 	_socket.pollfd.fd = rhs.get_fd();
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;

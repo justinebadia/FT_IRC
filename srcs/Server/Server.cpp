@@ -59,7 +59,6 @@ Server::~Server( void )										// default destructor
 
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
-	//_database.remove_client_list(pollfd.fd);
 	_disconnect_client(pollfd.fd);
 	cout << GREEN << "Server::_process_client_pollerr: removed client fd " << RESET << endl; // WARNING
 }
@@ -103,12 +102,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 
 void	Server::_check_registration( Client* client )
 {
-	Server::log("in registration check");
-	if (client->is_nickname_set())
-		Server::log("nickname is set");
-	if (client->is_username_set())
-		Server::log("username is set");
-	if (!client->is_registered() && (client->is_nickname_set() && client->is_username_set())) // WARNING missing password check
+	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
 	{
 		Message	message(client);
 		client->set_registration_flags(Client::COMPLETE); 
