@@ -8,6 +8,12 @@
 // #include "commands.hpp"
 #include "numeric_replies.hpp"
 #include "../includes/color.hpp"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <signal.h>
 
 
 using namespace irc;
@@ -143,6 +149,7 @@ Server&				Server::get_server( const unsigned int& port, const string password, 
 	return singleton;
 }
 
+string& 				Server::get_hostname( void ) { return _hostname; }
 const t_socket&			Server::get_socket( void ) const { return _server_socket; }
 const string&			Server::get_name( void ) const { return _server_name; }
 const unsigned int		Server::get_port( void ) const { return _port; }
@@ -223,7 +230,42 @@ int	Server::run_server( void )
 
 void	Server::init_server( void )
  {
-	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
+	int status;
+	void *addr;
+	struct addrinfo hints;
+	struct addrinfo *servinfo; //A FREE à la fin 
+	char ipstr[INET6_ADDRSTRLEN];
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
+	hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
+	hints.ai_flags = AI_PASSIVE;  // fill in my IP for me
+	if ((status = getaddrinfo(NULL, "6667", &hints, &servinfo)) != 0) 
+	{
+		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+		exit(1);
+	}
+
+	if (servinfo->ai_family == AF_INET)
+	{
+		struct sockaddr_in *ipv4 = (struct sockaddr_in *)servinfo->ai_addr;
+        addr = &(ipv4->sin_addr);
+	}
+	else
+	{
+		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)servinfo->ai_addr;
+        addr = &(ipv6->sin6_addr);
+	}
+	if (inet_ntop(servinfo->ai_family, addr, ipstr, sizeof(ipstr)) == NULL)
+	{
+		printf("IL Y A UN PROBLENE DANS INETNTOP \n");
+		exit (-1);
+	}
+	else
+		_server_name = ipstr;
+    std::cout <<_server_name << std::endl;
+
+	this->set_fd(socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol));
 	if (this->get_fd() == FAIL)	// Step 1:  socket()
 	{
 		throw Server::SocketErrorException();
@@ -233,20 +275,21 @@ void	Server::init_server( void )
 	this->get_pollfd().revents = 0;
 
 	int opt; // to store the setsockopt options
-	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
+	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &status, sizeof(status)) == FAIL) // Step 2: setsockopt()
 	{
 		throw Server::SetsockoptErrorException();
 	}
+	// REPRENDRE LA
+	//https://beej.us/guide/bgnet/html/#getaddrinfoprepare-to-launch
 	
-	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
-	this->get_addr6().sin6_addr = in6addr_any;
-	this->get_addr6().sin6_port = htons(get_port());
+	// this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+	// this->get_addr6().sin6_addr = in6addr_any;
+	// this->get_addr6().sin6_port = htons(get_port());
 	
-	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
+	if ((bind(this->get_fd(), servinfo->ai_addr, servinfo->ai_addrlen)) == FAIL) // Step 3: bind()
 	{
 		throw Server::BindErrorException();
 	}
-
 	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
 	{
 		throw Server::ListenErrorException();

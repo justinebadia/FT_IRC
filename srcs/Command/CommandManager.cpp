@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 14:36:54 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/10 15:29:00 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,10 @@ void	CommandManager::cmd_user( Message& msg )
 		client.set_username(msg[1]);
 	if ( !msg.get_colon().empty() )
 		client.set_realname(msg.get_colon());
-	client.set_hostname(msg[3]);
+	if (msg[3].length() == 1 && msg[3][0] == '*')
+		client.set_hostname(_server->get_hostname());
+	else
+		client.set_hostname(msg[3]);
 	client.set_registration_flags(Client::USER_SET);
 	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_colon() + RESET);
 	return ;

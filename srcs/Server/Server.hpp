@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 12:19:37 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:14:18 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,9 @@
 #include <map>
 #include <vector>
 #include <utility>
-#include <signal.h>
 #include "irc_define.hpp"
-#include <signal.h>
 #include <exception>
 #include <iostream>
-
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 
 #include "../Client/Client.hpp"
 #include "Database.hpp"
@@ -64,7 +57,8 @@ private:
 
 	Database			_database;
 	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
-	const string		_server_name;
+	string				_server_name;
+	string 				_hostname;
 	const unsigned int	_port;
 	const string		_password;
 	bool				_exit;
@@ -103,7 +97,7 @@ public:
 	/*-----------------------GETTERS----------------------*/
 	
 	static Server&			get_server( const unsigned int& port = 0, const string password = "", bool exit = false ); // singleton
-
+	string&					get_hostname( void );
 	const t_socket&			get_socket( void ) const;
 	const string&			get_name( void ) const;
 	const unsigned int		get_port( void ) const;
