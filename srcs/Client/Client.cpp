@@ -11,7 +11,7 @@ using namespace irc;
 Client::Client( int fd )		// main constructor
 {
 	_socket.pollfd.fd = fd;
-	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
+	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
 	_pending = 0;
 	// _socket.addr = addr;	
@@ -21,7 +21,7 @@ Client::Client( string nick )  // WARNING: TESTING PURPOSE constructor
 {
 	_nickname = nick;
 	_socket.pollfd.fd = 0;
-	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
+	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
 	_pending = 0;	
 }

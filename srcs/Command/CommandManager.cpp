@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/09 18:14:55 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 11:51:19 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,18 +131,12 @@ void	CommandManager::execute_commands( Client& client )
 {
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
-	size_t	last = 0;
 	size_t	next = 0;
-	size_t	len	= buffin.length();
 	
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
 	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
-	cout << endl << "Buffin string as ascii : ";
-	for (int i=0; i<buffin.length(); i++)
-    	cout << std::hex << (int)buffin[i];
-	cout << endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
@@ -156,8 +150,37 @@ void	CommandManager::execute_commands( Client& client )
 		}
 		msg.clear_all();
 		start = next + 2;
-		if (start >= len)
-			return ;
+	}
+	return ;
+}
+
+void	CommandManager::execute_commands_pending( Client& client )
+{
+	string&	buffin = client.get_buff(BUFFIN);
+	size_t	start = 0;
+	size_t	last = 0;
+	size_t	next = 0;
+	size_t	len	= buffin.length();
+	
+	Message	msg(&client);
+	t_cmd_function_ptr command;
+	while ((next = buffin.find("\r\n", start)) != string::npos)
+	{
+		msg = Message(&client);
+		msg.append_in(buffin.substr(start, next - start));
+		if (msg[0].compare("NICK") == 0 || msg[0].compare("USER") == 0 || msg[0].compare("PASS") == 0)
+		{
+			command = get_command_ptr(msg[0]);
+			if (command)
+			{
+				command(msg);
+				client.append_buff(BUFFOUT, msg.get_message_out());
+			}
+			msg.clear_all();
+			start = next + 2;
+			if (start >= len)
+				return ;
+		}
 	}
 	return ;
 }

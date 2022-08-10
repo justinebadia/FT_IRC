@@ -1,0 +1,7 @@
+*.dSYM
+*.dSYM/*
+*.dSym
+*.DSum/*
+.vscode
+*.swp
+a.out

@@ -80,6 +80,10 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	}
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
+	cout << endl << "Buffin string as ascii : "; // WARNING
+	for (int i=0; i<bytes; i++)
+    	cout << std::hex << (int)buffer[i];
+	cout << endl;
 	// if (!client->get_nickname().compare("operator"))
 	// {
 	// 	CommandManager::send_to_clients(_database.get_client_ptr_list(), client->get_buff(BUFFIN) + "\r\n");
@@ -87,17 +91,26 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	// 	return;
 	// }
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
-	CommandManager::execute_commands(*client);
+	if (client->is_pending())
+	{
+		CommandManager::execute_commands_pending(*client);
+		_check_pending(client);
+	}
+	else
+		CommandManager::execute_commands(*client);
+	client->clear_buff(BUFFIN);
+}
 
-	Message	message(client);
+void	Server::_check_pending( Client* client )
+{
 	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
 	{
+		Message	message(client);
 		client->_pending = 1;
 		CommandManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
 		client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
-	client->clear_buff(BUFFIN);
 }
 
 void	Server::_process_client_pollout( const t_pollfd& pollfd )
@@ -282,7 +295,7 @@ void	Server::process_clients( const t_pollfd* pollfd_array, size_t size )
 	int			i;
 	for (i = 0; i < size; i++)
 	{
-		if (pollfd_array[i].revents & POLLERR)
+		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP)
 		{
 			_process_client_pollerr( pollfd_array[i] );
 			continue;
