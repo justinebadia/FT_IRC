@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/09 15:43:46 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:05:56 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,6 @@ void	Message::append_out( const string& str )
 void	Message::append_in( const string& str )
 {
 	 _message_in.append(str);
-}
-
-string	Message::find_realname( void )
-{
-	string input = get_message_in();
-	size_t delim_pos = input.find(":", 0);
-	string realname = input.substr(delim_pos, input.npos);
-
-	return realname;
 }
 
 void Message::clear_all( void )

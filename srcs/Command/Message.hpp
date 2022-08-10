@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/09 15:36:25 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:05:39 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ public:
 
 	void	append_in( const string& str );
 	void	append_out( const string& str );
-	string 	find_realname( void );
 	void	clear_all( void );
 
 	friend std::ostream&	operator<<( std::ostream& o, const Message& obj );

@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:27:12 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/10 14:34:18 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,12 +137,10 @@ void	CommandManager::execute_commands( Client& client )
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
-	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		Server::log("did find \\r\\n");
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -155,7 +153,7 @@ void	CommandManager::execute_commands( Client& client )
 	return ;
 }
 
-void	CommandManager::execute_commands_pending( Client& client )
+void	CommandManager::execute_commands_registration( Client& client )
 {
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
@@ -177,11 +175,11 @@ void	CommandManager::execute_commands_pending( Client& client )
 				command(msg);
 				client.append_buff(BUFFOUT, msg.get_message_out());
 			}
-			msg.clear_all();
-			start = next + 2;
-			if (start >= len)
-				return ;
 		}
+		msg.clear_all();
+		start = next + 2;
+		if (start >= len)
+			return ;
 	}
 	return ;
 }
@@ -191,6 +189,7 @@ void CommandManager::cmd_join( Message& msg )
 	t_client_ptr_list	chan_memberlist;
 	Channel* 			channel;
 	string topic;
+	Client& client = *msg.get_client_ptr();
 	
 	if (msg[1].empty())
 	{
@@ -207,28 +206,27 @@ void CommandManager::cmd_join( Message& msg )
 	if (!channel)
 	{
 		_database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
-		_database->add_client_to_channel(msg.get_client_ptr(), _database->get_channel(msg[1]));
-		//run_reply(RPL_TOPIC, msg);
-		return;
+		channel = _database->get_channel(msg[1]);
 	}
-	if (chan_memberlist.size() >= MAX_CLIENT_PER_CHAN)
+	else if (chan_memberlist.size() >= MAX_CLIENT_PER_CHAN)
 	{
 		run_reply(ERR_CHANNELISFULL, msg);
 		return;
 	}
-	if (channel->is_banned(msg.get_client_ptr()))
+	else if (channel->is_banned(msg.get_client_ptr()))
 	{
 		run_reply(ERR_BANNEDFROMCHAN, msg);
 		return ;
 	}
-	if (channel->get_is_invite_only())
+	else if (channel->get_is_invite_only())
 	{
 		run_reply(ERR_INVITEONLYCHAN, msg);
 		return ;
 	}
 	_database->add_client_to_channel(msg.get_client_ptr(), channel);
-	topic = _database->get_channel(msg[1])->get_topic();
+	topic = channel->get_topic();
 	run_reply(RPL_TOPIC, msg);
+	client.append_buff(BUFFOUT, client.get_prefix() + "JOIN " + msg[1] + CRLF);
 	// WARNING ERR_BADCHANMASK
 	// ERR_BADCHANMASK
 	// ERR_NOSUCHCHANNEL??
@@ -250,7 +248,9 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
+	client.set_registration_flags(Client::NICK_SET);
 	Server::log(string() + GREEN + "Successfully set the nickname to " + msg[1] + RESET);
+	client.append_buff(BUFFOUT, client.get_prefix() + "NICK " + msg[1] + CRLF);
 }
 
 void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
@@ -278,10 +278,7 @@ void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for c
 	{
 		client = _database->get_client(msg[1]);
 		if (client)
-		{
-			prefix = string(msg.get_client_ptr()->get_nickname() + "!" + msg.get_client_ptr()->get_username() + "@10.11.7.5");
-			client->append_buff(BUFFOUT, ":" + prefix + " PRIVMSG " + client->get_nickname() + " :" + msg.get_colon() + "\n");
-		}
+			client->append_buff(BUFFOUT, client->get_prefix() + " PRIVMSG " + client->get_nickname() + " :" + msg.get_colon() + "\n");
 	}
 	
 	return;
@@ -291,15 +288,18 @@ void	CommandManager::cmd_user( Message& msg )
 {
 	Client& client			= *msg.get_client_ptr();
 
-	if(msg[4].empty()) //checking if there is, at least, 5 parameters
+	if(msg[4].empty() || msg.get_colon().empty()) //checking if there is, at least, 5 parameters
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
-	if (msg[4].find(":", 0) >= 0)
-		client.set_realname(msg.find_realname());
+	if ( !msg.get_colon().empty() )
+		client.set_realname(msg.get_colon());
+	client.set_hostname(msg[3]);
+	client.set_registration_flags(Client::USER_SET);
+	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_colon() + RESET);
 	return ;
 }
 
@@ -324,7 +324,7 @@ void CommandManager::cmd_ping( Message& msg )
 {
 	if (msg[1].empty())
 			run_reply(ERR_NOORIGIN, msg);
-	else if (msg[1] != _server->get_name())
+	else if (msg[1] != _server->get_name() && !_database->get_client(msg[1]))
 			run_reply(ERR_NOSUCHSERVER, msg);
 	else
 		msg.append_out(":127.0.0.1 PONG " + msg.get_client_ptr()->get_nickname() + " :127.0.0.1");

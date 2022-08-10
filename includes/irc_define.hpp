@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   irc_define.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:21:32 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 16:02:32 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 13:44:16 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include <string>
 
 namespace irc {
 
@@ -36,6 +37,8 @@ namespace irc {
 
 // Errors
 #define	ERR_ALLOC	1
+
+#define CRLF std::string("\r\n")
 
 }
  // namespace bracket

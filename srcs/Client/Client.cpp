@@ -13,7 +13,7 @@ Client::Client( int fd )		// main constructor
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
-	_pending = 0;
+	_registration = NONE_SET;
 	// _socket.addr = addr;	
 }
 
@@ -23,7 +23,7 @@ Client::Client( string nick )  // WARNING: TESTING PURPOSE constructor
 	_socket.pollfd.fd = 0;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
-	_pending = 0;	
+	_registration = NONE_SET;	
 }
 
 Client::Client( const Client& rhs ) // copy constructor
@@ -40,7 +40,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = rhs.is_opened();
 	
-	_pending = rhs.is_pending();
+	_registration = rhs.get_registration_flags();
 	// _socket.addr = rhs.get_addr_copy();
 	return *this;
 }
@@ -63,8 +63,16 @@ bool	Client::operator==( const Client& rhs) const
 
 const string&	Client::get_nickname( void ) const { return _nickname; }
 const string&	Client::get_username( void ) const { return _username; }
-string			Client::get_hostname( void ) const {return (_nickname + "!" + _username + "@127.0.0.1"); } 
+string			Client::get_hostname( void ) const {return _hostname; } 
 const string&	Client::get_realname( void ) const { return _realname; }
+
+string Client::get_prefix( void ) 
+{ 
+	return (":" + get_nickname() + "!" + get_username() + "@" + get_hostname() + " ");
+}
+
+
+int				Client::get_registration_flags( void ) const { return _registration; }
 
 // where is t_pollfd*	Client::get_pollfd_array( void ) ???
 t_pollfd&		Client::get_pollfd( void ) { return _socket.pollfd; }
@@ -91,15 +99,12 @@ const string&	Client::get_source( void ) const { return _nickname; }
 
 void	Client::set_nickname( const string& nickname ) { _nickname = nickname; }
 void	Client::set_username( const string& username ) { _username = username; }
-//void	Client::set_hostname( const string& hostname ) { _hostname = hostname; }
+void	Client::set_hostname( const string& hostname ) { _hostname = hostname; }
 void	Client::set_realname( const string& realname ) { _realname = realname; }
 
-void	Client::set_pending_user_flags( const int flag ) 
+void	Client::set_registration_flags( const e_registration& flag ) 
 {
-	this->_pending |= flag;
-
-	if (this->_pending & NICK_SET && this->_pending & USER_SET && this->_pending & PASS_SET)
-		this->_pending |= COMPLETE;
+	this->_registration |= flag;
 }
 
 
@@ -136,8 +141,11 @@ void	Client::trim_buff( u_int buff_i, size_t len )
 
 bool	Client::is_event( int event ) const { return (get_revents() & event); }
 bool	Client::is_opened( void ) const { return (_socket_opened); }
-bool	Client::is_pending( void ) const { return _pending == (NICK_SET | USER_SET | PASS_SET); } 
-// or { return  _pending == COMPLETE; }
+bool	Client::is_nickname_set( void ) const { return (_registration & NICK_SET ? true : false); } 
+bool	Client::is_username_set( void ) const { return (_registration & USER_SET ? true : false); } 
+bool	Client::is_password_validated( void ) const { return (_registration & PASS_SET ? true : false); } 
+bool	Client::is_registered( void ) const { return (_registration & COMPLETE ? true : false); } 
+// or { return  _registration == COMPLETE; }
 
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
