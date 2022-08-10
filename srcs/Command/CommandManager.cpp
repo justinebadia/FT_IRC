@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 11:51:19 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:27:12 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "Server.hpp"
 #include "irc_define.hpp"
 #include "numeric_replies.hpp"
-#include "replies.hpp"
 #include "typedef.hpp"
 #include "color.hpp"
 #include "utils.hpp"
@@ -82,6 +81,8 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));
+	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));
+	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));
 	
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 
@@ -189,6 +190,7 @@ void CommandManager::cmd_join( Message& msg )
 {
 	t_client_ptr_list	chan_memberlist;
 	Channel* 			channel;
+	string topic;
 	
 	if (msg[1].empty())
 	{
@@ -225,7 +227,8 @@ void CommandManager::cmd_join( Message& msg )
 		return ;
 	}
 	_database->add_client_to_channel(msg.get_client_ptr(), channel);
-	//run_reply(RPL_TOPIC, msg);
+	topic = _database->get_channel(msg[1])->get_topic();
+	run_reply(RPL_TOPIC, msg);
 	// WARNING ERR_BADCHANMASK
 	// ERR_BADCHANMASK
 	// ERR_NOSUCHCHANNEL??

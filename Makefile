@@ -57,7 +57,6 @@ UTILS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_UTILS_SRCS))
 _UTILS_HDRS =	color.hpp \
 				irc_define.hpp \
 				numeric_replies.hpp \
-				replies.hpp \
 				typedef.hpp \
 				utils.hpp 
 

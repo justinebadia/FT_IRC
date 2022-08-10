@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/09 14:36:49 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:36:40 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 using namespace irc;
 using std::string;
 
-Channel::Channel( void ) : _password_required(false), _password(string()) {} // default constructor [PRIVATE]
+Channel::Channel( void ) : _password_required(false), _password(string()), _topic("TO BE REMOVE") {} // default constructor [PRIVATE]
 
-Channel::Channel( const Channel& other ) : _password_required(false), _password(string()) 
+Channel::Channel( const Channel& other ) : _password_required(false), _password(string()), _topic("TO BE REMOVE")
 { 
 	*this = other; 
 } // copy constructor [PRIVATE]
@@ -42,6 +42,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _invite_only(false)
 	, _password_required(false)
 	, _password(string())
+	, _topic(string("TO REMOVE"))
 {
 	add(channel_owner);
 }
@@ -52,6 +53,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _invite_only(false)
 	, _password_required(true)
 	, _password(channel_password)
+	, _topic(string("TO REMOVE"))
 {
 }
 
@@ -81,6 +83,7 @@ bool				Channel::get_is_invite_only( void ) const { return _invite_only; }
 bool				Channel::get_is_password_required( void ) const { return _password_required; } 
 
 string&				Channel::get_password( void ) { return _password; }
+string&				Channel::get_topic( void ) { return _topic; }
 
 t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 

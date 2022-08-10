@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 10:42:29 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:23:11 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ public:
 	static void err_alreadyregistered( Message& msg );
 	/*PING replies*/
 	static void err_noorigin( Message& msg );
+	/*JOIN REPLIES*/
+	static void rpl_topic( Message& msg );
+	static void rpl_notopic ( Message& msg );
 
 	/*------------------COMMANDS_UTILS------------------*/
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
