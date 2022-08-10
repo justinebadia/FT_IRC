@@ -91,24 +91,29 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	// 	return;
 	// }
 	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
-	if (client->is_pending())
+	if (!client->is_registered())
 	{
-		CommandManager::execute_commands_pending(*client);
-		_check_pending(client);
+		CommandManager::execute_commands_registration(*client);
+		_check_registration(client);
 	}
 	else
 		CommandManager::execute_commands(*client);
 	client->clear_buff(BUFFIN);
 }
 
-void	Server::_check_pending( Client* client )
+void	Server::_check_registration( Client* client )
 {
-	if (client->_pending == 0 && ((!client->get_username().empty()) && !client->get_nickname().empty())) 
+	Server::log("in registration check");
+	if (client->is_nickname_set())
+		Server::log("nickname is set");
+	if (client->is_username_set())
+		Server::log("username is set");
+	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
 	{
 		Message	message(client);
-		client->_pending = 1;
+		client->set_registration_flags(Client::COMPLETE); 
 		CommandManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
-		client->append_buff(BUFFOUT, "\r\n");
+		// client->append_buff(BUFFOUT, "\r\n");
 		client->append_buff(BUFFOUT, message.get_message_out());
 	}
 }

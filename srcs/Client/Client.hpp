@@ -30,13 +30,13 @@ public:
 
 	/*--------------------TYPEDEF-&-ENUM-------------------*/
 	
-	enum e_pending
+	enum e_registration
 	{
 		NONE_SET = 0,
 		NICK_SET = 1,
 		USER_SET = 2,
 		PASS_SET = 4,
-		COMPLETE = 8  // The pending client is now a regular client 
+		COMPLETE = 8 // The pending client is now a regular client 
 	};
 
 
@@ -49,15 +49,15 @@ private:
 
 	/*--------------------ATTRIBUTES---------------------*/
 	
-	string		_nickname;
-	string		_username;
-	string		_hostname;
-	string 		_realname;
+	string			_nickname;
+	string			_username;
+	string			_hostname;
+	string 			_realname;
 	
-	t_socket	_socket;
-	string		_buff[2]; // 0 == read and 1 == write
-	bool		_socket_opened;
-	int			_pending;
+	t_socket		_socket;
+	string			_buff[2]; // 0 == read and 1 == write
+	bool			_socket_opened;
+	int				_registration;
 	
 
 public:
@@ -84,6 +84,7 @@ public:
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
 	const string&					get_realname( void ) const;
+	int								get_registration_flags( void ) const;
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
@@ -105,7 +106,7 @@ public:
 	//void	set_hostname( const string& hostname );
 	void	set_realname( const string& realname );
 
-	void	set_pending_user_flags( const int flag );
+	void	set_registration_flags( const e_registration& flag );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
@@ -116,7 +117,10 @@ public:
 
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;
-	bool	is_pending( void ) const;
+	bool	is_nickname_set( void ) const;
+	bool	is_username_set( void ) const;
+	bool	is_password_validated( void ) const;
+	bool	is_registered( void ) const;
 	
 
 };

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 11:00:46 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:19:37 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ private:
 	void	_process_client_pollerr( const t_pollfd& pollfd );
 	void	_process_client_pollin( const t_pollfd& pollfd );
 	void	_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
-	void	_check_pending( Client* client );
+	void	_check_registration( Client* client );
 	void	_process_client_pollout( const t_pollfd& pollfd );
 	void	_disconnect_client( const int& fd );
 

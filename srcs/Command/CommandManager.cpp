@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 11:51:19 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:33:58 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,12 +136,10 @@ void	CommandManager::execute_commands( Client& client )
 	Message	msg(&client);
 	t_cmd_function_ptr command;
 
-	std::cout << GREEN << "BUFFIN : " << RESET<< buffin << RESET << std::endl;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		Server::log("did find \\r\\n");
 		command = get_command_ptr(msg[0]);
 		if (command)
 		{
@@ -154,7 +152,7 @@ void	CommandManager::execute_commands( Client& client )
 	return ;
 }
 
-void	CommandManager::execute_commands_pending( Client& client )
+void	CommandManager::execute_commands_registration( Client& client )
 {
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
@@ -176,11 +174,11 @@ void	CommandManager::execute_commands_pending( Client& client )
 				command(msg);
 				client.append_buff(BUFFOUT, msg.get_message_out());
 			}
-			msg.clear_all();
-			start = next + 2;
-			if (start >= len)
-				return ;
 		}
+		msg.clear_all();
+		start = next + 2;
+		if (start >= len)
+			return ;
 	}
 	return ;
 }
@@ -247,6 +245,7 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_nickname(msg[1]);
+	client.set_registration_flags(Client::NICK_SET);
 	Server::log(string() + GREEN + "Successfully set the nickname to " + msg[1] + RESET);
 }
 
@@ -295,8 +294,10 @@ void	CommandManager::cmd_user( Message& msg )
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
-	if (msg[4].find(":", 0) >= 0)
-		client.set_realname(msg.find_realname());
+	if ( !msg.get_colon().empty() )
+		client.set_realname(msg.get_colon());
+	client.set_registration_flags(Client::USER_SET);
+	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_colon() + RESET);
 	return ;
 }
 
