@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 14:34:18 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/10 14:36:54 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,12 +322,14 @@ void CommandManager::cmd_whois( Message & msg )
 
 void CommandManager::cmd_ping( Message& msg )
 {
+	Client& client			= *msg.get_client_ptr();
+		
 	if (msg[1].empty())
 			run_reply(ERR_NOORIGIN, msg);
 	else if (msg[1] != _server->get_name() && !_database->get_client(msg[1]))
 			run_reply(ERR_NOSUCHSERVER, msg);
 	else
-		msg.append_out(":127.0.0.1 PONG " + msg.get_client_ptr()->get_nickname() + " :127.0.0.1");
+		msg.append_out(client.get_prefix() + client.get_hostname() + " PONG " + msg.get_client_ptr()->get_nickname() + " :" + client.get_hostname());
 		
 	return;
 }
