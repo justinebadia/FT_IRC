@@ -332,9 +332,6 @@ void	Database::remove_channel_list( const string& chan_name )
 			_channel_list.erase( std::find(_channel_list.begin(), _channel_list.end(), *channel) );
 		}
 	}
-
-	//remove_all_clients_from_channel(chan_name);
-	// WARNING : need to do more stuff when we'll be further
 }
 
 void	Database::remove_client_from_channel( const string& nickname, const string& chan_name )

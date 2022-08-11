@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 12:19:37 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 17:29:53 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 #include "CommandManager.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME "127.0.0.1"	// a.k.a. "localhost" alias
+#define	HOSTNAME "10.11.7.4"	// a.k.a. "localhost" alias
 #define PORT 6667
  
 class Channel;
@@ -90,6 +90,8 @@ private:
 
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
 
+	void	_process_connections( const t_pollfd& pollfd );
+	void	_process_clients( const t_pollfd* pollfd_array, size_t size );
 	void	_process_client_pollerr( const t_pollfd& pollfd );
 	void	_process_client_pollin( const t_pollfd& pollfd );
 	void	_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
@@ -106,6 +108,7 @@ public:
 
 	const t_socket&			get_socket( void ) const;
 	const string&			get_name( void ) const;
+	string					get_prefix( void ) const;
 	const unsigned int		get_port( void ) const;
 	Database*		 		get_database( void );
 	const string&			get_password( void ) const;
@@ -133,8 +136,6 @@ public:
 	void		init_server( void );
 
 	t_pollfd*	poll_sockets( void );
-	void		process_connections( const t_pollfd& pollfd );
-	void		process_clients( const t_pollfd* pollfd_array, size_t size );
 
 	static void	log( const string& msg );
 
