@@ -71,8 +71,8 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 	{
 		while(true)
 		{
-			socklen_t	len;
-			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
+			socklen_t	len = sizeof _server_socket.addr_storage;
+			client_fd = accept(pollfd.fd, (struct sockaddr*)&_server_socket.addr_storage, &len);
 			if (client_fd == -1)
 				break;
 			_database.add_client_list(Client(client_fd));
@@ -188,7 +188,7 @@ Database*		 		Server::get_database( void ) { return &_database; }
 const string&			Server::get_password( void ) const { return _password; }
 bool					Server::get_exit_status( void ) const { return _exit; }
 t_pollfd&			Server::get_pollfd( void ){ return _server_socket.pollfd; }
-t_addr6&			Server::get_addr6( void ){ return _server_socket.addr6; }
+//t_addr6&			Server::get_addr6( void ){ return _server_socket.addr6; }
 const int&			Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
 
 t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed

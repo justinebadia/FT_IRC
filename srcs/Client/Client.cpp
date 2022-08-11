@@ -77,8 +77,8 @@ int				Client::get_registration_flags( void ) const { return _registration; }
 
 // where is t_pollfd*	Client::get_pollfd_array( void ) ???
 t_pollfd&		Client::get_pollfd( void ) { return _socket.pollfd; }
-t_addr6&		Client::get_addr6_ref( void ) { return _socket.addr6; }
-t_addr6			Client::get_addr6_copy( void ) const { return _socket.addr6; }
+//t_addr6&		Client::get_addr6_ref( void ) { return _socket.addr6; }
+//t_addr6			Client::get_addr6_copy( void ) const { return _socket.addr6; }
 
 const int&		Client::get_fd( void ) const { return _socket.pollfd.fd; }
 short			Client::get_events( void ) const { return (_socket.pollfd.events); }

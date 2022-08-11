@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   typedef.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 15:20:42 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/10 23:40:05 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,17 @@ typedef map<int, t_reply_function_ptr>		t_reply_map;
 // typedef map<string, string>				t_message_info; // WARNING: might not use it
 
 typedef struct	pollfd					t_pollfd;
-typedef struct	sockaddr_in6			t_addr6;
+//typedef struct	sockaddr_in6			t_addr6;
 //typedef struct	sockaddr_in				t_addr;
+typedef struct	sockaddr_storage		t_addr_storage;
 
 
 
 typedef struct s_socket
 {
        t_pollfd			pollfd; // int fd, short events & revents
-       t_addr6			addr6; 
+       //t_addr6			addr6; 
+	   t_addr_storage	addr_storage;
 }      t_socket;
 
 

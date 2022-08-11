@@ -89,8 +89,8 @@ public:
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
-	t_addr6&						get_addr6_ref( void );
-	t_addr6							get_addr6_copy( void ) const;
+	// t_addr6&						get_addr6_ref( void );
+	// t_addr6							get_addr6_copy( void ) const;
 	
 	const int&						get_fd( void ) const;
 	short							get_events( void ) const;

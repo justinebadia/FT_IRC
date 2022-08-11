@@ -108,7 +108,7 @@ public:
 	bool					get_exit_status( void ) const;
 
 	t_pollfd&				get_pollfd( void );
-	t_addr6&				get_addr6( void );
+	//t_addr6&				get_addr6( void );
 	const int&				get_fd( void ) const;
 
 	// [Message related getters]
