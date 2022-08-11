@@ -63,6 +63,47 @@ Server::~Server( void )										// default destructor
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
 
+void	Server::_process_connections( const t_pollfd& pollfd )
+{
+	int			client_fd;
+	
+	if (pollfd.revents | POLLIN)
+	{
+		while(true)
+		{
+			socklen_t	len;
+			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
+			if (client_fd == -1)
+				break;
+			_database.add_client_list(Client(client_fd));
+			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
+		}
+	}
+}
+
+void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
+{
+	int			i;
+	for (i = 0; i < size; i++)
+	{
+		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP)
+		{
+			_process_client_pollerr( pollfd_array[i] );
+			continue;
+		}
+		if (pollfd_array[i].revents & POLLIN)
+		{
+			_process_client_pollin( pollfd_array[i]);
+		}
+		//_process_client_messages
+		if (pollfd_array[i].revents & POLLOUT)
+		{
+			_process_client_pollout(pollfd_array[i]);
+		}
+		_database.clean_database();
+	}
+}
+
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
 	_disconnect_client(pollfd.fd);
@@ -85,17 +126,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	}
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << endl << "Buffin string as ascii : "; // WARNING
-	for (int i=0; i<bytes; i++)
-    	cout << std::hex << (int)buffer[i];
-	cout << endl;
-	// if (!client->get_nickname().compare("operator"))
-	// {
-	// 	CommandManager::send_to_clients(_database.get_client_ptr_list(), client->get_buff(BUFFIN) + "\r\n");
-	// 	client->clear_buff(BUFFIN);
-	// 	return;
-	// }
-	cout << GREEN << "Server::_process_client_pollin: received and appended for client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+	cout << GREEN << "Server::_process_client_pollin: received client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
 	if (!client->is_registered())
 	{
 		CommandManager::execute_commands_registration(*client);
@@ -129,9 +160,9 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	if (client->get_buff(1).size() <= 0)
 		return;
 	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
-	bytes = send( pollfd.fd, client->get_buff(1).c_str(), MAX_OUT, MSG_DONTWAIT);
+	bytes = send( pollfd.fd, client->get_buff(1).c_str(), client->get_buff(1).length(), MSG_DONTWAIT);
 	if (bytes > 0)
-		client->clear_buff(BUFFOUT); // POUR TESTER - A SUPPRIMER
+		client->clear_buff(BUFFOUT); // POUR TESTER - À CHANGER
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
@@ -156,10 +187,9 @@ const unsigned int		Server::get_port( void ) const { return _port; }
 Database*		 		Server::get_database( void ) { return &_database; }
 const string&			Server::get_password( void ) const { return _password; }
 bool					Server::get_exit_status( void ) const { return _exit; }
-
-t_pollfd&				Server::get_pollfd( void ){ return _server_socket.pollfd; }
-t_addr6&				Server::get_addr6( void ){ return _server_socket.addr6; }
-const int&				Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
+t_pollfd&			Server::get_pollfd( void ){ return _server_socket.pollfd; }
+t_addr6&			Server::get_addr6( void ){ return _server_socket.addr6; }
+const int&			Server::get_fd( void ) const { return _server_socket.pollfd.fd; }
 
 t_pollfd*	Server::get_pollfd_array( void ) // Needs to be freed
 {
@@ -218,10 +248,10 @@ int	Server::run_server( void )
 		pollfds = poll_sockets();
 		if (pollfds == NULL)
 			continue;
-		process_connections(pollfds[0]);
+		_process_connections(pollfds[0]);
 		if (client_count > 0)
 		{
-			process_clients(&pollfds[1], client_count);
+			_process_clients(&pollfds[1], client_count);
 		}
 	}
 	cout << GREEN << "Leaving with absolute grace" << RESET << endl;
@@ -278,8 +308,6 @@ void    Server::init_server( void )
     {
         throw Server::SetsockoptErrorException();
     }
-    // REPRENDRE LA
-    //https://beej.us/guide/bgnet/html/#getaddrinfoprepare-to-launch
     
     // this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
     // this->get_addr6().sin6_addr = in6addr_any;
@@ -312,47 +340,6 @@ t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
 		return NULL;
 	poll(pollfd_array, static_cast<nfds_t>(_database.get_client_count() + 1), 0);
 	return pollfd_array;
-}
-
-void	Server::process_connections( const t_pollfd& pollfd )
-{
-	int			client_fd;
-	
-	if (pollfd.revents | POLLIN)
-	{
-		while(true)
-		{
-			socklen_t	len;
-			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
-			if (client_fd == -1)
-				break;
-			_database.add_client_list(Client(client_fd));
-			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
-		}
-	}
-}
-
-void	Server::process_clients( const t_pollfd* pollfd_array, size_t size )
-{
-	int			i;
-	for (i = 0; i < size; i++)
-	{
-		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP)
-		{
-			_process_client_pollerr( pollfd_array[i] );
-			continue;
-		}
-		if (pollfd_array[i].revents & POLLIN)
-		{
-			_process_client_pollin( pollfd_array[i]);
-		}
-		//_process_client_messages
-		if (pollfd_array[i].revents & POLLOUT)
-		{
-			_process_client_pollout(pollfd_array[i]);
-		}
-		_database.clean_database();
-	}
 }
 
 void	Server::log( const string& msg )
