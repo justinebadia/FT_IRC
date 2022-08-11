@@ -228,79 +228,79 @@ int	Server::run_server( void )
 	close(get_fd()); // Need a close function
 }
 
-void	Server::init_server( void )
+void    Server::init_server( void )
  {
-	int status;
-	void *addr;
-	struct addrinfo hints;
-	struct addrinfo *servinfo; //A FREE à la fin 
-	char ipstr[INET6_ADDRSTRLEN];
+    int status;
+    void *addr;
+    struct addrinfo hints;
+    struct addrinfo *servinfo; //A FREE à la fin 
+    char ipstr[INET6_ADDRSTRLEN];
 
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
-	hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
-	hints.ai_flags = AI_PASSIVE;  // fill in my IP for me
-	if ((status = getaddrinfo(NULL, "6667", &hints, &servinfo)) != 0) 
-	{
-		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
-		exit(1);
-	}
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
+    hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
+    hints.ai_flags = AI_PASSIVE;  // fill in my IP for me
+    if ((status = getaddrinfo(NULL, "6667", &hints, &servinfo)) != 0) 
+    {
+        fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+        exit(1);
+    }
 
-	if (servinfo->ai_family == AF_INET)
-	{
-		struct sockaddr_in *ipv4 = (struct sockaddr_in *)servinfo->ai_addr;
+    if (servinfo->ai_family == AF_INET)
+    {
+        struct sockaddr_in *ipv4 = (struct sockaddr_in *)servinfo->ai_addr;
         addr = &(ipv4->sin_addr);
-	}
-	else
-	{
-		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)servinfo->ai_addr;
+    }
+    else
+    {
+        struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)servinfo->ai_addr;
         addr = &(ipv6->sin6_addr);
-	}
-	if (inet_ntop(servinfo->ai_family, addr, ipstr, sizeof(ipstr)) == NULL)
-	{
-		printf("IL Y A UN PROBLENE DANS INETNTOP \n");
-		exit (-1);
-	}
-	else
-		_server_name = ipstr;
-    std::cout <<_server_name << std::endl;
+    }
+    if (inet_ntop(servinfo->ai_family, addr, ipstr, sizeof(ipstr)) == NULL)
+    {
+        printf("IL Y A UN PROBLENE DANS INETNTOP \n");
+        exit (-1);
+    }
+    else
+        _server_name = ipstr;
 
-	this->set_fd(socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol));
-	if (this->get_fd() == FAIL)	// Step 1:  socket()
-	{
-		throw Server::SocketErrorException();
-	}
+    this->set_fd(socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol));
+    if (this->get_fd() == FAIL) // Step 1:  socket()
+    {
+        throw Server::SocketErrorException();
+    }
 
-	this->get_pollfd().events = 0;
-	this->get_pollfd().revents = 0;
+    this->get_pollfd().events = 0;
+    this->get_pollfd().revents = 0;
 
-	int opt; // to store the setsockopt options
-	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &status, sizeof(status)) == FAIL) // Step 2: setsockopt()
-	{
-		throw Server::SetsockoptErrorException();
-	}
-	// REPRENDRE LA
-	//https://beej.us/guide/bgnet/html/#getaddrinfoprepare-to-launch
-	
-	// this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
-	// this->get_addr6().sin6_addr = in6addr_any;
-	// this->get_addr6().sin6_port = htons(get_port());
-	
-	if ((bind(this->get_fd(), servinfo->ai_addr, servinfo->ai_addrlen)) == FAIL) // Step 3: bind()
-	{
-		throw Server::BindErrorException();
-	}
-	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
-	{
-		throw Server::ListenErrorException();
-	}
+    //int opt; // to store the setsockopt options
+    if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &status, sizeof(status)) == FAIL) // Step 2: setsockopt()
+    {
+        throw Server::SetsockoptErrorException();
+    }
+    // REPRENDRE LA
+    //https://beej.us/guide/bgnet/html/#getaddrinfoprepare-to-launch
+    
+    // this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+    // this->get_addr6().sin6_addr = in6addr_any;
+    // this->get_addr6().sin6_port = htons(get_port());
+    if (fcntl(this->get_fd(), F_SETFL, O_NONBLOCK) == FAIL)
+        printf("ERROR FCNTL\n");
+    
+    if ((bind(this->get_fd(), servinfo->ai_addr, servinfo->ai_addrlen)) == FAIL) // Step 3: bind()
+    {
+        throw Server::BindErrorException();
+    }
+    if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
+    {
+        throw Server::ListenErrorException();
+    }
 
-	CommandManager::_init_command_map();
-	CommandManager::_init_reply_map();
-	CommandManager::set_server(this);
-	CommandManager::set_database(&_database);
-	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
-	this->get_pollfd().events = POLLIN;
+    CommandManager::_init_command_map();
+    CommandManager::_init_reply_map();
+    CommandManager::set_server(this);
+    CommandManager::set_database(&_database);
+    this->get_pollfd().events = POLLIN;
 }
 
 t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
