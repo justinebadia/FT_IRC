@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 17:57:22 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/11 18:58:59 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "typedef.hpp"
 #include "color.hpp"
 #include "utils.hpp"
+#include "Channel.hpp"
+
 
 using namespace irc;
 using std::cout;
@@ -194,4 +196,37 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 }
 
 
+void CommandManager::cmd_mode_chanop( Message& msg ) //attention les yeux
+{
+	Client*		client	= msg.get_client_ptr();
+
+	if (msg[3].empty())
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return ;
+	}
+	if (!msg[1].empty() && msg[1][0] == '#')
+	{
+		Channel *channel = _database->get_channel(msg[1]);
+		if (channel)
+		{
+			if(!msg[2].empty() && msg[2][0] == '+')
+			{
+				if (msg[2][1] == 'o')
+				{
+					if (!msg[3].empty() && (channel->is_chanop(client) || channel->is_owner(client)))
+					{
+						Client* target = _database->get_client(msg[4]);
+						if(!msg[4].empty() && channel->is_member(target))
+						{
+							channel->set_permission(target, Channel::e_permission::CHANOP);
+							
+						}
+					}
+				}
+			}	
+		}
+	}
+
+}
 

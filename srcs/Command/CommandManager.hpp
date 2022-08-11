@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:44:33 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/11 18:47:54 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ public:
 	static void	cmd_whois( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_quit( Message& msg );
+	static void cmd_mode_chanop( Message& msg );
+
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
 	static void run_reply( int code, Message& msg );

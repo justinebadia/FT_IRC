@@ -2,13 +2,18 @@
 #include "Message.hpp"
 #include "Client.hpp"
 #include "../includes/color.hpp"
-
+#include "../includes/utils.hpp"
 
 using namespace irc;
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
-Client::Client( int fd )		// main constructor
+Client::Client( int fd ) // main constructor
+	: _nickname("")
+	, _username("")
+	, _hostname("")
+	, _realname("")
+	, _client_ip(grab_ip_address())
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
@@ -17,16 +22,20 @@ Client::Client( int fd )		// main constructor
 	// _socket.addr = addr;	
 }
 
-Client::Client( string nick )  // WARNING: TESTING PURPOSE constructor
+Client::Client( string nickname ) // WARNING: TESTING PURPOSE constructor - Pourquoi on le garde pas ?
+	: _nickname(nickname)
+	, _username("")
+	, _hostname("")
+	, _realname("")
+	, _client_ip(grab_ip_address())  
 {
-	_nickname = nick;
 	_socket.pollfd.fd = 0;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
 	_registration = NONE_SET;	
 }
 
-Client::Client( const Client& rhs ) // copy constructor
+Client::Client( const Client& rhs ) : 	_client_ip(rhs._client_ip)// copy constructor
 {
 	*this = rhs;
 }
@@ -36,7 +45,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 	set_nickname(rhs.get_nickname());
 	set_username(rhs.get_username());
 	set_hostname(rhs.get_hostname());
-	
+	_realname = rhs._realname;
 	_socket.pollfd.fd = rhs.get_fd();
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = rhs.is_opened();
@@ -64,8 +73,9 @@ bool	Client::operator==( const Client& rhs) const
 
 const string&	Client::get_nickname( void ) const { return _nickname; }
 const string&	Client::get_username( void ) const { return _username; }
-string			Client::get_hostname( void ) const {return _hostname; } 
+string			Client::get_hostname( void ) const { return _hostname; } 
 const string&	Client::get_realname( void ) const { return _realname; }
+const string&	Client::get_client_ip(void ) const { return _client_ip; }
 
 string Client::get_prefix( void ) 
 { 

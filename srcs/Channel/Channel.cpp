@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 14:41:29 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/11 18:34:59 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,12 +261,12 @@ int	Channel::remove_member( Client* client )
 				{
 					empty_memberlist();
 					// RETURN INT TO DATABASE TO REMOVE THE CHANNEL
-					return;
+					return 42;
 				}
 				else
 				{
 					_memberlist.erase(it);
-					transfer_ownership();
+					//transfer_ownership();
 
 					if (is_only_banned_member_left() == true)
 					{
@@ -288,36 +288,36 @@ void	Channel::empty_memberlist( void )
 	_memberlist.clear();
 }
 
-void	transfer_ownership( void )
-{
-	Channel::iterator it = _memberlist.begin();
-	Channel::iterator ite = _memberlist.end();
+// void	Channel::transfer_ownership( void )
+// {
+// 	Channel::iterator it = _memberlist.begin();
+// 	Channel::iterator ite = _memberlist.end();
 
-	for (; it != ite; it++)
-	{
-		if (get_permission((*it).first) == CHANOP)
-		{
-			(*it).second = OWNER;
-			return ;
-		}
+// 	for (; it != ite; it++)
+// 	{
+// 		if (get_permission((*it).first) == CHANOP)
+// 		{
+// 			(*it).second = OWNER;
+// 			return ;
+// 		}
 	
-	}
-	it = _memberlist.begin();
-	ite = _memberlist.end();
+// 	}
+// 	it = _memberlist.begin();
+// 	ite = _memberlist.end();
 
-	for (; it != ite; it++)
-	{
-		if (get_permission((*it).first) == REGULAR)
-		{
-			(*it).second = OWNER;
-			return ;
-		}
-	}
+// 	for (; it != ite; it++)
+// 	{
+// 		if (get_permission((*it).first) == REGULAR)
+// 		{
+// 			(*it).second = OWNER;
+// 			return ;
+// 		}
+// 	}
 
-	// ELSE IL NE RESTE QUE DU MONDE BAN DANS LA MEMBERLIST, IL FAUT ENVOYER UN INT POUR REMOVE LE CHANNEL DE LA DATABASE
-	// OU FAIRE UNE FONCTION IS ONLY BANNED_MEMBER_LEFT
+// 	// ELSE IL NE RESTE QUE DU MONDE BAN DANS LA MEMBERLIST, IL FAUT ENVOYER UN INT POUR REMOVE LE CHANNEL DE LA DATABASE
+// 	// OU FAIRE UNE FONCTION IS ONLY BANNED_MEMBER_LEFT
 	
-}
+// }
 
 
 

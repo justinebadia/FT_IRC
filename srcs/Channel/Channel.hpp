@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 14:40:46 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/11 18:26:58 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ public:
 		CHANOP = 2,
 		OWNER = 4
 	};
+	
 	typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
 	typedef	std::list<std::pair<Client*, e_permission> >::iterator	iterator;
 
@@ -95,8 +96,6 @@ public:
 	channel_memberlist					get_memberlist( void );
 	//t_client_ptr_list					get_banlist( void );
 	e_permission						get_permission( Client* client );
-	string&								get_topic( void );
-
 
 
 	/*-----------------------SETTERS----------------------*/
@@ -118,7 +117,7 @@ public:
 	bool	is_chanop( Client* client );
 	bool	is_banned( Client* client );
 	bool	is_only_banned_member_left( void );
-	bool	is_empty( Client* client );
+	bool	is_empty( void );
 
 	void	add_member( Client* client, e_permission type );
 	int		remove_member( Client* client );

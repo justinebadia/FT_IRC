@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 17:29:53 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/11 15:28:03 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,10 @@
 #include <list>
 #include <map>
 #include <vector>
-#include <utility>
-#include <signal.h>
-#include "irc_define.hpp"
-#include <signal.h>
 #include <exception>
 #include <iostream>
 
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-
+#include "irc_define.hpp"
 #include "../Client/Client.hpp"
 #include "Database.hpp"
 #include "Message.hpp"
@@ -64,6 +56,7 @@ private:
 
 	Database			_database;
 	t_socket			_server_socket; // t_pollfd pollfd, t_addr addr6; 
+	const string		_server_ip;
 	const string		_server_name;
 	const unsigned int	_port;
 	const string		_password;
@@ -113,6 +106,7 @@ public:
 	Database*		 		get_database( void );
 	const string&			get_password( void ) const;
 	bool					get_exit_status( void ) const;
+	const string&			get_server_ip ( void ) const;
 
 	t_pollfd&				get_pollfd( void );
 	t_addr6&				get_addr6( void );

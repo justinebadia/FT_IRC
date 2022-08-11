@@ -1,14 +1,18 @@
-#include "Server.hpp" // includes: <string><list><map><vector><utility><signal.h><exception><iostream> "irc_define.hpp"
-					  // <arpa/inet.h><netinet/in.h><sys/types.h><sys/socket.h>
+#include "Server.hpp" // includes: <string><list><map><vector><exception><iostream> "irc_define.hpp"
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
-
 #include <poll.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
-// #include "commands.hpp"
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <utility>
+#include <signal.h>
 #include "numeric_replies.hpp"
 #include "../includes/color.hpp"
-
+#include "../includes/utils.hpp"
+#include <iostream>
 
 using namespace irc;
 using std::cout;
@@ -27,10 +31,15 @@ void	set_exit_true( int signal )
 
 /*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
-Server::Server( void ) : _port(PORT), _password("") {}		// default constructor [PRIVATE]
+Server::Server( void ) // default constructor [PRIVATE]
+	: _server_ip(grab_ip_address())
+	, _port(PORT)
+	, _password("") 
+	{}		
 
 Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
 	: _server_socket(other._server_socket)
+	, _server_ip(other._server_ip)
 	, _server_name(other._server_name)
 	, _port(other._port)
 	, _password(other._password)
@@ -43,7 +52,7 @@ Server&	Server::operator=( const Server& other ){}			// copy operator overload [
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor
-	: _server_name(HOSTNAME)	// 127.0.0.1 
+	: _server_ip(grab_ip_address())
 	, _port(port)				// 6667
 	, _password(password)
 	, _exit(false)
@@ -124,6 +133,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	if (!client->is_registered())
 	{
 		CommandManager::execute_commands_registration(*client);
+		std::cout << "ADRESSE IP = " << client->get_client_ip() << std::endl;
 		_check_registration(client);
 	}
 	else
@@ -181,6 +191,7 @@ const unsigned int	Server::get_port( void ) const { return _port; }
 Database*		 	Server::get_database( void ) { return &_database; }
 const string&		Server::get_password( void ) const { return _password; }
 bool				Server::get_exit_status( void ) const { return _exit; }
+const string&		Server::get_server_ip( void ) const { return _server_ip; }
 
 t_pollfd&			Server::get_pollfd( void ){ return _server_socket.pollfd; }
 t_addr6&			Server::get_addr6( void ){ return _server_socket.addr6; }

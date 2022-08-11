@@ -53,6 +53,7 @@ private:
 	string			_username;
 	string			_hostname;
 	string 			_realname;
+	const string 	_client_ip;
 	
 	t_socket		_socket;
 	string			_buff[2]; // 0 == read and 1 == write
@@ -66,10 +67,10 @@ public:
 
 	Client( int fd );									// main constructor
 	// Client( t_socket client_socket );				// main constructor
-	Client( string nick ); 								// WARNING: TESTING PURPOSE constructor
+	Client( string nickname ); 								// WARNING: TESTING PURPOSE constructor
 
-	Client( const Client& other ); 						// copy constructor
-	Client&	operator=( const Client& other ); 			// copy operator overload
+	Client( const Client& rhs ); 						// copy constructor
+	Client&	operator=( const Client& rhs ); 			// copy operator overload
 	~Client( void ); 									// destructor
 	
 
@@ -84,6 +85,7 @@ public:
 	const string&					get_username( void ) const;
 	string							get_hostname( void ) const;
 	const string&					get_realname( void ) const;
+	const string& 					get_client_ip( void ) const;
 	string							get_prefix( void );
 	int								get_registration_flags( void ) const;
 
