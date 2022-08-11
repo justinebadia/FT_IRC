@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 14:41:29 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/11 18:33:15 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 using namespace irc;
 using std::string;
+
+
+/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
 Channel::Channel( void ) // default constructor 
 	: _name("")
@@ -47,9 +50,6 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	return *this;
 }							
 
-
-/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
-
 Channel::Channel( const string& channel_name, Client* channel_owner )			// no password constructor
 	: _name(channel_name)
 	, _owner(channel_owner)
@@ -74,6 +74,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _topic_by_chanop_only(true)
 	, _topic("")
 	, _password(channel_password)
+	, _memberlist(0) 
 {
 	add_member(channel_owner, OWNER);
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
@@ -261,12 +262,12 @@ int	Channel::remove_member( Client* client )
 				{
 					empty_memberlist();
 					// RETURN INT TO DATABASE TO REMOVE THE CHANNEL
-					return;
+					return 22; // WARNING
 				}
 				else
 				{
 					_memberlist.erase(it);
-					transfer_ownership();
+					//transfer_ownership(); WARNING INCORECCT!!!!!
 
 					if (is_only_banned_member_left() == true)
 					{
@@ -281,6 +282,7 @@ int	Channel::remove_member( Client* client )
 			break;
 		}
 	}
+	return 42; // WARNING
 }
 
 void	Channel::empty_memberlist( void )
@@ -288,7 +290,7 @@ void	Channel::empty_memberlist( void )
 	_memberlist.clear();
 }
 
-void	transfer_ownership( void )
+void	Channel::transfer_ownership( void )
 {
 	Channel::iterator it = _memberlist.begin();
 	Channel::iterator ite = _memberlist.end();
