@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 18:26:58 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 15:00:58 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,14 @@ public:
 	typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
 	typedef	std::list<std::pair<Client*, e_permission> >::iterator	iterator;
 
+	enum mode_flags
+	{
+		FLAG_O = 1,
+		FLAG_I = 2,
+		FLAG_T = 4,
+		FLAG_K = 8,
+		FLAG_B = 16,
+	};
 	//typedef t_client_ptr_list::iterator	iterator;
 
 private:
@@ -63,6 +71,7 @@ private:
 	string								_topic;
 	string								_password;
 	channel_memberlist					_memberlist;
+	int									_mode_flags;
 	//t_client_ptr_list					_banlist;
 
 
@@ -124,6 +133,7 @@ public:
 	void	empty_memberlist( void );
 
 	void	transfer_ownership( void );
+	int		parse_modes( string message );
 
 };
 

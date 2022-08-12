@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:05:39 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 12:15:05 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ public:
 	Client*			get_client_ptr( void ) const;
 	const string&	get_message_in( void ) const;
 	const string&	get_message_out( void ) const;
-	string			get_colon( void );
+	string			get_substr_after( const string& symbol );
+	int 			get_param_count( void );
 
 	/*-----------------------SETTERS----------------------*/
 

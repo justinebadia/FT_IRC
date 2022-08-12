@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/11 18:58:59 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 12:48:08 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void CommandManager::cmd_join( Message& msg )
 void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
-
+	
 	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
 	{
 		run_reply(ERR_ERRONEUSNICKNAME, msg);
@@ -114,14 +114,14 @@ void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for c
 		{
 			chan_memberlist = _database->get_clients_in_channel(channel);
 			chan_memberlist.remove(msg.get_client_ptr());
-			send_to_clients(chan_memberlist, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + channel->get_name() + " :" + msg.get_colon() + CRLF);
+			send_to_clients(chan_memberlist, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + channel->get_name() + " :" + msg.get_substr_after(":") + CRLF);
 		}
 	}
 	else
 	{
 		client = _database->get_client(msg[1]);
 		if (client)
-			client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + msg[1] + " :" + msg.get_colon() + CRLF);
+			client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	}
 	
 	return;
@@ -131,21 +131,21 @@ void	CommandManager::cmd_user( Message& msg )
 {
 	Client& client			= *msg.get_client_ptr();
 
-	if(msg[4].empty() || msg.get_colon().empty()) //checking if there is, at least, 5 parameters
+	if(msg[4].empty() || msg.get_substr_after(":").empty()) //checking if there is, at least, 5 parameters
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
-	if ( !msg.get_colon().empty() )
-		client.set_realname(msg.get_colon());
+	if ( !msg.get_substr_after(":").empty() )
+		client.set_realname(msg.get_substr_after(":"));
 	if (msg[3].length() == 1 && msg[3][0] == '*')
 		client.set_hostname(_server->get_name());
 	else
 		client.set_hostname(msg[3]);
 	client.set_registration_flags(Client::USER_SET);
-	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_colon() + RESET);
+	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_substr_after(":") + RESET);
 	return ;
 }
 
@@ -190,42 +190,9 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 	_database->remove_client_list(client); // WARNING to be changed for a queue of client to disconnect, I think?
 	cout << "Amount of channels client is in : " << chan_list.size() << endl;
 	if (!msg[1].empty())  // WARNING todo
-		send_to_channels(chan_list, prefix + "QUIT :" + msg.get_colon() + CRLF);	
+		send_to_channels(chan_list, prefix + "QUIT :" + msg.get_substr_after(":") + CRLF);	
 	if (msg[1].empty())  // WARNING todo
 		send_to_channels(chan_list, prefix + "QUIT" + CRLF);
 }
 
-
-void CommandManager::cmd_mode_chanop( Message& msg ) //attention les yeux - faire une fonction qui parse la commande
-{
-	Client*		client	= msg.get_client_ptr();
-
-	if (msg[3].empty())
-	{
-		run_reply(ERR_NEEDMOREPARAMS, msg);
-		return ;
-	}
-	if (!msg[1].empty() && msg[1][0] == '#')
-	{
-		Channel *channel = _database->get_channel(msg[1]);
-		if (channel)
-		{
-			if(!msg[2].empty() && msg[2][0] == '+')
-			{
-					if (!msg[3].empty() && (channel->is_chanop(client) || channel->is_owner(client)))
-					{
-						Client* target = _database->get_client(msg[4]);
-						if(!msg[4].empty() && channel->is_member(target))
-						{
-							if (msg[2][1] == 'o')
-								channel->set_permission(target, Channel::e_permission::CHANOP);
-							
-						}
-					}
-				}
-			}	
-		}
-	}
-
-}
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:05:56 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 12:45:30 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ string		Message::operator[]( int i )					// scope operator overload
 	size_t last		= 0;
 	size_t next		= 0;
 	size_t len		= _message_in.length();
+	size_t colon 	= _message_in.find(" :", 0);
 
 	while (i >= 0)
 	{   
 		next = _message_in.find(MSG_DELIMITER, last);
-		if (next == string::npos)
+		if (next == string::npos || (next > colon && colon != string::npos))
 		{
 			if (i > 0)
 			{
@@ -74,18 +75,26 @@ Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
 const string&	Message::get_message_in( void ) const { return _message_in; }
 const string&	Message::get_message_out( void ) const { return _message_out; }
 
-string			Message::get_colon( void )
-{ 
+
+string		Message::get_substr_after( const string& symbol )
+{
 	size_t pos;
+	string symb = " " + symbol;
  
-	pos = _message_in.find(":", 0);
+	pos = _message_in.find(symb, 1);
 	if (pos == string::npos)
-	{
-			return string("");
-	}
+		return string("");
 	return _message_in.substr(pos + 1);
 }
 
+int		Message::get_param_count( void )
+{
+	int i = 0;
+
+	while(!(*this)[i].empty())
+		i++;
+	return (i - 1);
+}
 
 /*-----------------------SETTERS----------------------*/
 

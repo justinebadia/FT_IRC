@@ -35,6 +35,7 @@ _CLASS_SRCS	=	Channel/Channel.cpp \
 				Command/Message.cpp \
 				Command/CommandManager.cpp \
 				Command/commands.cpp \
+				Command/mode.cpp\
 				Command/utils_commands.cpp\
 				Command/num_replies.cpp \
 				Server/Server.cpp

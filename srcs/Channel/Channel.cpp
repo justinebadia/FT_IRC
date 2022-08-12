@@ -6,11 +6,12 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 18:34:59 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 15:00:54 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
+#include "Message.hpp"
 
 using namespace irc;
 using std::string;
@@ -25,6 +26,7 @@ Channel::Channel( void ) // default constructor
 	, _topic("")
 	, _password("")
 	, _memberlist(0) 
+	, _mode_flags(0)
 	{}
 
 Channel::Channel( const Channel& rhs ) // copy constructor
@@ -43,6 +45,7 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_topic = rhs._topic;
 	_password = rhs._password;
 	_memberlist = rhs._memberlist;
+	_mode_flags = rhs._mode_flags;
 
 	return *this;
 }							
@@ -60,6 +63,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _topic("")
 	, _password("")
 	, _memberlist(0) 
+	, _mode_flags(0)
 {
 	add_member(channel_owner, OWNER);
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
@@ -74,6 +78,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _topic_by_chanop_only(true)
 	, _topic("")
 	, _password(channel_password)
+	, _mode_flags(0)
 {
 	add_member(channel_owner, OWNER);
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
@@ -375,6 +380,24 @@ void	Channel::join_private( Client* client, const string& password )
 // 		}
 // 	}
 // }
+
+
+int Channel::parse_modes( string message )
+{
+	for (int i = 0; i != message.length(); i++)
+	{
+		if (message[i] == 'o')
+			_mode_flags |= mode_flags::FLAG_O;
+		if (message[i] == 'i')
+			_mode_flags |= mode_flags::FLAG_I;
+		if (message[i] == 't')
+			_mode_flags |= mode_flags::FLAG_T;
+		if (message[i] == 'k')
+			_mode_flags |= mode_flags::FLAG_K;
+		if (message[i] == 'b')
+			_mode_flags |= mode_flags::FLAG_B;
+	}
+}
 
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
