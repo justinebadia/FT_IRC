@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 15:00:58 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 16:53:39 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,10 @@ public:
 	enum e_permission									// Usage-> Channel::OWNER, not sure
 	{
 		BAN = 0,
-		REGULAR = 1,
-		CHANOP = 2,
-		OWNER = 4
+		INVITE = 1,
+		REGULAR = 2,
+		CHANOP = 4,
+		OWNER = 8
 	};
 	
 	typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
@@ -67,6 +68,7 @@ private:
 	bool								_private;					// ±p
 	bool								_secret;					// ±s
 	bool								_invite_only;				// ±i
+	bool								_password_required;			// ±flag pour +k
 	bool								_topic_by_chanop_only;		// ±t
 	string								_topic;
 	string								_password;
@@ -99,11 +101,11 @@ public:
 	bool								get_is_private( void ) const;
 	bool								get_is_secret( void ) const;
 	bool								get_is_invite_only( void ) const;
+	bool								get_is_password_required( void ) const;
 	bool								get_is_topic_by_chanop_only( void ) const;
 	string&								get_topic( void );
 	string&								get_password( void );
 	channel_memberlist					get_memberlist( void );
-	//t_client_ptr_list					get_banlist( void );
 	e_permission						get_permission( Client* client );
 
 
@@ -113,6 +115,7 @@ public:
 	void	set_mode_private( bool setting );
 	void	set_mode_secret( bool setting );
 	void	set_mode_invite_only( bool setting );
+	void	set_mode_key_password_required( bool setting );
 	void	set_mode_topic_by_chanop_only( bool setting );
 
 	void	set_topic( const string& topic );

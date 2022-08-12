@@ -22,7 +22,7 @@ int parse_cmd_mode( Message& msg ) // si erreur -42
 		if (msg.get_param_count() < 3)
 		{
 			irc::CommandManager::run_reply(ERR_NEEDMOREPARAMS, msg);
-			return ;
+			return -1;
 		}
 		return 1; // 1 = mode channel
 	}
@@ -42,19 +42,19 @@ if (parse_cmd_mode(msg) == 1)
 	Channel *channel = _database->get_channel(msg[1]);
 	if (!channel)
 	{
-		run_reply(ERR_NOSUCHCHANNEL, err_nosuchchannel);
+		run_reply(ERR_NOSUCHCHANNEL, msg);
 		return ;
 	}
 	if (!(channel->is_chanop(client)) || !(channel->is_owner(client)))
 	{
-		run_reply( ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded);
+		run_reply(ERR_CHANOPRIVSNEEDED, msg);
 		return ;
 	}
-	// if (channel->)
-	// {
-	// 	run_reply(ERR_NOTONCHANNEL , err_notonchannel);
-	// 	return ;
-	// }
+	if (channel->is_member(client))
+	{
+		run_reply(ERR_NOTONCHANNEL, msg);
+		return ;
+	}
 	
 
 }

@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 12:48:08 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 16:52:12 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,4 +195,32 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 		send_to_channels(chan_list, prefix + "QUIT" + CRLF);
 }
 
+
+void CommandManager::cmd_kick( Message& msg )
+{
+//	if (msg.get_param_count() < 2)
+//		run_reply(ERR_NEEDMOREPARAMS, msg);
+	
+	 	Client*	source_client = msg.get_client_ptr();
+		
+		Channel* channel = _database->get_channel(msg[1]);
+		if (!channel)
+			run_reply(ERR_NOSUCHCHANNEL, msg);
+		
+		if (!msg[1][0] == '&' && msg[1][0] != '#')
+			run_reply(ERR_BADCHANMASK, msg); 
+		
+		if (channel->is_chanop(source_client) == false)
+			run_reply(ERR_CHANOPRIVSNEEDED, msg);
+		
+		if (!msg[2].empty())
+		{
+			Client* target_client = _database->get_client(msg[2]);
+			if (!target_client)
+				run_reply(ERR_NOTONCHANNEL, msg);
+			if (channel->is_member(target_client) == false)
+				run_reply(ERR_NOTONCHANNEL, msg);
+			channel->remove_member(target_client);
+		}			
+}
 

@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 15:00:54 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 16:54:06 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@
 using namespace irc;
 using std::string;
 
+
+/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
 Channel::Channel( void ) // default constructor 
 	: _name("")
 	, _owner(NULL)
 	, _private(false)
 	, _secret(false)
 	, _invite_only(false)
+	, _password_required(false)
 	, _topic_by_chanop_only(false)
 	, _topic("")
 	, _password("")
@@ -41,17 +45,15 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_private = rhs._private;
 	_secret = rhs._secret;
 	_invite_only = rhs._invite_only;
+	_password_required = rhs._password_required;
 	_topic_by_chanop_only = rhs._topic_by_chanop_only;
 	_topic = rhs._topic;
 	_password = rhs._password;
-	_memberlist = rhs._memberlist;
+	_memberlist = channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
 	_mode_flags = rhs._mode_flags;
 
 	return *this;
 }							
-
-
-/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
 Channel::Channel( const string& channel_name, Client* channel_owner )			// no password constructor
 	: _name(channel_name)
@@ -59,6 +61,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _private(false)
 	, _secret(false)
 	, _invite_only(false)
+	, _password_required(false)
 	, _topic_by_chanop_only(false)
 	, _topic("")
 	, _password("")
@@ -78,6 +81,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _topic_by_chanop_only(true)
 	, _topic("")
 	, _password(channel_password)
+	, _memberlist(0) 
 	, _mode_flags(0)
 {
 	add_member(channel_owner, OWNER);
@@ -111,6 +115,8 @@ bool				Channel::get_is_private( void ) const { return _private; }
 bool				Channel::get_is_secret( void ) const { return _secret; }
 
 bool				Channel::get_is_invite_only( void ) const { return _invite_only; } 
+
+bool				Channel::get_is_password_required( void ) const { return _password_required; } 
 
 bool				Channel::get_is_topic_by_chanop_only( void ) const { return _topic_by_chanop_only; }
 
@@ -166,6 +172,11 @@ void	Channel::set_mode_secret( bool setting )
 void	Channel::set_mode_invite_only( bool setting ) 
 {
 	_invite_only = setting;
+}
+
+void	Channel::set_mode_key_password_required( bool setting )
+{
+	_password_required = setting;
 }
 
 void	Channel::set_mode_topic_by_chanop_only( bool setting )
@@ -266,12 +277,12 @@ int	Channel::remove_member( Client* client )
 				{
 					empty_memberlist();
 					// RETURN INT TO DATABASE TO REMOVE THE CHANNEL
-					return 42;
+					return 22; // WARNING
 				}
 				else
 				{
 					_memberlist.erase(it);
-					//transfer_ownership();
+					//transfer_ownership(); WARNING INCORECCT!!!!!
 
 					if (is_only_banned_member_left() == true)
 					{
@@ -286,6 +297,7 @@ int	Channel::remove_member( Client* client )
 			break;
 		}
 	}
+	return 42; // WARNING
 }
 
 void	Channel::empty_memberlist( void )
