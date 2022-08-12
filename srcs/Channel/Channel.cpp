@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 18:33:15 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 12:01:50 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Channel::Channel( void ) // default constructor
 	, _private(false)
 	, _secret(false)
 	, _invite_only(false)
+	, _password_required(false)
 	, _topic_by_chanop_only(false)
 	, _topic("")
 	, _password("")
@@ -42,10 +43,12 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_private = rhs._private;
 	_secret = rhs._secret;
 	_invite_only = rhs._invite_only;
+	_password_required = rhs._password_required;
 	_topic_by_chanop_only = rhs._topic_by_chanop_only;
 	_topic = rhs._topic;
 	_password = rhs._password;
-	_memberlist = rhs._memberlist;
+
+	_memberlist = channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
 
 	return *this;
 }							
@@ -56,6 +59,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _private(false)
 	, _secret(false)
 	, _invite_only(false)
+	, _password_required(false)
 	, _topic_by_chanop_only(false)
 	, _topic("")
 	, _password("")
@@ -107,6 +111,8 @@ bool				Channel::get_is_private( void ) const { return _private; }
 bool				Channel::get_is_secret( void ) const { return _secret; }
 
 bool				Channel::get_is_invite_only( void ) const { return _invite_only; } 
+
+bool				Channel::get_is_password_required( void ) const { return _password_required; } 
 
 bool				Channel::get_is_topic_by_chanop_only( void ) const { return _topic_by_chanop_only; }
 
@@ -162,6 +168,11 @@ void	Channel::set_mode_secret( bool setting )
 void	Channel::set_mode_invite_only( bool setting ) 
 {
 	_invite_only = setting;
+}
+
+void	Channel::set_mode_key_password_required( bool setting )
+{
+	_password_required = setting;
 }
 
 void	Channel::set_mode_topic_by_chanop_only( bool setting )
