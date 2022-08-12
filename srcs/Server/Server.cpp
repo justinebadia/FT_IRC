@@ -70,7 +70,7 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 			if (client_fd == -1)
 				break;
 			_database.add_client_list(Client(client_fd));
-			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
+			Server::log(string(GREEN) + "Server::process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
 		}
 	}
 }
@@ -249,7 +249,7 @@ int	Server::run_server( void )
 			_process_clients(&pollfds[1], client_count);
 		}
 	}
-	cout << GREEN << "Leaving with absolute grace" << RESET << endl;
+	Server::log(string(GREEN) + "Leaving with absolute grace" + RESET);
 	close(get_fd()); // Need a close function
 }
 
