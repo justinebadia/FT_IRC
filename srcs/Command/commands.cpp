@@ -196,7 +196,7 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 }
 
 
-void CommandManager::cmd_mode_chanop( Message& msg ) //attention les yeux
+void CommandManager::cmd_mode_chanop( Message& msg ) //attention les yeux - faire une fonction qui parse la commande
 {
 	Client*		client	= msg.get_client_ptr();
 
@@ -212,14 +212,13 @@ void CommandManager::cmd_mode_chanop( Message& msg ) //attention les yeux
 		{
 			if(!msg[2].empty() && msg[2][0] == '+')
 			{
-				if (msg[2][1] == 'o')
-				{
 					if (!msg[3].empty() && (channel->is_chanop(client) || channel->is_owner(client)))
 					{
 						Client* target = _database->get_client(msg[4]);
 						if(!msg[4].empty() && channel->is_member(target))
 						{
-							channel->set_permission(target, Channel::e_permission::CHANOP);
+							if (msg[2][1] == 'o')
+								channel->set_permission(target, Channel::e_permission::CHANOP);
 							
 						}
 					}
