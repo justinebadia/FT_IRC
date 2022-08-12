@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:44:33 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 16:05:22 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ class CommandManager {
 private:
 	friend class Server;
 	/*--------------PROHIBITED-CONSTRUCTORS--------------*/
-	CommandManager( const CommandManager& rhs ) {  };
-	CommandManager& operator=( const CommandManager& rhs ) {  };
+	CommandManager( const CommandManager& ) {  };
+	CommandManager& operator=( const CommandManager& ) { return *this; };
 	CommandManager( void );	
 	CommandManager( Database* database );	// main constructor
 	~CommandManager( void );			// destructor
@@ -50,6 +50,8 @@ private:
 
 	static void	_init_command_map( void );
 	static void	_init_reply_map( void );
+
+	static bool	_is_unregistered_allowed( const string& cmd_name );
 	
 public:
 
@@ -66,6 +68,7 @@ public:
 	static void	execute_commands_registration( Client& client );
 	static void cmd_join( Message& msg );
 	static void	cmd_nick( Message& msg );
+	static void	cmd_pass( Message& msg );
 	static void cmd_privmsg( Message& msg );
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
@@ -95,6 +98,7 @@ public:
 	/*USERS MSG REPLIES*/
 	static void err_needmoreparams( Message& msg );
 	static void err_alreadyregistered( Message& msg );
+	static void	err_passwdmismatch( Message& msg );
 	/*PING replies*/
 	static void err_noorigin( Message& msg );
 	/*JOIN REPLIES*/

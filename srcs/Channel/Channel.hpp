@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 12:34:25 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 14:29:11 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #define CHANNEL_HPP
 
 #include <iostream>
-#include <list>
-#include <map>
+// #include <list>
+// #include <map>
 #include <string>
 #include "Client.hpp"
 #include "typedef.hpp"
@@ -112,9 +112,6 @@ public:
 	/*-----------------NON-MEMBER-FUNCTIONS---------------*/
 
 	std::ostream&	operator<<( std::ostream& o, const Channel& obj );
-	
-	static int							get_nb_of_channels(  void );
-
 
 } // namespace irc end bracket
 

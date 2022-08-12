@@ -7,8 +7,11 @@
 #include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
+
 #define PORT 6667
-  
+
+using std::string;
+
 int main(int argc, char const* argv[])
 {
     int sock = 0, valread, client_fd;
@@ -45,6 +48,14 @@ int main(int argc, char const* argv[])
 	pollfds[0].fd = sock;
 	pollfds[0].events = POLLIN | POLLOUT;
 	int res;
+	if (argc == 3)
+	{
+		input = "NICK " + string(argv[1]) + "\r\n";
+		send(pollfds[0].fd, input.c_str(), input.size(), 0);
+		input = "USER " + string(argv[2]) + " * * :" + string(argv[2]) + "\r\n";
+		send(pollfds[0].fd, input.c_str(), input.size(), 0);
+		input.clear();
+	}
 	while(1)
 	{
 		if (!input.size())

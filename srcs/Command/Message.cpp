@@ -6,11 +6,16 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:05:56 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 14:27:22 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+
+#include <string>
+#include <iostream>
+
+#include "Client.hpp"
 
 using namespace irc;
 

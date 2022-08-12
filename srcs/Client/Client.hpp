@@ -53,12 +53,14 @@ private:
 	string			_username;
 	string			_hostname;
 	string 			_realname;
+	bool			_operator;
 	
 	t_socket		_socket;
 	string			_buff[2]; // 0 == read and 1 == write
 	bool			_socket_opened;
 	int				_registration;
 	
+	void	_set_operator( bool value );
 
 public:
 
@@ -122,6 +124,7 @@ public:
 	bool	is_username_set( void ) const;
 	bool	is_password_validated( void ) const;
 	bool	is_registered( void ) const;
+	bool	is_operator( void ) const;
 	
 
 };

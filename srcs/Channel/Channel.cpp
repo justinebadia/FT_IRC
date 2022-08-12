@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 12:36:40 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 14:28:50 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
+
+#include <iostream>
+// #include <list>
+// #include <map>
+#include <string>
+
+#include "Client.hpp"
+#include "typedef.hpp"
 
 using namespace irc;
 using std::string;
@@ -221,6 +229,7 @@ bool	Channel::is_banned( Client* member )
 
 std::ostream& operator<<( std::ostream& o, const Channel& obj ) 
 { 
+	o << "Channel name: " << obj.get_name() << std::endl;
 	return o; 
 }
 

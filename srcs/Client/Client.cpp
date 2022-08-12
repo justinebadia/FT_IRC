@@ -102,6 +102,7 @@ void	Client::set_nickname( const string& nickname ) { _nickname = nickname; }
 void	Client::set_username( const string& username ) { _username = username; }
 void	Client::set_hostname( const string& hostname ) { _hostname = hostname; }
 void	Client::set_realname( const string& realname ) { _realname = realname; }
+void	Client::_set_operator( bool value ) { _operator = value; }
 
 void	Client::set_registration_flags( const e_registration& flag ) 
 {
@@ -145,8 +146,8 @@ bool	Client::is_opened( void ) const { return (_socket_opened); }
 bool	Client::is_nickname_set( void ) const { return (_registration & NICK_SET ? true : false); } 
 bool	Client::is_username_set( void ) const { return (_registration & USER_SET ? true : false); } 
 bool	Client::is_password_validated( void ) const { return (_registration & PASS_SET ? true : false); } 
-bool	Client::is_registered( void ) const { return (_registration & COMPLETE ? true : false); } 
-// or { return  _registration == COMPLETE; }
+bool	Client::is_registered( void ) const { return (_registration & COMPLETE ? true : false); }
+bool	Client::is_operator( void ) const { return (_operator); } 
 
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/

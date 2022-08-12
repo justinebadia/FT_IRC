@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 17:29:53 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 17:01:41 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,17 @@
 #define SERVER_HPP
 
 #include <string>
-#include <list>
-#include <map>
-#include <vector>
 #include <utility>
-#include <signal.h>
-#include "irc_define.hpp"
-#include <signal.h>
+// #include <signal.h>
 #include <exception>
-#include <iostream>
 
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-
-#include "../Client/Client.hpp"
 #include "Database.hpp"
-#include "Message.hpp"
-#include "CommandManager.hpp"
+#include "irc_define.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME "10.11.7.4"	// a.k.a. "localhost" alias
+#define	HOSTNAME 	"10.11.7.4"	// a.k.a. "localhost" alias
 #define PORT 6667
+#define OPER_PASS	"Tobastine"
  
 class Channel;
 
@@ -52,6 +40,13 @@ class CommandManager;
 class Server {
 
 private:
+
+	// class Operator
+	// {
+	// 	const string	name;
+	// 	const string	password;
+	// 	int				client_fd;
+	// };
 
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
@@ -90,16 +85,15 @@ private:
 
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
 
-	void	_process_connections( const t_pollfd& pollfd );
-	void	_process_clients( const t_pollfd* pollfd_array, size_t size );
-	void	_process_client_pollerr( const t_pollfd& pollfd );
-	void	_process_client_pollin( const t_pollfd& pollfd );
-	void	_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
-	void	_check_registration( Client* client );
-	void	_process_client_pollout( const t_pollfd& pollfd );
-	void	_disconnect_client( const int& fd );
+	t_pollfd*	_poll_sockets( void );
+	void		_process_connections( const t_pollfd& pollfd );
+	void		_process_clients( const t_pollfd* pollfd_array, size_t size );
+	void		_process_client_pollerr( const t_pollfd& pollfd );
+	void		_process_client_pollin( const t_pollfd& pollfd );
+	void		_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
+	void		_check_registration( Client* client );
+	void		_process_client_pollout( const t_pollfd& pollfd );
 
-	
 public:
 
 	/*-----------------------GETTERS----------------------*/
@@ -109,7 +103,7 @@ public:
 	const t_socket&			get_socket( void ) const;
 	const string&			get_name( void ) const;
 	string					get_prefix( void ) const;
-	const unsigned int		get_port( void ) const;
+	const unsigned int&		get_port( void ) const;
 	Database*		 		get_database( void );
 	const string&			get_password( void ) const;
 	bool					get_exit_status( void ) const;
@@ -135,9 +129,10 @@ public:
 	int			run_server( void );
 	void		init_server( void );
 
-	t_pollfd*	poll_sockets( void );
+	void		disconnect_client( const int& fd );
 
 	static void	log( const string& msg );
+	static void	log_error( const string& msg );
 
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
 	
@@ -160,7 +155,6 @@ public:
 	{
 		public: virtual const char* what() const throw();
 	};
-
 };
 
 
