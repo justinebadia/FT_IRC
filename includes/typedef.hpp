@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 15:20:42 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 18:01:49 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <map>
+#include <vector>
 #include <list>
 #include <netinet/in.h>
 #include <poll.h>
@@ -31,6 +32,8 @@ namespace irc {
 class Client;
 class Channel;
 class Message;
+class Server;
+class Operator;
 
 typedef	void(*t_cmd_function_ptr)(Message&);
 typedef	void(*t_reply_function_ptr)(Message&);

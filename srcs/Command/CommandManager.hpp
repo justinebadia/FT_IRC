@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 17:03:41 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 17:51:30 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ public:
 	static void	execute_commands_registration( Client& client );
 	static void cmd_join( Message& msg );
 	static void	cmd_nick( Message& msg );
+	static void	cmd_oper( Message& msg );
 	static void	cmd_pass( Message& msg );
 	static void cmd_privmsg( Message& msg );
 	static void	cmd_user( Message& msg );

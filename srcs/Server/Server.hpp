@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 17:01:41 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 18:20:40 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include <string>
 #include <utility>
-// #include <signal.h>
 #include <exception>
+#include <vector>
 
 #include "Database.hpp"
 #include "irc_define.hpp"
@@ -29,8 +29,7 @@
 class Channel;
 
 using std::string;
-using std::list;
-using std::pair;
+using std::vector;
 
 /*============================================================================*/ 
 namespace irc {
@@ -39,15 +38,21 @@ class CommandManager;
 
 class Server {
 
+
+
 private:
 
-	// class Operator
-	// {
-	// 	const string	name;
-	// 	const string	password;
-	// 	int				client_fd;
-	// };
+	class Operator
+	{
+	public:
+		const string	name;
+		const string	password;
+		int				client_fd;
 
+		Operator( const string& name, const string& pass ) : name(name), password(pass) {  }
+	};
+	typedef vector<Operator>	t_operator_vect;
+	
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 	Server( void );										// default constructor
@@ -67,6 +72,7 @@ private:
 	t_client_list		_client_list;
 	t_command_map		_command_map;
 	t_reply_map			_reply_map;
+	t_operator_vect		_operator_vect;
 
 	static int			log_level;
 
@@ -84,6 +90,9 @@ public:
 private:
 
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
+
+	void		_init_server( void );
+	void		_init_operators( void );
 
 	t_pollfd*	_poll_sockets( void );
 	void		_process_connections( const t_pollfd& pollfd );
@@ -127,9 +136,10 @@ public:
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	int			run_server( void );
-	void		init_server( void );
-
 	void		disconnect_client( const int& fd );
+
+	bool		attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
+	bool		is_client_operator( const int& fd );
 
 	static void	log( const string& msg );
 	static void	log_error( const string& msg );

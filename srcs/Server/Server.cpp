@@ -62,7 +62,7 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	, _password(password)
 	, _exit(exit)
 {
-	init_server();
+	_init_server();
 }
 
 Server::~Server( void )										// default destructor
@@ -70,6 +70,52 @@ Server::~Server( void )										// default destructor
 
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
+
+void	Server::_init_server( void )
+ {
+	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
+	if (this->get_fd() == FAIL)	// Step 1:  socket()
+	{
+		throw Server::SocketErrorException();
+	}
+
+	this->get_pollfd().events = 0;
+	this->get_pollfd().revents = 0;
+
+	int opt; // to store the setsockopt options
+	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
+	{
+		throw Server::SetsockoptErrorException();
+	}
+	
+	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+	this->get_addr6().sin6_addr = in6addr_any;
+	this->get_addr6().sin6_port = htons(get_port());
+	
+	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
+	{
+		throw Server::BindErrorException();
+	}
+
+	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
+	{
+		throw Server::ListenErrorException();
+	}
+
+	CommandManager::_init_command_map();
+	CommandManager::_init_reply_map();
+	CommandManager::set_server(this);
+	CommandManager::set_database(&_database);
+	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
+	this->get_pollfd().events = POLLIN;
+}
+
+void	Server::_init_operators( void )
+{
+	_operator_vect.push_back(Operator("sfournie", "irc"));
+	_operator_vect.push_back(Operator("jbadia", "irc"));
+	_operator_vect.push_back(Operator("tshimoda", "irc"));
+}
 
 t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
 {
@@ -278,50 +324,48 @@ int	Server::run_server( void )
 	return 0;
 }
 
-void	Server::init_server( void )
- {
-	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
-	if (this->get_fd() == FAIL)	// Step 1:  socket()
-	{
-		throw Server::SocketErrorException();
-	}
-
-	this->get_pollfd().events = 0;
-	this->get_pollfd().revents = 0;
-
-	int opt; // to store the setsockopt options
-	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
-	{
-		throw Server::SetsockoptErrorException();
-	}
-	
-	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
-	this->get_addr6().sin6_addr = in6addr_any;
-	this->get_addr6().sin6_port = htons(get_port());
-	
-	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
-	{
-		throw Server::BindErrorException();
-	}
-
-	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
-	{
-		throw Server::ListenErrorException();
-	}
-
-	CommandManager::_init_command_map();
-	CommandManager::_init_reply_map();
-	CommandManager::set_server(this);
-	CommandManager::set_database(&_database);
-	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
-	this->get_pollfd().events = POLLIN;
-}
-
 void	Server::disconnect_client( const int& fd )
 {
 	_database.remove_client_list(fd);
 	close(fd);
 	Server::log("Disconnected client of fd " + std::to_string(fd));
+}
+
+bool	Server::attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass )
+{
+	t_operator_vect::iterator	it;
+
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd == client.get_fd())
+		{
+			return false;
+			Server::log("Client nicknamed " + client.get_nickname() + " is already an operator");
+		}
+	}
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd > 0 && (*it).name == oper_name && (*it).password == oper_pass)
+		{
+			(*it).client_fd = client.get_fd();
+			client._set_operator(true);
+			Server::log("Client nicknamed " + client.get_nickname() + " is now an operator");
+			return true;
+		}
+	}
+	return false;
+}
+
+bool	Server::is_client_operator( const int& fd )
+{
+	t_operator_vect::iterator	it;
+
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd == fd)
+			return true;
+	}
+	return false;
 }
 
 void	Server::log( const string& msg )
