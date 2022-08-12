@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/10 12:44:33 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 15:44:07 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ public:
 	static void	cmd_whois( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_quit( Message& msg );
+	static void	cmd_kick( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
 	static void run_reply( int code, Message& msg );
@@ -101,6 +102,12 @@ public:
 	static void rpl_topic( Message& msg );
 	static void rpl_notopic ( Message& msg );
 
+	/*KICK REPLIES*/
+	static void err_nosuchchannel( Message& msg );
+	static void err_badchanmask( Message& msg );
+	static void err_chanoprivsneeded( Message& msg );
+	static void err_notonchannel( Message& msg );
+	
 	/*------------------COMMANDS_UTILS------------------*/
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
 	static void send_to_channels(t_channel_ptr_list list_of_chan, string output);

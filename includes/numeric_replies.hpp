@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 13:25:48 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 15:24:26 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@
 #define	ERR_INVITEONLYCHAN		473
 #define	ERR_BANNEDFROMCHAN		474
 #define	ERR_BADCHANNELKEY		475
-// #define	ERR_BADCHANMASK			476
+#define	ERR_BADCHANMASK			476
 #define	ERR_NOPRIVILEGES		481
 #define	ERR_CHANOPRIVSNEEDED	482
 // #define	ERR_CANTKILLSERVER		483
