@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/12 16:04:29 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 17:03:03 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,34 @@ void CommandManager::rpl_topic( Message& msg )
 
 void CommandManager::rpl_notopic ( Message& msg )
 {
-	msg.append_out(": 331 :" + msg[1] + ":No topic is set");
+	msg.append_out(": 331 " + msg[1] + " :No topic is set");
 }
-} // namespace irc end bracket
 
+void CommandManager::err_nosuchchannel( Message& msg )
+{
+	msg.append_out(": 403 " + msg[1] + " :No such channel");
+}
+
+void CommandManager::err_badchanmask( Message& msg )
+{
+	msg.append_out(": 476 "); // WARNING RFC DIT PAS GRAND CHOSE
+}
+
+void CommandManager::err_chanoprivsneeded( Message& msg )
+{
+	msg.append_out(": 482 " + msg[1] + " :You're not channel operator");
+}
+
+void CommandManager::err_notonchannel( Message& msg )
+{
+	msg.append_out(" 442 " + msg[1] + " :You're not on that channel");
+}
+
+
+
+
+
+
+
+
+} // namespace irc end bracket

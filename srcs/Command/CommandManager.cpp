@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 16:08:42 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 17:03:32 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
-
+	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
 }
 
 void	CommandManager::_init_reply_map( void )
@@ -83,7 +83,11 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));
 	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));
-	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));
+	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));	
+	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));
+	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));
+	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));
+	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));
 }
 
 bool	CommandManager::_is_unregistered_allowed( const string& cmd_name )
@@ -196,7 +200,3 @@ void	CommandManager::execute_commands_registration( Client& client )
 	}
 	return ;
 }
-
-
-
-

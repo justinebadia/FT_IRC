@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 14:29:11 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 17:03:59 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,15 @@ public:
 	enum e_permission									// Usage-> Channel::OWNER, not sure
 	{
 		BAN = 0,
-		REGULAR = 1,
-		CHANOP = 2,
-		OWNER = 4
+		INVITE = 1,
+		REGULAR = 2,
+		CHANOP = 4,
+		OWNER = 8
 	};
-	typedef t_client_ptr_list::iterator	iterator;
+	typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
+	typedef	std::list<std::pair<Client*, e_permission> >::iterator	iterator;
+
+	//typedef t_client_ptr_list::iterator	iterator;
 
 private:
 
@@ -52,11 +56,15 @@ private:
 	
 	string								_name;						// channel_name
 	Client*								_owner;
-	bool								_invite_only;
-	bool								_password_required;
+	bool								_private;					// ±p
+	bool								_secret;					// ±s
+	bool								_invite_only;				// ±i
+	bool								_password_required;			// ±flag pour +k
+	bool								_topic_by_chanop_only;		// ±t
+	string								_topic;
 	string								_password;
-	string 								_topic;
-	t_client_ptr_list					_banlist;
+	channel_memberlist					_memberlist;
+	//t_client_ptr_list					_banlist;
 
 
 public:
@@ -80,32 +88,45 @@ public:
 	
 	const string&						get_name( void ) const;
 	Client*								get_owner( void ) const;
+	bool								get_is_private( void ) const;
+	bool								get_is_secret( void ) const;
 	bool								get_is_invite_only( void ) const;
 	bool								get_is_password_required( void ) const;
-	string&								get_password( void );
-	t_client_ptr_list					get_banlist( void );
-	e_permission						get_permission( Client* client );
+	bool								get_is_topic_by_chanop_only( void ) const;
 	string&								get_topic( void );
+	string&								get_password( void );
+	channel_memberlist					get_memberlist( void );
+	e_permission						get_permission( Client* client );
 
 
 
 	/*-----------------------SETTERS----------------------*/
 	
-	void	set_invite_only( bool setting );
-	void	set_password( const string& password );
 	int		set_permission( Client* client, e_permission type );
+	void	set_mode_private( bool setting );
+	void	set_mode_secret( bool setting );
+	void	set_mode_invite_only( bool setting );
+	void	set_mode_key_password_required( bool setting );
+	void	set_mode_topic_by_chanop_only( bool setting );
+
+	void	set_topic( const string& topic );
+	void	set_password( const string& password );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void	join_public( Client* client );	// Warning: test, maybe everything will be done in Database
-	void	join_private( Client* client, const string& password );
-	void	add( Client* client );
-	// void	kick( Client* source, Client* target );
-	// void	ban( Client* source, Client* target );
-
-	bool	is_operator( Client* member );
+	bool	is_member( Client* client );
+	bool	is_owner( Client* client );
+	bool	is_chanop( Client* client );
 	bool	is_banned( Client* client );
+	bool	is_only_banned_member_left( void );
+	bool	is_empty( void );
+
+	void	add_member( Client* client, e_permission type );
+	int		remove_member( Client* client );
+	void	empty_memberlist( void );
+
+	void	transfer_ownership( void );
 
 };
 
