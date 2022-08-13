@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/13 14:24:20 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/13 18:25:41 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,56 +27,57 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-/*
-   void CommandManager::cmd_join( Message& msg )
-   {
-   t_client_ptr_list	chan_memberlist;
-   Channel* 			channel;
-   string topic;
-   Client& client = *msg.get_client_ptr();
+/*[INVITE]-----------------------------------------------------------------------------------------------------------[INVITE]*/
+void CommandManager::cmd_invite( Message& msg )
+{
+	// NOTE INVITE ONLY WORKS FOR INVITE_ONLY CHANNEL (+i)
+	
+	Client* source_client = msg.get_client_ptr();	
+	if (msg.get_param_count() < 2)				// WARNING à verfier
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return;
+	}
+	if (_database->is_client_listed(msg[1]) == false)		// if target is not in the client list
+	{
+		run_reply(ERR_NOSUCHNICK, msg);
+		return;
+	}
 
-   if (msg[1].empty())
-   {
-   run_reply(ERR_NEEDMOREPARAMS, msg);
-   return;
-   }
-   if (_database->get_channel_count() >= MAX_CHANNELS)
-   {
-   run_reply(ERR_TOOMANYCHANNELS, msg);
-   return;
-   }
-   channel = _database->get_channel(msg[1]);
-   chan_memberlist = _database->get_clients_in_channel(channel);
-   if (!channel)
-   {
-   _database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
-   channel = _database->get_channel(msg[1]);
-   }
-   else if (chan_memberlist.size() >= MAX_CLIENT_PER_CHAN)
-   {
-   run_reply(ERR_CHANNELISFULL, msg);
-   return;
-   }
-   else if (channel->is_banned(msg.get_client_ptr()))
-   {
-   run_reply(ERR_BANNEDFROMCHAN, msg);
-   return ;
-   }
-   else if (channel->get_is_invite_only())
-   {
-   run_reply(ERR_INVITEONLYCHAN, msg);
-   return ;
-   }
-   _database->add_client_to_channel(msg.get_client_ptr(), channel);
-   topic = channel->get_topic();
-   run_reply(RPL_TOPIC, msg);
-   client.append_buff(BUFFOUT, client.get_prefix() + " JOIN " + msg[1] + CRLF);
-// WARNING ERR_BADCHANMASK
-// ERR_BADCHANMASK
-// ERR_NOSUCHCHANNEL??
-return;
+	Channel* channel = _database->get_channel(msg[2]);	// if the channel doesnt exist
+	if (!channel)
+		return; // Not sure if its also ERR_NOSUCHNICK
+		
+	if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
+	{	
+		run_reply(ERR_NOTONCHANNEL, msg);
+		return;
+	}
+
+	Client* target_client = _database->get_client(msg[1]);
+	if (channel->is_member(target_client) && channel->get_permission(target_client) != BAN)	// if target user is already a member of the channel && is also not ban!!!
+	{
+		run_reply(ERR_USERONCHANNEL, msg);
+		return;
+	}
+
+	if (!channel->is_owner(source_client) && !channel->is_chanop(source_client))
+	{	
+		run_reply(ERR_CHANOPRIVSNEEDED, msg);
+		return;
+	}
+
+	if (channel->get_is_invite_only() == true)
+		_database->create_invite_coupon(target_client, channel);
+	run_reply(RPL_INVITING, msg);
+	
+	t_client_ptr_list	recipient_list;
+	recipient_list.push_back(source_client);
+	recipient_list.push_back(target_client);
+	send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
+	
+	// RPL_AWAY ??? not sure
 }
-*/
 
 /*[JOIN]---------------------------------------------------------------------------------------------------------------[JOIN]*/
 void CommandManager::cmd_join( Message& msg )			
@@ -84,7 +85,6 @@ void CommandManager::cmd_join( Message& msg )
 	t_client_ptr_list	client_list;
 	Channel* 			channel;
 	string topic;
-	Client& client = *msg.get_client_ptr();
 	Client* client_ptr = msg.get_client_ptr();	
 	if (msg[1].empty())
 	{
@@ -135,12 +135,15 @@ void CommandManager::cmd_join( Message& msg )
 	channel->add_member(client_ptr, REGULAR);
 
 	topic = channel->get_topic();
-	run_reply(RPL_TOPIC, msg);
-	// WARNING ERR_BADCHANMASK
-	// ERR_BADCHANMASK
-	// ERR_NOSUCHCHANNEL??
+	if (topic.size() == 0)				// WARNING A VERIFIER si NULL ou string vide ""
+		run_reply(RPL_NOTOPIC, msg);
+	else
+		run_reply(RPL_TOPIC, msg);
+			
+	// WARNING ERR_BADCHANMASK ???
+	// WARNING ERR_NOSUCHCHANNEL ???
 	client_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(client_list, client.get_prefix() + " JOIN " + msg[1] + CRLF);
+	send_to_clients(client_list, client_ptr->get_prefix() + " JOIN " + msg[1] + CRLF);
 
 	return;
 }
@@ -155,7 +158,7 @@ void CommandManager::cmd_kick( Message& msg )
 	}
 	
 	Client*	source_client = msg.get_client_ptr();
-	t_client_ptr_list client_list;
+	t_client_ptr_list recipient_list;
 	
 	Channel* channel = _database->get_channel(msg[1]);
 	if (!channel)
@@ -178,16 +181,20 @@ void CommandManager::cmd_kick( Message& msg )
 		run_reply(ERR_CHANOPRIVSNEEDED, msg);
 		return;
 	}
-	client_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(client_list, msg.get_client_ptr()->get_prefix() + "KICK " + msg[1] + " " + msg[2] + CRLF);
+	recipient_list = channel->get_clients_not_matching_permissions(BAN);
+	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KICK " + msg[1] + " " + msg[2] + CRLF);
 	
 	Client* target_client = _database->get_client(msg[2]);
 	if (!target_client)	// WARNING what are we supposed to do? its not ERR_NOTONCHANNEL
 		return;
 	channel->remove_member(target_client);
+
+	// WARNING TEST TO DO try chanop kick another chanop and what happens when you kick a banned member? is removed from memberlist?
 }
 
+
 /*[MODE]-------------------------------------------in-seperate-file-MODE.cpp-------------------------------------------[MODE]*/
+
 
 /*[NICK]---------------------------------------------------------------------------------------------------------------[NICK]*/
 void	CommandManager::cmd_nick( Message& msg )
@@ -261,7 +268,7 @@ void CommandManager::cmd_ping( Message& msg )
 /*[PRIVMSG]---------------------------------------------------------------------------------------------------------[PRIVMSG]*/
 void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
 {
-	t_client_ptr_list		client_list;
+	t_client_ptr_list		recipient_list;
 	Channel* 				channel;
 	Client*					client;
 	string					prefix;
@@ -277,9 +284,9 @@ void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for c
 		if (channel)
 		{
 			client = msg.get_client_ptr();
-			client_list = channel->get_clients_not_matching_permissions(BAN);
-			client_list.remove(client);
-			send_to_clients(client_list, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + channel->get_name() + " " + msg.get_substr_after(":") + CRLF);
+			recipient_list = channel->get_clients_not_matching_permissions(BAN);
+			recipient_list.remove(client);
+			send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + channel->get_name() + " " + msg.get_substr_after(":") + CRLF);
 		}
 	}
 	else

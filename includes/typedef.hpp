@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:17:27 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/13 17:06:58 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ enum e_permission									// Usage-> Channel::OWNER, not sure
 };
 
 typedef	std::list<std::pair<Client*, e_permission> >			t_channel_memberlist;
+typedef       std::list<std::pair<Client*, Channel*> >                       t_invite_coupon_list;
 
 typedef	void(*t_cmd_function_ptr)(Message&);
 typedef	void(*t_reply_function_ptr)(Message&);

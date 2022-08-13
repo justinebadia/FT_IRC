@@ -42,6 +42,11 @@ void	CommandManager::rpl_welcome( Message& msg )
 /*=[200-----------------------------------------------------------------------------------------------------------------------------------------299]=*/
 /*=[300-----------------------------------------------------------------------------------------------------------------------------------------399]=*/
 
+void	CommandManager::rpl_away( Message& msg )
+{
+	msg.append_out(": 301 " + msg[1] + " :is away");
+}
+
 void	CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
@@ -88,7 +93,7 @@ void	CommandManager::rpl_channelmodeis( Message& msg )
 	msg.append_out(": 324 " + msg[1] + " " + msg[2] + " " + msg[3]);
 }
 
-void	CommandManager::rpl_notopic ( Message& msg )
+void	CommandManager::rpl_notopic( Message& msg )
 {
 	msg.append_out(": 331 " + msg[1] + " :No topic is set");
 }
@@ -96,6 +101,11 @@ void	CommandManager::rpl_notopic ( Message& msg )
 void	CommandManager::rpl_topic( Message& msg )
 {
 	msg.append_out(": 332 " + msg.get_client_ptr()->get_nickname() + " " + msg[1] + " :"+ _database->get_channel(msg[1])->get_topic());
+}
+
+void	CommandManager::rpl_inviting( Message& msg )
+{
+	msg.append_out(": 341 " + msg[2] + " " + msg[1]);
 }
 
 void	CommandManager::rpl_banlist( Message& msg )
@@ -130,6 +140,12 @@ void	CommandManager::rpl_nousers( Message& msg )
 }
 
 /*=[400-----------------------------------------------------------------------------------------------------------------------------------------499]=*/
+
+void	CommandManager::err_nosuchnick( Message& msg)
+{
+	string err_msg = ": 401 " + msg[1] + " :No such nick/channel";
+	msg.append_out(err_msg);
+}
 
 /*"<server name> :No such server"*/
 void	CommandManager::err_nosuchserver( Message& msg)
@@ -184,6 +200,11 @@ void	CommandManager::err_nickcollision( Message& msg)
 void	CommandManager::err_notonchannel( Message& msg )
 {
 	msg.append_out(": 442 " + msg[1] + " :You're not on that channel");
+}
+
+void	CommandManager::err_useronchannel( Message& msg )
+{
+	msg.append_out(": 443 " + msg[1] + " " + msg[2] + " :is already on channel");
 }
 
 /* ":USERS has been disabled"*/

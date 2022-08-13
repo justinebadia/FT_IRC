@@ -11,9 +11,9 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+namespace irc {
 
-namespace irc
-{
+/*--------------------------CONSTRUCTORS-&-DESTRUCTOR--------------------------*/
 
 Database::Database( void ) // default constructor [PRIVATE]
 { 
@@ -29,6 +29,7 @@ Database&	Database::operator=( const Database& other ) // copy operator overload
 {
 	_client_list = t_client_list(other._client_list);
 	_channel_list = t_channel_list(other._channel_list);
+	_invite_coupon_list = t_invite_coupon_list(other._invite_coupon_list);
 	return *this;
 }	
 
@@ -151,6 +152,8 @@ t_channel_ptr_list	Database::get_channel_list_of_client( Client *client )
 	}
 	return (list_of_client_chan);
 }
+
+t_invite_coupon_list	Database::get_invite_coupon_list( void ) { return _invite_coupon_list; }
 
 
 
@@ -376,7 +379,7 @@ void	Database::clean_database( void )
 {
 	t_channel_list::iterator it;
 
-    for (it = _channel_list.begin(); it != _channel_list.end(); it++)
+	for (it = _channel_list.begin(); it != _channel_list.end(); it++)
 	{
 		if ((*it).is_empty())
 			remove_channel_list((*it).get_name());
@@ -384,5 +387,27 @@ void	Database::clean_database( void )
 
 }
 
+
+void	Database::create_invite_coupon( Client* client, Channel* channel )
+{
+	// WARNING VERIFY IF INVITE_COUPON IS UNIQUE ???
+	_invite_coupon_list.push_back(std::make_pair(client, channel));
 }
 
+void	Database::use_invite_coupon( Client* client, Channel* channel )
+{
+	t_invite_coupon_list::iterator it = _invite_coupon_list.begin();
+	t_invite_coupon_list::iterator ite = _invite_coupon_list.end();
+
+	for (; it != ite; it++)
+	{
+		if ((*it).first->get_nickname() == client->get_nickname() &&
+			(*it).second->get_name() == channel->get_name())
+		{
+			_invite_coupon_list.erase(it);
+			return;
+		}
+	}	
+}
+
+} // namespace irc end bracket
