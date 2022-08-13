@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 16:53:39 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:38:54 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,17 @@ public:
 
 	/*--------------------TYPEDEF-&-ENUM-------------------*/
 	
-	enum e_permission									// Usage-> Channel::OWNER, not sure
-	{
-		BAN = 0,
-		INVITE = 1,
-		REGULAR = 2,
-		CHANOP = 4,
-		OWNER = 8
-	};
+	// enum e_permission									// Usage-> Channel::OWNER, not sure
+	// {
+	// 	BAN = 0,
+	// 	INVITE = 1,
+	// 	REGULAR = 2,
+	// 	CHANOP = 4,
+	// 	OWNER = 8
+	// };
 	
-	typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
-	typedef	std::list<std::pair<Client*, e_permission> >::iterator	iterator;
+	// typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
+	typedef	t_channel_memberlist::iterator	iterator;
 
 	enum mode_flags
 	{
@@ -72,7 +72,7 @@ private:
 	bool								_topic_by_chanop_only;		// ±t
 	string								_topic;
 	string								_password;
-	channel_memberlist					_memberlist;
+	t_channel_memberlist				_memberlist;
 	int									_mode_flags;
 	//t_client_ptr_list					_banlist;
 
@@ -105,8 +105,11 @@ public:
 	bool								get_is_topic_by_chanop_only( void ) const;
 	string&								get_topic( void );
 	string&								get_password( void );
-	channel_memberlist					get_memberlist( void );
+	t_channel_memberlist				get_memberlist( void );
 	e_permission						get_permission( Client* client );
+	t_client_ptr_list					get_clients_matching_permissions( int type );
+	t_client_ptr_list					get_clients_not_matching_permissions( int type );
+
 
 
 	/*-----------------------SETTERS----------------------*/

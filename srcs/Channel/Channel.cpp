@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 16:54:06 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:55:37 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
+#include "typedef.hpp"
 
 using namespace irc;
 using std::string;
@@ -49,7 +50,7 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_topic_by_chanop_only = rhs._topic_by_chanop_only;
 	_topic = rhs._topic;
 	_password = rhs._password;
-	_memberlist = channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
+	_memberlist = t_channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
 	_mode_flags = rhs._mode_flags;
 
 	return *this;
@@ -124,11 +125,11 @@ string&				Channel::get_topic( void ) { return _topic; }
 
 string&				Channel::get_password( void ) { return _password; }
 
-Channel::channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
+t_channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
 
 //t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 
-Channel::e_permission		Channel::get_permission( Client* client )
+e_permission		Channel::get_permission( Client* client )
 {
  	iterator it = _memberlist.begin();
  	iterator ite = _memberlist.end();
@@ -141,6 +142,39 @@ Channel::e_permission		Channel::get_permission( Client* client )
  	return (e_permission)FAIL;														// Didn't find the Client in the channel_banlist
 }
 
+t_client_ptr_list	Channel::get_clients_matching_permissions( int type )
+{
+	t_client_ptr_list	client_list;
+
+	iterator it = _memberlist.begin();
+ 	iterator ite = _memberlist.end();
+
+	for(; it != ite; it++)
+	{
+		if ((*it).second == type )
+		{
+			client_list.push_back((*it).first);
+		}
+	}
+	return (client_list);
+}
+
+t_client_ptr_list	Channel::get_clients_not_matching_permissions( int type )
+{
+	t_client_ptr_list	client_list;
+
+	iterator it = _memberlist.begin();
+ 	iterator ite = _memberlist.end();
+
+	for(; it != ite; it++)
+	{
+		if ((*it).second != type )
+		{
+			client_list.push_back((*it).first);
+		}
+	}
+	return (client_list);
+}
 
 /*-----------------------SETTERS----------------------*/
 
@@ -293,6 +327,7 @@ int	Channel::remove_member( Client* client )
 						break;
 				}
 			}
+			std::cout << "BEFORE ERASE\n";
 			_memberlist.erase(it);
 			break;
 		}

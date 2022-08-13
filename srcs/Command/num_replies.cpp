@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/12 15:44:59 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 19:52:11 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ void CommandManager::err_chanoprivsneeded( Message& msg )
 
 void CommandManager::err_notonchannel( Message& msg )
 {
-	msg.append_out(" 442 " + msg[1] + " :You're not on that channel");
+	msg.append_out(": 442 " + msg[1] + " :You're not on that channel");
 }
 
 

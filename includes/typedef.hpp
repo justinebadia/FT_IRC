@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   typedef.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/08 15:20:42 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/12 19:39:15 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,19 @@ namespace irc {
 class Client;
 class Channel;
 class Message;
+
+using std::pair;
+
+enum e_permission									// Usage-> Channel::OWNER, not sure
+{
+       BAN = 0,
+       INVITE = 1,
+       REGULAR = 2,
+       CHANOP = 4,
+       OWNER = 8
+};
+
+typedef	std::list<std::pair<Client*, e_permission> >			t_channel_memberlist;
 
 typedef	void(*t_cmd_function_ptr)(Message&);
 typedef	void(*t_reply_function_ptr)(Message&);

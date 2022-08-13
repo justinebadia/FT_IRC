@@ -88,7 +88,7 @@ Client*	Database::get_client( const string& nickname )
 }
 
 
-t_client_ptr_list	Database::get_clients_in_channel( const string& chan_name )
+t_client_ptr_list	Database::get_clients_in_channel( const string& chan_name ) // TO UPDATE
 {
 	t_client_ptr_list				clients_in_channel_list;
 	t_channel_clients_map::iterator it;
@@ -100,7 +100,7 @@ t_client_ptr_list	Database::get_clients_in_channel( const string& chan_name )
 	return t_client_ptr_list();	// return une liste vide
 }
 
-t_client_ptr_list	Database::get_clients_in_channel( Channel* channel )
+t_client_ptr_list	Database::get_clients_in_channel( Channel* channel ) // TO UPDATE
 {
 	t_client_ptr_list				clients_in_channel_list;
 	t_channel_clients_map::iterator it;
@@ -375,10 +375,12 @@ void	Database::clean_database( void )
 
     for (it = _channel_list.begin(); it != _channel_list.end(); it++)
 	{
-		if ( is_channel_empty(&(*it)) )
+		if ((*it).is_empty())
 			remove_channel_list((*it).get_name());
 	}
+
 }
+
 
 };
 
