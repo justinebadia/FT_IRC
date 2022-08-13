@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fousse <fousse@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/07 21:44:45 by fousse           ###   ########.fr       */
+/*   Updated: 2022/08/13 18:39:23 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ using irc::Server;
 int	main( int argc, char** argv )
 {
 	if (argc != 3)
-		return 1;
+	{
+		cerr << RED << "\v [Error: Usage:] " << RESET << "./ircserv <port> <pass> \v" << endl;
+		return FAIL;
+	}
 	try 
 	{
 		Server& server = Server::get_server(static_cast<u_int>(std::stoi(string(argv[1]))), argv[2]);
@@ -38,10 +41,10 @@ int	main( int argc, char** argv )
 	catch (std::exception& e)
 	{
 		cerr << "Error running the server: " << e.what() << endl;
-		return 1;
+		return FAIL;
 	}
 	
 	// set_signal_ctrl_c();
 	// signal(SIGINT, &
-	return 0;
+	return SUCCESS;
 }
