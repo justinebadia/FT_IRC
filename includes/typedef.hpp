@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 19:39:15 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:17:27 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <map>
+#include <vector>
 #include <list>
 #include <netinet/in.h>
 #include <poll.h>
@@ -31,6 +32,8 @@ namespace irc {
 class Client;
 class Channel;
 class Message;
+class Server;
+class Operator;
 
 using std::pair;
 

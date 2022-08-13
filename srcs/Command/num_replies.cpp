@@ -6,19 +6,20 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/12 19:52:11 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:16:53 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "CommandManager.hpp"
+
+#include "Channel.hpp"
 #include "Client.hpp"
 #include "Message.hpp"
 #include "Server.hpp"
 #include "Database.hpp"
 #include "numeric_replies.hpp"
-#include "../Channel/Channel.hpp"
 #include "typedef.hpp"
-#include "CommandManager.hpp"
-#include "../includes/color.hpp"
+#include "color.hpp"
 
 namespace irc 
 {
@@ -74,9 +75,9 @@ void CommandManager::rpl_endofwhois( Message& msg )
 	msg.append_out(": 318 : " + client.get_nickname() + " :End of WHOIS list");
 }
 
-void CommandManager::rpl_whoischannels( Message& msg )
+void CommandManager::rpl_whoischannels( Message& )
 {
-	Client& client = *msg.get_client_ptr();
+	// Client& client = *msg.get_client_ptr();
 
 	//if client est dans channel
 		//if client est chanop
@@ -90,8 +91,6 @@ void CommandManager::rpl_whoischannels( Message& msg )
 /* ":No nickname given"*/
 void CommandManager::err_nonicknamegiven( Message& msg)
 {
-	Client&	client = *msg.get_client_ptr();
-
 	msg.append_out(": 431 :No nickname given");
 }
 
@@ -127,9 +126,6 @@ void CommandManager::err_nickcollision( Message& msg)
 /*"<server name> :No such server"*/
 void CommandManager::err_nosuchserver( Message& msg)
 {
-	Server&	server = Server::get_server();
-	Client&	client = *msg.get_client_ptr();
-
 	string err_msg = ": 402 " + msg[1] + " :No such server";
 	msg.append_out(err_msg);
 }
@@ -151,7 +147,7 @@ void CommandManager::rpl_nousers( Message& msg )
 
 /* WARNING pas fini 
 ":UserID   Terminal  Host"*/
-void CommandManager::rpl_usersstart( Message& msg )
+void CommandManager::rpl_usersstart( Message&  )
 {	
 	string err_msg = "392 "; // WARNING todo à créer
 }
@@ -166,8 +162,6 @@ void CommandManager::rpl_endofusers( Message& msg )
 /*NUM REPLIES - Users message*/
 void CommandManager::err_needmoreparams( Message& msg )
 {
-	Client&	client = *msg.get_client_ptr();
-
 	string err_msg = ": 461 " + msg[0] + " :Not enough parameters";
 	msg.append_out(err_msg);
 }
@@ -177,6 +171,12 @@ void CommandManager::err_alreadyregistered( Message& msg )
 	Client&	client = *msg.get_client_ptr();
 
 	string err_msg = ":" + client.get_hostname() + " 462 :You may not reregister";
+	msg.append_out(err_msg);
+}
+
+void CommandManager::err_passwdmismatch( Message& msg )
+{
+	string err_msg = ": 464 :Not enough parameters";
 	msg.append_out(err_msg);
 }
 

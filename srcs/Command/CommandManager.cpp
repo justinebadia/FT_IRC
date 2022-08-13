@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 15:50:21 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:22:21 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "irc_define.hpp"
 #include "numeric_replies.hpp"
 #include "typedef.hpp"
-#include "color.hpp"
 #include "utils.hpp"
 
 using namespace irc;
@@ -54,11 +53,13 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
+	_command_map.insert(std::make_pair(string("PASS"), cmd_pass));
 	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
+	_command_map.insert(std::make_pair(string("OPER"), cmd_oper));
 }
 
 void	CommandManager::_init_reply_map( void )
@@ -74,6 +75,7 @@ void	CommandManager::_init_reply_map( void )
 	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
+	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));
 	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
 	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));
 	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));
@@ -87,9 +89,18 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));
 	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));
+}
 
-	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
-
+bool	CommandManager::_is_unregistered_allowed( const string& cmd_name )
+{
+	if (cmd_name.compare("NICK") == 0 
+		|| cmd_name.compare("USER") == 0
+		|| cmd_name.compare("PASS") == 0
+		|| cmd_name.compare("QUIT") == 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 /*-----------------------GETTERS----------------------*/
@@ -149,7 +160,8 @@ void	CommandManager::execute_commands( Client& client )
 		if (command)
 		{
 			command(msg);
-			client.append_buff(BUFFOUT, msg.get_message_out());
+			if (msg.get_client_ptr())
+				client.append_buff(BUFFOUT, msg.get_message_out());
 		}
 		msg.clear_all();
 		start = next + 2;
@@ -161,7 +173,6 @@ void	CommandManager::execute_commands_registration( Client& client )
 {
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
-	size_t	last = 0;
 	size_t	next = 0;
 	size_t	len	= buffin.length();
 	
@@ -171,13 +182,16 @@ void	CommandManager::execute_commands_registration( Client& client )
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
-		if (msg[0].compare("NICK") == 0 || msg[0].compare("USER") == 0 || msg[0].compare("PASS") == 0)
+		if (_is_unregistered_allowed(msg[0]))
 		{
-			command = get_command_ptr(msg[0]);
-			if (command)
+			if (client.is_password_validated() || msg[0] == "PASS" || msg[0] == "QUIT")
 			{
-				command(msg);
-				client.append_buff(BUFFOUT, msg.get_message_out());
+				command = get_command_ptr(msg[0]);
+				if (command)
+				{
+					command(msg);
+					client.append_buff(BUFFOUT, msg.get_message_out());
+				}
 			}
 		}
 		msg.clear_all();

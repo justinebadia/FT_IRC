@@ -3,17 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:39:27 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/11 15:38:15 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 20:20:07 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <map>
-#include <list>
-#include <vector>
 #include <iostream>
 #include <regex>
 #include <string>
@@ -29,8 +25,6 @@
 
 
 using std::string;
-using std::cout;
-using std::cin;
 using std::cerr;
 using std::endl;
 using std::regex;
@@ -38,9 +32,9 @@ using std::regex;
 namespace irc
 {
 
-int		error_log( const string& src,const string& msg, int error_code )
+int		error_log( const string& src, const string& msg, int error_code )
 {
-	cerr << "Error " << error_code << " : " << msg << endl;
+	cerr << "Error " << error_code << ": " << src << ": " << msg << endl;
 	return error_code;
 }
 

@@ -27,6 +27,9 @@ Database::Database( const Database& other ) // copy constructor [PRIVATE]
 
 Database&	Database::operator=( const Database& other ) // copy operator overload [PRIVATE]
 {
+	_client_list = t_client_list(other._client_list);
+	_channel_list = t_channel_list(other._channel_list);
+	return *this;
 }	
 
 
@@ -381,6 +384,5 @@ void	Database::clean_database( void )
 
 }
 
-
-};
+}
 

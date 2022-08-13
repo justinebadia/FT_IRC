@@ -1,18 +1,27 @@
 #include "Server.hpp" // includes: <string><list><map><vector><exception><iostream> "irc_define.hpp"
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
-#include <poll.h>
+
+// #include <arpa/inet.h>
+// #include <netinet/in.h>
+// #include <sys/types.h>
+// #include <sys/socket.h>
+// #include <poll.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <utility>
-#include <signal.h>
-#include "numeric_replies.hpp"
-#include "../includes/color.hpp"
-#include "../includes/utils.hpp"
+// #include <signal.h>
+
+#include <string>
+#include <exception>
 #include <iostream>
+
+
+#include "CommandManager.hpp"
+#include "Message.hpp"
+#include "irc_define.hpp"
+#include "color.hpp"
+#include "typedef.hpp"
+#include "numeric_replies.hpp"
+#include "utils.hpp"
 
 using namespace irc;
 using std::cout;
@@ -26,7 +35,7 @@ void	set_exit_true( int signal )
 {
 	(void)signal;
 	Server::get_server().set_exit(true);
-} /*/
+}
 
 
 /*---------------PROHIBITED-CONSTRUCTORS--------------*/
@@ -46,7 +55,7 @@ Server::Server( const Server& other ) 						// copy constructor [PRIVATE]
 	, _exit(other._exit)
 	{ *this = other; }
 
-Server&	Server::operator=( const Server& other ){}			// copy operator overload [PRIVATE]
+Server&	Server::operator=( const Server& ){ return *this; }			// copy operator overload [PRIVATE]
 
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
@@ -55,9 +64,9 @@ Server::Server( const unsigned int& port, const string password, bool exit ) // 
 	: _server_ip(grab_ip_address())
 	, _port(port)				// 6667
 	, _password(password)
-	, _exit(false)
+	, _exit(exit)
 {
-	init_server();
+	_init_server();
 }
 
 Server::~Server( void )										// default destructor
@@ -65,6 +74,63 @@ Server::~Server( void )										// default destructor
 
 
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
+
+void	Server::_init_server( void )
+ {
+	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
+	if (this->get_fd() == FAIL)	// Step 1:  socket()
+	{
+		throw Server::SocketErrorException();
+	}
+
+	this->get_pollfd().events = 0;
+	this->get_pollfd().revents = 0;
+
+	int opt; // to store the setsockopt options
+	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
+	{
+		throw Server::SetsockoptErrorException();
+	}
+	
+	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+	this->get_addr6().sin6_addr = in6addr_any;
+	this->get_addr6().sin6_port = htons(get_port());
+	
+	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
+	{
+		throw Server::BindErrorException();
+	}
+
+	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
+	{
+		throw Server::ListenErrorException();
+	}
+
+	CommandManager::_init_command_map();
+	CommandManager::_init_reply_map();
+	CommandManager::set_server(this);
+	CommandManager::set_database(&_database);
+	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
+	this->get_pollfd().events = POLLIN;
+}
+
+void	Server::_init_operators( void )
+{
+	_operator_vect.push_back(Operator("sfournie", "irc"));
+	_operator_vect.push_back(Operator("jbadia", "irc"));
+	_operator_vect.push_back(Operator("tshimoda", "irc"));
+}
+
+t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
+{
+	t_pollfd*	pollfd_array;
+
+	pollfd_array = get_pollfd_array();
+	if (!pollfd_array)
+		return NULL;
+	poll(pollfd_array, static_cast<nfds_t>(_database.get_client_count() + 1), 0);
+	return pollfd_array;
+}
 
 void	Server::_process_connections( const t_pollfd& pollfd )
 {
@@ -79,14 +145,15 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 			if (client_fd == -1)
 				break;
 			_database.add_client_list(Client(client_fd));
-			cout << GREEN << "Server::process_connections: Added client with fd " << client_fd << RESET <<  endl; // WARNING
+			Server::log(string(GREEN) + "Server::process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
 		}
 	}
 }
 
 void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 {
-	int			i;
+	size_t	i;
+
 	for (i = 0; i < size; i++)
 	{
 		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP)
@@ -109,7 +176,7 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
-	_disconnect_client(pollfd.fd);
+	disconnect_client(pollfd.fd);
 	cout << GREEN << "Server::_process_client_pollerr: removed client fd " << RESET << endl; // WARNING
 }
 
@@ -124,12 +191,13 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
 	{
-		_disconnect_client(pollfd.fd);
+		disconnect_client(pollfd.fd);
 		return ;
 	}
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	cout << GREEN << "Server::_process_client_pollin: received client fd " << pollfd.fd << ": " << RESET << client->get_buff(BUFFIN)  << endl; // WARNING
+	Server::log(string(GREEN) + "Server::_process_client_pollin: received client fd "
+				+ std::to_string(pollfd.fd) + ": " + RESET + client->get_buff(BUFFIN)); // WARNING
 	if (!client->is_registered())
 	{
 		CommandManager::execute_commands_registration(*client);
@@ -145,9 +213,13 @@ void	Server::_check_registration( Client* client )
 {
 	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
 	{
-		Message	message(client);
+		Message					message(client);
+		t_reply_function_ptr	reply;
+
 		client->set_registration_flags(Client::COMPLETE); 
-		CommandManager::get_reply_ptr(RPL_WELCOME)(message); //WARNING
+		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
+		if (reply)
+			reply(message);
 		client->append_buff(BUFFOUT, message.get_message_out());
 		client->append_buff(BUFFOUT, "\r\n");
 	}
@@ -163,17 +235,11 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 		return ;
 	if (client->get_buff(1).size() <= 0)
 		return;
-	cout << GREEN <<"Buff content before sending: " << client->get_buff(1).c_str() << RESET <<endl;
+	Server::log(string(GREEN) + "Buff content before sending: " + client->get_buff(1).c_str() + RESET);
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), client->get_buff(1).length(), MSG_DONTWAIT);
 	if (bytes > 0)
 		client->clear_buff(BUFFOUT); // POUR TESTER - À CHANGER
 	// client->trim_buff(1, static_cast<size_t>(bytes));
-}
-
-void	Server::_disconnect_client( const int& fd )
-{
-	_database.remove_client_list(fd);
-	close(fd);
 }
 
 /*---------------------------------GETTERS-----------------------------------*/
@@ -187,7 +253,7 @@ Server&				Server::get_server( const unsigned int& port, const string password, 
 const t_socket&		Server::get_socket( void ) const { return _server_socket; }
 const string&		Server::get_name( void ) const { return _server_name; }
 string				Server::get_prefix( void ) const { return (":" + _server_name + " "); }
-const unsigned int	Server::get_port( void ) const { return _port; }
+const unsigned int&	Server::get_port( void ) const { return _port; }
 Database*		 	Server::get_database( void ) { return &_database; }
 const string&		Server::get_password( void ) const { return _password; }
 bool				Server::get_exit_status( void ) const { return _exit; }
@@ -246,12 +312,11 @@ int	Server::run_server( void )
 {
 	t_pollfd*	pollfds;
 	size_t		client_count;
-	int			i;
 
 	while (get_exit_status() == false)
 	{
 		client_count = _database.get_client_count();
-		pollfds = poll_sockets();
+		pollfds = _poll_sockets();
 		if (pollfds == NULL)
 			continue;
 		_process_connections(pollfds[0]);
@@ -260,64 +325,65 @@ int	Server::run_server( void )
 			_process_clients(&pollfds[1], client_count);
 		}
 	}
-	cout << GREEN << "Leaving with absolute grace" << RESET << endl;
+	Server::log(string(GREEN) + "Leaving with absolute grace" + RESET);
 	close(get_fd()); // Need a close function
+	return 0;
 }
 
-void	Server::init_server( void )
- {
-	this->set_fd(socket(AF_INET6, SOCK_STREAM, 0));
-	if (this->get_fd() == FAIL)	// Step 1:  socket()
-	{
-		throw Server::SocketErrorException();
-	}
-
-	this->get_pollfd().events = 0;
-	this->get_pollfd().revents = 0;
-
-	int opt; // to store the setsockopt options
-	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
-	{
-		throw Server::SetsockoptErrorException();
-	}
-	
-	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
-	this->get_addr6().sin6_addr = in6addr_any;
-	this->get_addr6().sin6_port = htons(get_port());
-	
-	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
-	{
-		throw Server::BindErrorException();
-	}
-
-	if (listen(this->get_fd(), MAX_PENDING) == FAIL) // Step 4: listen()
-	{
-		throw Server::ListenErrorException();
-	}
-
-	CommandManager::_init_command_map();
-	CommandManager::_init_reply_map();
-	CommandManager::set_server(this);
-	CommandManager::set_database(&_database);
-	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
-	this->get_pollfd().events = POLLIN;
-}
-
-t_pollfd*	Server::poll_sockets( void ) //needs to be deleted
+void	Server::disconnect_client( const int& fd )
 {
-	t_pollfd*	pollfd_array;
+	_database.remove_client_list(fd);
+	close(fd);
+	Server::log("Disconnected client of fd " + std::to_string(fd));
+}
 
-	pollfd_array = get_pollfd_array();
-	if (!pollfd_array)
-		return NULL;
-	poll(pollfd_array, static_cast<nfds_t>(_database.get_client_count() + 1), 0);
-	return pollfd_array;
+bool	Server::attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass )
+{
+	t_operator_vect::iterator	it;
+
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd == client.get_fd())
+		{
+			return false;
+			Server::log("Client nicknamed " + client.get_nickname() + " is already an operator");
+		}
+	}
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd > 0 && (*it).name == oper_name && (*it).password == oper_pass)
+		{
+			(*it).client_fd = client.get_fd();
+			client._set_operator(true);
+			Server::log("Client nicknamed " + client.get_nickname() + " is now an operator");
+			return true;
+		}
+	}
+	return false;
+}
+
+bool	Server::is_client_operator( const int& fd )
+{
+	t_operator_vect::iterator	it;
+
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd == fd)
+			return true;
+	}
+	return false;
 }
 
 void	Server::log( const string& msg )
 {
 	if (log_level == 1)
-		cout << msg << endl;
+		cout << GREEN << "Server log: " << RESET << msg << endl;
+}
+
+void	Server::log_error( const string& msg )
+{
+	if (log_level == 1)
+		cout << RED << "Server log: " << RESET << msg << endl;
 }
 
 /*-------------------------NESTED-CLASS-EXCEPTIONS--------------------------*/

@@ -6,12 +6,20 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 19:55:37 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:13:48 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
+#include "typedef.hpp"
+
+#include <iostream>
+// #include <list>
+// #include <map>
+#include <string>
+
+#include "Client.hpp"
 #include "typedef.hpp"
 
 using namespace irc;
@@ -451,6 +459,7 @@ int Channel::parse_modes( string message )
 
 std::ostream& operator<<( std::ostream& o, const Channel& obj ) 
 { 
+	o << "Channel name: " << obj.get_name() << std::endl;
 	return o; 
 }
 

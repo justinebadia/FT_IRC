@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:02:15 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:15:26 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,39 @@ void	CommandManager::cmd_nick( Message& msg )
 	client.set_nickname(msg[1]);
 }
 
+void	CommandManager::cmd_oper( Message& msg )
+{
+	if(msg[1].empty())
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return ;
+	}
+}
+
+void	CommandManager::cmd_pass( Message& msg )
+{ 
+	Client& client			= *msg.get_client_ptr();
+
+	if(msg[1].empty())
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return ;
+	}
+	if ( client.is_registered() )
+	{
+		run_reply(ERR_ALREADYREGISTERED, msg);
+		return ;
+	}
+	if ( msg[1].compare(_server->get_password()) )
+	{
+		run_reply(ERR_PASSWDMISMATCH, msg);
+		return ;
+		
+	}
+	client.set_registration_flags(Client::PASS_SET);
+	Server::log(string("Client fd ") + std::to_string(client.get_fd()) + " has entered the right password: " + msg[1]);
+}
+
 void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
 {
 	t_client_ptr_list		client_list;
@@ -257,7 +290,8 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 
 	if (!client)
 		return;
-	_database->remove_client_list(client); // WARNING to be changed for a queue of client to disconnect, I think?
+	_server->disconnect_client(client->get_fd()); // WARNING to be changed for a queue of client to disconnect, I think?
+	msg.set_client_ptr(NULL);
 	cout << "Amount of channels client is in : " << chan_list.size() << endl;
 	if (!msg[1].empty())  // WARNING todo
 		send_to_channels(chan_list, prefix + "QUIT :" + msg.get_substr_after(":") + CRLF);	

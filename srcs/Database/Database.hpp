@@ -14,17 +14,11 @@
 #define DATABASE_HPP
 
 #include <string>
-#include <list>
-#include <map>
 #include <iostream>
 
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "typedef.hpp"
-
-using std::string;
-using std::list;
-using std::pair;
 
 /*============================================================================*/ 
 namespace irc {
