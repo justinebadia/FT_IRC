@@ -52,12 +52,12 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 			run_reply(ERR_NOSUCHCHANNEL, msg);
 			return ;
 		}
-		if (!(channel->is_chanop(client)) || !(channel->is_owner(client)))
+		if (!(channel->is_chanop(client)) && !(channel->is_owner(client)))
 		{
 			run_reply(ERR_CHANOPRIVSNEEDED, msg);
 			return ;
 		}
-		if (channel->is_member(client))
+		if (!channel->is_member(client))
 		{
 			run_reply(ERR_NOTONCHANNEL, msg);
 			return ;
@@ -71,19 +71,23 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 					case Channel::FLAG_I: //modifier join
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						break;
 					}
 					case Channel::FLAG_T:
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						break;
 					}
 					case Channel::FLAG_B: 
 					{
 						run_reply(RPL_BANLIST, msg);
 						run_reply(RPL_ENDOFBANLIST, msg);	
+						break;
 					}
 					case (Channel::FLAG_I + Channel::FLAG_T): 
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						break;
 					}
 				}
 			}
@@ -102,6 +106,7 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 						run_reply(RPL_CHANNELMODEIS, msg);
 						if (channel->is_member(target))
 							channel->set_permission(target, CHANOP);
+						break;
 					}
 					case Channel::FLAG_B: // modifier cmd_join et cmd_privmsg
 					{
@@ -111,15 +116,17 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 					case Channel::FLAG_K: 
 					{
 						run_reply(RPL_CHANNELMODEIS, msg); // aller intégrer mode +k à cmd_join
-
+						break;
 					}
 					case (Channel::FLAG_K + Channel::FLAG_O): // je dois avoir 2 param pour chaque
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						break;
 					}
 					case (Channel::FLAG_K + Channel::FLAG_B): // je dois avoir 2 param pour chaque
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						break;
 					}
 				}
 			}
