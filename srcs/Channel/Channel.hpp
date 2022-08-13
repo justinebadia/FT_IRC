@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 16:53:39 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:09:48 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ public:
 	string&								get_topic( void );
 	string&								get_password( void );
 	channel_memberlist					get_memberlist( void );
+	int 								get_mode_flags( void );
 	e_permission						get_permission( Client* client );
 
 

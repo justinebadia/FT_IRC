@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 15:50:21 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 19:58:20 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
+	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
+
 }
 
 void	CommandManager::_init_reply_map( void )
@@ -87,6 +89,10 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));
 	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));
+	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));
+	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));
+	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));
+
 
 	//_command_map.insert(std::make_pair(string("NOM_DE_COMMANDE"), cmd_join));
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   num_replies.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 12:48:16 by jbadia            #+#    #+#             */
-/*   Updated: 2022/08/12 15:44:59 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:10:14 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,14 +212,23 @@ void CommandManager::err_chanoprivsneeded( Message& msg )
 
 void CommandManager::err_notonchannel( Message& msg )
 {
-	msg.append_out(" 442 " + msg[1] + " :You're not on that channel");
+	msg.append_out(": 442 " + msg[1] + " :You're not on that channel");
 }
 
+void CommandManager::rpl_channelmodeis( Message& msg )
+{
+	msg.append_out(": 324 " + msg[1] + " " + msg[2] + " " + msg[3]);
+}
 
+void CommandManager::rpl_banlist( Message& msg )
+{
+	msg.append_out(": 367 " + msg[1] + " " + msg[3]); 
+}
 
-
-
-
+void CommandManager::rpl_endofbanlist( Message& msg )
+{
+	msg.append_out(": 368 " + msg[1] + ":End of channel ban list");
+}
 
 
 } // namespace irc end bracket

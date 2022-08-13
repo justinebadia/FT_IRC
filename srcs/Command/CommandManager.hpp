@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 16:52:25 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:56:57 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ public:
 	static void cmd_ping( Message& msg );
 	static void cmd_quit( Message& msg );
 	static void cmd_mode( Message& msg );
-
 	static void	cmd_kick( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
@@ -103,7 +102,10 @@ public:
 	/*JOIN REPLIES*/
 	static void rpl_topic( Message& msg );
 	static void rpl_notopic ( Message& msg );
-
+	/*MODE REPLIES*/
+	static void rpl_channelmodeis( Message& msg );
+	static void rpl_banlist( Message& msg );
+	static void rpl_endofbanlist( Message& msg );
 	/*KICK REPLIES*/
 	static void err_nosuchchannel( Message& msg );
 	static void err_badchanmask( Message& msg );

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 15:24:26 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 18:37:40 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 #define	RPL_LISTSTART			321
 #define	RPL_LIST				322
 #define	RPL_LISTEND				323
-// #define	RPL_CHANNELMODEIS		324
+#define	RPL_CHANNELMODEIS		324
 // #define	RPL_CREATIONTIME		329
 // #define	RPL_WHOISACCOUNT		330
 #define	RPL_NOTOPIC				331
@@ -77,8 +77,8 @@
 #define	RPL_ENDOFNAMES			366
 // #define	RPL_LINKS				364
 // #define	RPL_ENDOFLINKS			365
-// #define	RPL_BANLIST				367
-// #define	RPL_ENDOFBANLIST		368
+#define	RPL_BANLIST				367
+#define	RPL_ENDOFBANLIST		368
 // #define	RPL_ENDOFWHOWAS			369
 // #define	RPL_INFO				371
 // #define	RPL_ENDOFINFO			374
