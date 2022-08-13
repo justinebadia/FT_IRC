@@ -3,32 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 12:15:05 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 20:16:53 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
+#pragma once
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
 
 #include <iostream>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <poll.h>
 #include <string>
-#include <map>
-#include <list>
 
+#include "Client.hpp"
 #include "irc_define.hpp"
 #include "typedef.hpp"
-#include "Client.hpp"
 
 #define MSG_DELIMITER	" "
 

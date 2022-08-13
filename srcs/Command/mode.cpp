@@ -101,7 +101,7 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
 						if (channel->is_member(target))
-							channel->set_permission(target, Channel::CHANOP);
+							channel->set_permission(target, CHANOP);
 					}
 					case Channel::FLAG_B: // modifier cmd_join et cmd_privmsg
 					{

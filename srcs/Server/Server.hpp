@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/11 15:28:03 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/12 20:18:04 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,22 @@
 #define SERVER_HPP
 
 #include <string>
-#include <list>
-#include <map>
-#include <vector>
+#include <utility>
 #include <exception>
-#include <iostream>
+#include <vector>
 
-#include "irc_define.hpp"
-#include "../Client/Client.hpp"
 #include "Database.hpp"
-#include "Message.hpp"
-#include "CommandManager.hpp"
+#include "irc_define.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME "10.11.7.4"	// a.k.a. "localhost" alias
+#define	HOSTNAME 	"10.11.7.4"	// a.k.a. "localhost" alias
 #define PORT 6667
+#define OPER_PASS	"Tobastine"
  
 class Channel;
 
 using std::string;
-using std::list;
-using std::pair;
+using std::vector;
 
 /*============================================================================*/ 
 namespace irc {
@@ -43,8 +38,21 @@ class CommandManager;
 
 class Server {
 
+
+
 private:
 
+	class Operator
+	{
+	public:
+		const string	name;
+		const string	password;
+		int				client_fd;
+
+		Operator( const string& name, const string& pass ) : name(name), password(pass) {  }
+	};
+	typedef vector<Operator>	t_operator_vect;
+	
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 	Server( void );										// default constructor
@@ -65,6 +73,7 @@ private:
 	t_client_list		_client_list;
 	t_command_map		_command_map;
 	t_reply_map			_reply_map;
+	t_operator_vect		_operator_vect;
 
 	static int			log_level;
 
@@ -83,16 +92,18 @@ private:
 
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
 
-	void	_process_connections( const t_pollfd& pollfd );
-	void	_process_clients( const t_pollfd* pollfd_array, size_t size );
-	void	_process_client_pollerr( const t_pollfd& pollfd );
-	void	_process_client_pollin( const t_pollfd& pollfd );
-	void	_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
-	void	_check_registration( Client* client );
-	void	_process_client_pollout( const t_pollfd& pollfd );
-	void	_disconnect_client( const int& fd );
+	void		_init_server( void );
+	void		_init_operators( void );
 
-	
+	t_pollfd*	_poll_sockets( void );
+	void		_process_connections( const t_pollfd& pollfd );
+	void		_process_clients( const t_pollfd* pollfd_array, size_t size );
+	void		_process_client_pollerr( const t_pollfd& pollfd );
+	void		_process_client_pollin( const t_pollfd& pollfd );
+	void		_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
+	void		_check_registration( Client* client );
+	void		_process_client_pollout( const t_pollfd& pollfd );
+
 public:
 
 	/*-----------------------GETTERS----------------------*/
@@ -102,7 +113,7 @@ public:
 	const t_socket&			get_socket( void ) const;
 	const string&			get_name( void ) const;
 	string					get_prefix( void ) const;
-	const unsigned int		get_port( void ) const;
+	const unsigned int&		get_port( void ) const;
 	Database*		 		get_database( void );
 	const string&			get_password( void ) const;
 	bool					get_exit_status( void ) const;
@@ -127,11 +138,13 @@ public:
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	int			run_server( void );
-	void		init_server( void );
+	void		disconnect_client( const int& fd );
 
-	t_pollfd*	poll_sockets( void );
+	bool		attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
+	bool		is_client_operator( const int& fd );
 
 	static void	log( const string& msg );
+	static void	log_error( const string& msg );
 
 	/*---------------NESTED-CLASS-EXCEPTIONS---------------*/
 	
@@ -154,7 +167,6 @@ public:
 	{
 		public: virtual const char* what() const throw();
 	};
-
 };
 
 
