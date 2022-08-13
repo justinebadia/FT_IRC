@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:15:26 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/12 20:33:21 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ void	CommandManager::cmd_oper( Message& msg )
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
+	_server->attempt_client_as_operator(*msg.get_client_ptr(), msg[1], msg[2]);
 }
 
 void	CommandManager::cmd_pass( Message& msg )

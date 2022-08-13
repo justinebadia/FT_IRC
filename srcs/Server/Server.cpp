@@ -106,6 +106,7 @@ void	Server::_init_server( void )
 		throw Server::ListenErrorException();
 	}
 
+	_init_operators();
 	CommandManager::_init_command_map();
 	CommandManager::_init_reply_map();
 	CommandManager::set_server(this);
@@ -345,13 +346,15 @@ bool	Server::attempt_client_as_operator( Client& client, const string& oper_name
 	{
 		if ((*it).client_fd == client.get_fd())
 		{
-			return false;
+			
 			Server::log("Client nicknamed " + client.get_nickname() + " is already an operator");
+			return false;
 		}
 	}
 	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
 	{
-		if ((*it).client_fd > 0 && (*it).name == oper_name && (*it).password == oper_pass)
+		Server::log("checking " + (*it).name + " " + oper_name + " " + (*it).password + " " + oper_pass);
+		if ((*it).client_fd > 0 && !(*it).name.compare(oper_name) && !(*it).password.compare(oper_pass))
 		{
 			(*it).client_fd = client.get_fd();
 			client._set_operator(true);
