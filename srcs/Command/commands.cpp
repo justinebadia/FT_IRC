@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/13 18:25:41 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/14 11:46:58 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,18 @@ void	CommandManager::cmd_oper( Message& msg )
 		return ;
 	}
 }
+
+/*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/
+void	CommandManager::cmd_part( Message& msg )
+{
+	Client* source_client = msg.get_client_ptr();	
+	if (msg.get_param_count() < 1)				// WARNING à verfier
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return;
+	}
+}
+
 
 /*[PASS]---------------------------------------------------------------------------------------------------------------[PASS]*/
 void	CommandManager::cmd_pass( Message& msg )

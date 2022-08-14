@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/13 17:41:38 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/14 11:10:20 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ public:
 	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
+	static void	cmd_part( Message& msg );
 	static void	cmd_pass( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );
@@ -105,16 +106,16 @@ public:
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
 	static void	err_nosuchnick( Message& msg);			//[401] INVITE
 	static void	err_nosuchserver( Message& msg);		//[402] USERS,WHOIS
-	static void	err_nosuchchannel( Message& msg );		//[403] KICK
+	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
 	static void	err_noorigin( Message& msg );			//[409] PING
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK
 	static void	err_erroneusnickname( Message& msg);	//[432] NICK
 	static void	err_nicknameinuse( Message& msg);		//[433] NICK
 	static void	err_nickcollision( Message& msg);		//[436] NICK
-	static void	err_notonchannel( Message& msg );		//[442] JOIN,KICK,TOPIC
+	static void	err_notonchannel( Message& msg );		//[442] INVITE,KICK,PART,TOPIC
 	static void	err_useronchannel( Message& msg );		//[443] INVITE
 	static void	err_userdisabled( Message& msg );		//[446] USERS
-	static void	err_needmoreparams( Message& msg );		//[461] INIVTE,KICK,TOPIC,USERS_MSG
+	static void	err_needmoreparams( Message& msg );		//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
 	static void	err_alreadyregistered( Message& msg );	//[462] USERS_MSG
 	static void	err_passwdmismatch( Message& msg );		//[464] USERS_MSG
 	static void	err_badchanmask( Message& msg );		//[476] KICK
