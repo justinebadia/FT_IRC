@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 11:46:58 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/14 12:08:17 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,15 @@ void CommandManager::cmd_invite( Message& msg )
 	}
 
 	if (channel->get_is_invite_only() == true)
+	{
 		_database->create_invite_coupon(target_client, channel);
-	run_reply(RPL_INVITING, msg);
+		run_reply(RPL_INVITING, msg);
 	
-	t_client_ptr_list	recipient_list;
-	recipient_list.push_back(source_client);
-	recipient_list.push_back(target_client);
-	send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
-	
+		t_client_ptr_list	recipient_list;
+		recipient_list.push_back(source_client);
+		recipient_list.push_back(target_client);
+		send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
+	}
 	// RPL_AWAY ??? not sure
 }
 
@@ -236,6 +237,22 @@ void	CommandManager::cmd_part( Message& msg )
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return;
 	}
+	
+	for (int i = 0; i < msg.get_param_count(); i++)
+	{
+		Channel* channel = _database->get_channel(msg[i]);	// if the channel doesnt exist
+		if (!channel)
+		{
+			run_reply(ERR_NOSUCHCHANNEL, msg);
+			return;
+		}
+		else if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
+		{	
+			run_reply(ERR_NOTONCHANNEL, msg);
+			return;
+		}
+		channel->remove_member(source_client);
+	}
 }
 
 
@@ -258,7 +275,6 @@ void	CommandManager::cmd_pass( Message& msg )
 	{
 		run_reply(ERR_PASSWDMISMATCH, msg);
 		return ;
-		
 	}
 	client.set_registration_flags(Client::PASS_SET);
 	Server::log(string("Client fd ") + std::to_string(client.get_fd()) + " has entered the right password: " + msg[1]);
