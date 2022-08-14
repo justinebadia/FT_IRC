@@ -41,7 +41,7 @@ public:
 		FLAG_I = 2,
 		FLAG_T = 4,
 		FLAG_K = 8,
-		FLAG_B = 16,
+		FLAG_B = 16
 	};
 	//typedef t_client_ptr_list::iterator	iterator;
 
@@ -126,7 +126,8 @@ public:
 	bool	is_empty( void );
 
 	void	add_member( Client* client, e_permission type );
-	int		remove_member( Client* client );
+	void	remove_member( Client* client );
+	void	print_memberlist( void );
 	void	empty_memberlist( void );
 
 	void	transfer_ownership( void );

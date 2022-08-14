@@ -293,13 +293,20 @@ bool	Channel::is_empty( void )
 void	Channel::add_member( Client* client, e_permission type )
 {
 	if (is_member(client) == false)
+	{
 		_memberlist.push_back(std::make_pair(client, type));
+	}
+
+	// WARNING
+	print_memberlist();
+	// WARNING
 }
 
-int	Channel::remove_member( Client* client )
+void	Channel::remove_member( Client* client )
 {
 	iterator it = _memberlist.begin();
 	iterator ite = _memberlist.end();
+
 
 	for (; it != ite; it++)
 	{
@@ -310,8 +317,7 @@ int	Channel::remove_member( Client* client )
 				if (_memberlist.size() == 1)
 				{
 					empty_memberlist();
-					// RETURN INT TO DATABASE TO REMOVE THE CHANNEL
-					return 22; // WARNING
+					return;
 				}
 				else
 				{
@@ -320,19 +326,30 @@ int	Channel::remove_member( Client* client )
 
 					if (is_only_banned_member_left() == true)
 					{
-						// retourne un int pour dire a la database de detruire ce channel
-						return 1;
+						empty_memberlist();
+						return;
 					}
 					else
 						break;
 				}
 			}
-			std::cout << "BEFORE ERASE\n";
 			_memberlist.erase(it);
+			std::cout << "AFTER Channel::remove_member()\n";
+			print_memberlist();
 			break;
 		}
 	}
-	return 42; // WARNING
+}
+
+void	Channel::print_memberlist( void )
+{
+	iterator it = _memberlist.begin();
+	iterator ite = _memberlist.end();
+
+	for (; it != ite; it++)
+	{
+		std::cout << "list of members " << (*it).first->get_nickname() << std::endl;
+	}
 }
 
 void	Channel::empty_memberlist( void )

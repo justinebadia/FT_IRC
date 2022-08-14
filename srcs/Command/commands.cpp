@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 12:08:17 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/14 19:00:57 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ void CommandManager::cmd_invite( Message& msg )
 /*[JOIN]---------------------------------------------------------------------------------------------------------------[JOIN]*/
 void CommandManager::cmd_join( Message& msg )			
 {
-	t_client_ptr_list	client_list;
+	t_client_ptr_list	recipient_list;
 	Channel* 			channel;
 	string topic;
-	Client* client_ptr = msg.get_client_ptr();	
+	Client* source_client = msg.get_client_ptr();	
 	if (msg[1].empty())
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
@@ -109,12 +109,12 @@ void CommandManager::cmd_join( Message& msg )
 		run_reply(ERR_CHANNELISFULL, msg);
 		return;
 	}
-	else if (channel->is_banned(client_ptr))
+	else if (channel->is_banned(source_client))
 	{
 		run_reply(ERR_BANNEDFROMCHAN, msg);
 		return ;
 	}
-	else if (channel->is_member(client_ptr))
+	else if (channel->is_member(source_client))
 	{
 		return ;
 	}
@@ -133,7 +133,8 @@ void CommandManager::cmd_join( Message& msg )
 	}
 	//_database->add_client_to_channel(msg.get_client_ptr(), channel);
 	
-	channel->add_member(client_ptr, REGULAR);
+	cout << "BEFORE ADD ADD ADD" << endl;
+	channel->add_member(source_client, REGULAR);
 
 	topic = channel->get_topic();
 	if (topic.size() == 0)				// WARNING A VERIFIER si NULL ou string vide ""
@@ -143,8 +144,8 @@ void CommandManager::cmd_join( Message& msg )
 			
 	// WARNING ERR_BADCHANMASK ???
 	// WARNING ERR_NOSUCHCHANNEL ???
-	client_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(client_list, client_ptr->get_prefix() + " JOIN " + msg[1] + CRLF);
+	recipient_list = channel->get_clients_not_matching_permissions(BAN);
+	send_to_clients(recipient_list, source_client->get_prefix() + " JOIN " + msg[1] + CRLF);
 
 	return;
 }
@@ -231,26 +232,37 @@ void	CommandManager::cmd_oper( Message& msg )
 /*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/
 void	CommandManager::cmd_part( Message& msg )
 {
-	Client* source_client = msg.get_client_ptr();	
+	
 	if (msg.get_param_count() < 1)				// WARNING à verfier
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return;
 	}
-	
-	for (int i = 0; i < msg.get_param_count(); i++)
+
+	Client* source_client = msg.get_client_ptr();	
+	// string channel_parameter = msg[1];
+	// string target_channel;
+	// string delimiter = ",";
+
+	Channel* channel = _database->get_channel(msg[1]);	// if the channel doesnt exist
+
+	if (!channel)
 	{
-		Channel* channel = _database->get_channel(msg[i]);	// if the channel doesnt exist
-		if (!channel)
-		{
-			run_reply(ERR_NOSUCHCHANNEL, msg);
-			return;
-		}
-		else if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
-		{	
-			run_reply(ERR_NOTONCHANNEL, msg);
-			return;
-		}
+		run_reply(ERR_NOSUCHCHANNEL, msg);
+	}
+	else if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
+	{	
+		run_reply(ERR_NOTONCHANNEL, msg);
+	}
+	else
+	{
+		cout << "name of the channel: " << channel->get_name() << endl;	
+		
+		t_client_ptr_list	recipient_list;
+		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		
+		send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
+		
 		channel->remove_member(source_client);
 	}
 }
