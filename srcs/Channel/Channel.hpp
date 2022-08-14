@@ -41,7 +41,7 @@ public:
 		FLAG_I = 2,
 		FLAG_T = 4,
 		FLAG_K = 8,
-		FLAG_B = 16,
+		FLAG_B = 16
 	};
 	//typedef t_client_ptr_list::iterator	iterator;
 

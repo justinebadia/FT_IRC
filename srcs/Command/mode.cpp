@@ -41,8 +41,8 @@ int parse_cmd_mode( Message& msg ) // si erreur -42
  */
 void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une fonction qui parse la commande
 {
-	Client*		client	= msg.get_client_ptr();
 	t_channel_ptr_list chan_list;
+	Client*		client	= msg.get_client_ptr();
 
 	if (parse_cmd_mode(msg) == 1)
 	{	
@@ -68,64 +68,91 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 			{
 				switch (channel->get_mode_flags())
 				{
-					case Channel::FLAG_I: //modifier join
-					{
-						run_reply(RPL_CHANNELMODEIS, msg);
-						break;
-					}
-					case Channel::FLAG_T:
-					{
-						run_reply(RPL_CHANNELMODEIS, msg);
-						break;
-					}
 					case Channel::FLAG_B: 
 					{
 						run_reply(RPL_BANLIST, msg);
 						run_reply(RPL_ENDOFBANLIST, msg);	
 						break;
 					}
-					case (Channel::FLAG_I + Channel::FLAG_T): 
-					{
+					default:
 						run_reply(RPL_CHANNELMODEIS, msg);
 						break;
-					}
 				}
 			}
 			else //command ou nickname est obligatoire +o +b +k
 			{
-				Client* target	= _database->get_client(msg[3]);// si client n'existe pas, on le skip
-				string password = ""; // donc s'il y a k, le param va sur le k
-				// if (!channel->is_member(target)) QUEL REPLY SI NON MEMBRE ? PAS IMPORTANT - faire plus de test
-				// {
-
-				// }
+				Client* target3	= _database->get_client(msg[3]);// si client n'existe pas, on le skip
+				Client* target4	= _database->get_client(msg[4]);// si client n'existe pas, on le skip
 				switch (channel->get_mode_flags())
 				{
 					case Channel::FLAG_O: 
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
-						if (channel->is_member(target))
-							channel->set_permission(target, CHANOP);
+						if (target3)
+							if (channel->is_member(target3))
+								channel->set_permission(target3, CHANOP);
+						else
+							run_reply(ERR_NOTONCHANNEL, msg);
+						break;
+					}
+					case (Channel::FLAG_I + Channel::FLAG_T + Channel::FLAG_K):
+					case (Channel::FLAG_I + Channel::FLAG_K):
+					case (Channel::FLAG_T + Channel::FLAG_K):
+					case (Channel::FLAG_K):
+					{
+						run_reply(RPL_CHANNELMODEIS, msg);
+						if (!msg[3].empty())
+							channel->set_password((msg[3]));
 						break;
 					}
 					case Channel::FLAG_B: // modifier cmd_join et cmd_privmsg
 					{
-						// if (channel->get_permission(target) == Channel::REGULAR)
-						//	ajouter la target à la banlist, pas besoin qu'il fasse parti du channel
-					}
-					case Channel::FLAG_K: 
-					{
-						run_reply(RPL_CHANNELMODEIS, msg); // aller intégrer mode +k à cmd_join
+						if (target3)
+							channel->set_permission(target3, BAN);
 						break;
 					}
 					case (Channel::FLAG_K + Channel::FLAG_O): // je dois avoir 2 param pour chaque
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						if (msg[2][1] == 'k' && msg[2][2] == 'o')
+						{
+							if (!msg[3].empty())
+								channel->set_password((msg[3]));
+							if (target4)
+								if (channel->is_member(target4))
+									channel->set_permission(target4, CHANOP);
+							else
+								run_reply(ERR_NOTONCHANNEL, msg); //si l'argument du flag est incorrect, irssi ne renvoie pas d'erreur, je ne sais pas si on doit le faire ou pas
+						}
+						if (msg[2][1] == 'o' && msg[2][2] == 'k')
+						{
+							if (!msg[4].empty())
+								channel->set_password((msg[4]));
+							if (target3)
+								if (channel->is_member(target3))
+									channel->set_permission(target3, CHANOP);
+							else
+								run_reply(ERR_NOTONCHANNEL, msg);
+						}
 						break;
 					}
 					case (Channel::FLAG_K + Channel::FLAG_B): // je dois avoir 2 param pour chaque
 					{
 						run_reply(RPL_CHANNELMODEIS, msg);
+						if (msg[2][1] == 'k' && msg[2][2] == 'b')
+						{
+							if (!msg[3].empty())
+								channel->set_password((msg[3]));
+							if (target4)
+								channel->set_permission(target4, BAN);
+						}
+						if (msg[2][1] == 'b' && msg[2][2] == 'k')
+						{
+							if (!msg[4].empty())
+								channel->set_password((msg[4]));
+							if (target3)
+								channel->set_permission(target3, BAN);
+						}
 						break;
 					}
 				}

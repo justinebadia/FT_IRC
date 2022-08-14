@@ -217,7 +217,7 @@ void CommandManager::rpl_banlist( Message& msg )
 
 void CommandManager::rpl_endofbanlist( Message& msg )
 {
-	msg.append_out(": 368 " + msg[1] + ":End of channel ban list");
+	msg.append_out(": 368 " + msg[1] + " :End of channel ban list");
 }
 
 
