@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:27:05 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/14 15:48:55 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef COMMAND_MANAGER_HPP
 #define COMMAND_MANAGER_HPP
@@ -34,7 +33,9 @@ class Server;
 class CommandManager {
 
 private:
+
 	friend class Server;
+
 	/*--------------PROHIBITED-CONSTRUCTORS--------------*/
 	CommandManager( const CommandManager& ) {  };
 	CommandManager& operator=( const CommandManager& ) { return *this; };
@@ -63,67 +64,69 @@ public:
 	static void	set_server( Server* server );
 	static void	set_database( Database* database );
 
-	/*------------------COMMANDS-FUNCTIONS----------------*/
+	/*-----------------COMMANDS-FUNCTIONS-----------------*/
 	static void	execute_commands( Client& client );
 	static void	execute_commands_registration( Client& client );
+
+	// COMMANDS []WARNING[] TEMPORARILY IN ALPHABETICAL ORDER
+	static void cmd_invite( Message& msg );
 	static void cmd_join( Message& msg );
+	static void	cmd_kick( Message& msg );
+	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
+	static void	cmd_part( Message& msg );
 	static void	cmd_pass( Message& msg );
+	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );
+	static void cmd_quit( Message& msg );
+	static void	cmd_topic( Message& msg );
 	static void	cmd_user( Message& msg );
 	static void	cmd_whois( Message& msg );
-	static void cmd_ping( Message& msg );
-	static void cmd_quit( Message& msg );
-	static void cmd_mode( Message& msg );
-	static void	cmd_kick( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
 	static void run_reply( int code, Message& msg );
-	static void rpl_welcome( Message& msg );
-	static void rpl_whoisuser( Message& msg );
-	static void rpl_whoisserver(Message& msg );
-	static void rpl_whoisoperator(Message& msg );
-	static void rpl_endofwhois( Message& msg );
-	static void rpl_whoischannels( Message& msg );
-	/*NICK REPLIES*/
-	static void err_nonicknamegiven( Message& msg);
-	static void err_erroneusnickname( Message& msg);
-	static void err_nicknameinuse( Message& msg);
-	static void err_nickcollision( Message& msg);
-	/*USERS REPLIES*/
-	static void err_nosuchserver( Message& msg);
-	static void err_userdisabled( Message& msg );
-	/*WHOIS REPLIES*/
-	static void rpl_nousers( Message& msg );
-	static void rpl_usersstart( Message& msg );
-	static void rpl_endofusers( Message& msg );
-	/*USERS MSG REPLIES*/
-	static void err_needmoreparams( Message& msg );
-	static void err_alreadyregistered( Message& msg );
-	static void	err_passwdmismatch( Message& msg );
-	/*PING replies*/
-	static void err_noorigin( Message& msg );
-	/*JOIN REPLIES*/
-	static void rpl_topic( Message& msg );
-	static void rpl_notopic ( Message& msg );
-	/*MODE REPLIES*/
-	static void rpl_channelmodeis( Message& msg );
-	static void rpl_banlist( Message& msg );
-	static void rpl_endofbanlist( Message& msg );
-	/*KICK REPLIES*/
-	static void err_nosuchchannel( Message& msg );
-	static void err_badchanmask( Message& msg );
-	static void err_chanoprivsneeded( Message& msg );
-	static void err_notonchannel( Message& msg );
+
+	// NUMERIC REPLIES
+	static void	rpl_welcome( Message& msg );			//[001] ????
+	static void	rpl_away( Message& msg );				//[301] INVITE
+	static void	rpl_whoisuser( Message& msg );			//[311] WHOIS
+	static void	rpl_whoisserver(Message& msg );			//[312] WHOIS
+	static void	rpl_whoisoperator(Message& msg );		//[313] WHOIS
+	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
+	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS
+	static void	rpl_channelmodeis( Message& msg );		//[324] MODE
+	static void	rpl_notopic( Message& msg );			//[331] JOIN,TOPIC
+	static void	rpl_topic( Message& msg );				//[332] JOIN,TOPIC
+	static void	rpl_inviting( Message& msg );			//[341] INVITE
+	static void	rpl_banlist( Message& msg );			//[367] MODE
+	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
+	static void	rpl_usersstart( Message& msg );			//[392] WHOIS
+	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
+	static void	rpl_nousers( Message& msg );			//[395] WHOIS
+	static void	err_nosuchnick( Message& msg);			//[401] INVITE
+	static void	err_nosuchserver( Message& msg);		//[402] USERS,WHOIS
+	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
+	static void	err_noorigin( Message& msg );			//[409] PING
+	static void	err_nonicknamegiven( Message& msg);		//[431] NICK
+	static void	err_erroneusnickname( Message& msg);	//[432] NICK
+	static void	err_nicknameinuse( Message& msg);		//[433] NICK
+	static void	err_nickcollision( Message& msg);		//[436] NICK
+	static void	err_notonchannel( Message& msg );		//[442] INVITE,KICK,PART,TOPIC
+	static void	err_useronchannel( Message& msg );		//[443] INVITE
+	static void	err_userdisabled( Message& msg );		//[446] USERS
+	static void	err_needmoreparams( Message& msg );		//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
+	static void	err_alreadyregistered( Message& msg );	//[462] USERS_MSG
+	static void	err_passwdmismatch( Message& msg );		//[464] USERS_MSG
+	static void err_keyset( Message& msg ); 			//[467] MODE_ERR_KEYSET
+	static void	err_badchanmask( Message& msg );		//[476] KICK
+	static void	err_chanoprivsneeded( Message& msg );	//[482] INVITE,KICK,TOPIC
 	
-	/*------------------COMMANDS_UTILS------------------*/
+	/*------------------COMMANDS_UTILS------------------*/	
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
 	static void send_to_channels(t_channel_ptr_list list_of_chan, string output);
 
 };
-
-	
 
 } // namespace irc end bracket
 

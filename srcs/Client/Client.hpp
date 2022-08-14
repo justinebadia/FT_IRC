@@ -128,6 +128,7 @@ public:
 	bool	is_registered( void ) const;
 	bool	is_operator( void ) const;
 	
+	const string 	grab_client_ip_adress( void );
 
 };
 

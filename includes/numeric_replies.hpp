@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 18:37:40 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/14 15:47:36 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@
 #define	ERR_ALREADYREGISTERED	462
 #define	ERR_PASSWDMISMATCH		464
 // #define	ERR_YOUREBANNEDCREEP	465
+#define ERR_KEYSET				467
 #define	ERR_CHANNELISFULL		471
 // #define	ERR_UNKNOWNMODE			472
 #define	ERR_INVITEONLYCHAN		473

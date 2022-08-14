@@ -3,6 +3,8 @@
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
 #include "typedef.hpp"
+#include "CommandManager.hpp"
+#include "numeric_replies.hpp"
 
 #include <iostream>
 // #include <list>
@@ -429,8 +431,9 @@ void	Channel::join_private( Client* client, const string& password )
 // }
 
 
-int Channel::parse_modes( string message )
+int Channel::parse_modes( Message& msg )
 {
+	string message = msg[2];
 	if (message.at(0) == '+')
 	{
 		for (int i = 1; i != message.length(); i++)
@@ -449,6 +452,8 @@ int Channel::parse_modes( string message )
 			}
 			else if (message[i] == 'k')
 			{
+				if (get_is_password_required() == true)
+					irc::CommandManager::run_reply(ERR_KEYSET, msg);
 				set_mode_key_password_required(true);
 				_mode_flags |= mode_flags::FLAG_K;
 			}
@@ -476,6 +481,7 @@ int Channel::parse_modes( string message )
 			{
 				set_mode_key_password_required(false);
 				_mode_flags &= mode_flags::FLAG_K;
+				set_password("");
 			}
 			else if (message[i] == 'b')
 				_mode_flags &= mode_flags::FLAG_B;

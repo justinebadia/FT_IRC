@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:26:58 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/14 15:46:46 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,51 +49,60 @@ CommandManager::~CommandManager( void )									// destructor
 /*--------------------------PRIVATE-MEMBER-FUNCTIONS--------------------------*/
 
 void	CommandManager::_init_command_map( void )
-{
-	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
-	_command_map.insert(std::make_pair(string("USER"), cmd_user));
-	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
-	_command_map.insert(std::make_pair(string("PASS"), cmd_pass));
-	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
+{			
+			// WARNING TEMPORARILY IN ALPHABETICAL ORDER
+	_command_map.insert(std::make_pair(string("INVITE"), cmd_invite));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
-	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
-	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
 	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
-
+	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("OPER"), cmd_oper));
+	_command_map.insert(std::make_pair(string("PART"), cmd_part));
+	_command_map.insert(std::make_pair(string("PASS"), cmd_pass));
+	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
+	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
+	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
+	_command_map.insert(std::make_pair(string("TOPIC"), cmd_topic));
+	_command_map.insert(std::make_pair(string("USER"), cmd_user));
+	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
+
 }
 
 void	CommandManager::_init_reply_map( void )
 {
-	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));
-	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));
-	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));
-	// _reply_map.insert(std::make_pair(ERR_NICKCOLLISION, err_nickcollision));
-	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));
-	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));
-	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));
-	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));
-	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));
-	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));
-	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));
-	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));
-	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));
-	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));
-	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));
-	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));
-	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));
-	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));
-	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));
-	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));
-	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));	
-	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));
-	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));
-	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));
-	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));
-	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));
-	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));
-	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));
+	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));						//[001] ????
+	_reply_map.insert(std::make_pair(RPL_AWAY, rpl_away));								//[301] INVITE
+	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));					//[311] WHOIS
+	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));				//[312] WHOIS
+	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));			//[313] WHOIS
+	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));					//[318] WHOIS
+	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));			//[319] WHOIS
+	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));			//[324] MODE
+	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));						//[331] JOIN
+	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));							//[332] JOIN
+	_reply_map.insert(std::make_pair(RPL_INVITING, rpl_inviting));						//[341] INVITE
+	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
+	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
+	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));				//[392] WHOIS
+	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));				//[394] WHOIS
+	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));						//[395] WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] USERS,WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] KICK,PART
+	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
+	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK
+	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));		//[432] NICK
+	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));			//[433] NICK
+	// _reply_map.insert(std::make_pair(ERR_NICKCOLLISION, err_nickcollision));			//[436] NICK
+	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));				//[442] INVITE,KICK,PART,TOPIC
+	_reply_map.insert(std::make_pair(ERR_USERONCHANNEL, err_useronchannel));			//[443] INVITE
+	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));			//[446] USERS
+	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));			//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_KEYSET, err_keyset));							//[467] MODE_KEY_SET
+	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] KICK
+	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));		//[482] INVITE,KICK,TOPIC
 
 }
 
@@ -109,8 +118,8 @@ bool	CommandManager::_is_unregistered_allowed( const string& cmd_name )
 	return false;
 }
 
-/*-----------------------GETTERS----------------------*/
 
+/*----------------------------------GETTERS-----------------------------------*/
 t_cmd_function_ptr		CommandManager::get_command_ptr( string name )
 {
 	t_command_map::iterator it;
@@ -135,7 +144,7 @@ t_reply_function_ptr	CommandManager::get_reply_ptr( int code )
 	return NULL;
 }
 
-/*-----------------------SETTERS----------------------*/
+/*----------------------------------SETTERS-----------------------------------*/
 
 void	CommandManager::set_server( Server* server )
 {
@@ -147,7 +156,7 @@ void	CommandManager::set_database( Database* database )
 	_database = database;
 }
 
-/*---------------COMMANDS-FUNCTIONS---------------*/
+/*-----------------------------COMMANDS-FUNCTIONS-----------------------------*/
 
 void	CommandManager::execute_commands( Client& client )
 {

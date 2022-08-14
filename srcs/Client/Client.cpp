@@ -4,6 +4,14 @@
 #include "../includes/color.hpp"
 #include "../includes/utils.hpp"
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 using namespace irc;
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
@@ -13,7 +21,7 @@ Client::Client( int fd ) // main constructor
 	, _username("")
 	, _hostname("")
 	, _realname("")
-	, _client_ip(grab_ip_address())
+	, _client_ip(grab_client_ip_adress())
 {
 	_socket.pollfd.fd = fd;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
@@ -27,7 +35,7 @@ Client::Client( string nickname ) // WARNING: TESTING PURPOSE constructor - Pour
 	, _username("")
 	, _hostname("")
 	, _realname("")
-	, _client_ip(grab_ip_address())  
+	, _client_ip(grab_client_ip_adress())  
 {
 	_socket.pollfd.fd = 0;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
@@ -79,7 +87,7 @@ const string&	Client::get_client_ip(void ) const { return _client_ip; }
 
 string Client::get_prefix( void ) 
 { 
-	return (":" + get_nickname() + "!" + get_username() + "@" + get_hostname() + " ");
+	return (":" + get_nickname() + "!" + get_username() + "@" + get_client_ip() + " ");
 }
 
 
@@ -159,6 +167,23 @@ bool	Client::is_password_validated( void ) const { return (_registration & PASS_
 bool	Client::is_registered( void ) const { return (_registration & COMPLETE ? true : false); }
 bool	Client::is_operator( void ) const { return (_operator); } 
 
+const string 	Client::grab_client_ip_adress( void )
+{
+	char hostname[128];
+	char ip[16];
+	struct hostent* host;
+
+	gethostname(hostname, sizeof(hostname));
+
+	host = gethostbyname(hostname);
+
+	for (int i = 0; host->h_addr_list[i]; i++) 
+	{
+		_socket.addr6.sin6_addr = *((struct in6_addr*) host->h_addr_list[i]);
+		inet_ntop(AF_INET, &_socket.addr6.sin6_addr, ip, sizeof(ip));
+	}
+	return (string(ip));
+}
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 

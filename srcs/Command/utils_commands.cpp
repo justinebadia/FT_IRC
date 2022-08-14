@@ -7,6 +7,8 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+/*---------------------------------------COMMANDS-UTILS-------------------------------------------*/
+
 void CommandManager::send_to_clients( t_client_ptr_list list_of_client, string output)
 {
     t_client_ptr_list::iterator it;

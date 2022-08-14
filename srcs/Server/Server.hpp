@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 20:18:04 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/14 17:54:11 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,8 @@ public:
 
 	bool		attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
 	bool		is_client_operator( const int& fd );
+
+	const string grab_ip_address( void );
 
 	static void	log( const string& msg );
 	static void	log_error( const string& msg );

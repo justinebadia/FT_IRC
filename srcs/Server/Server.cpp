@@ -1,11 +1,13 @@
 #include "Server.hpp" // includes: <string><list><map><vector><exception><iostream> "irc_define.hpp"
 					  // "../Client/Client.hpp" "Message.hpp" "typedef.hpp"
 
-// #include <arpa/inet.h>
-// #include <netinet/in.h>
-// #include <sys/types.h>
-// #include <sys/socket.h>
-// #include <poll.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <poll.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
 // #include <signal.h>
@@ -201,7 +203,6 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	if (!client->is_registered())
 	{
 		CommandManager::execute_commands_registration(*client);
-		std::cout << "ADRESSE IP = " << client->get_client_ip() << std::endl;
 		_check_registration(client);
 	}
 	else
@@ -384,6 +385,25 @@ void	Server::log_error( const string& msg )
 {
 	if (log_level == 1)
 		cout << RED << "Server log: " << RESET << msg << endl;
+}
+
+const string Server::grab_ip_address( void )
+{
+	char hostname[128];
+	char ip[16];
+	struct hostent* host;
+	struct sockaddr_in sock_addr;
+
+	gethostname(hostname, sizeof(hostname));
+
+	host = gethostbyname(hostname);
+
+	for (int i = 0; host->h_addr_list[i]; i++) 
+	{
+		sock_addr.sin_addr = *((struct in_addr*) host->h_addr_list[i]);
+		inet_ntop(AF_INET, &sock_addr.sin_addr, ip, sizeof(ip));
+	}
+	return (string(ip));
 }
 
 /*-------------------------NESTED-CLASS-EXCEPTIONS--------------------------*/

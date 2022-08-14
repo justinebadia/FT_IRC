@@ -130,7 +130,7 @@ public:
 	void	empty_memberlist( void );
 
 	void	transfer_ownership( void );
-	int		parse_modes( string message );
+	int		parse_modes( Message& msg );
 
 };
 

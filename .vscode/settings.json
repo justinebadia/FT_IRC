@@ -77,6 +77,10 @@
 		"memory_resource": "cpp",
 		"random": "cpp",
 		"shared_mutex": "cpp",
-		"thread": "cpp"
+		"thread": "cpp",
+		"__bits": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp",
+		"variant": "cpp"
 	}
 }
