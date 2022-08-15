@@ -90,7 +90,7 @@ void	CommandManager::rpl_whoischannels( Message& )
 
 void	CommandManager::rpl_channelmodeis( Message& msg )
 {
-	msg.append_out(": 324 " + msg[1] + " " + msg[2] + " " + msg[3] + " " + msg[4]);
+	msg.append_out(": 324 " + msg[1] + " " + msg.get_mode_rpl());
 }
 
 void	CommandManager::rpl_notopic( Message& msg )
@@ -115,7 +115,7 @@ void	CommandManager::rpl_banlist( Message& msg )
 
 void	CommandManager::rpl_endofbanlist( Message& msg )
 {
-	msg.append_out(": 368 " + msg[1] + ":End of channel ban list");
+	msg.append_out(": 368 " + msg[1] + " :End of channel ban list");
 }
 
 /* WARNING pas fini 

@@ -431,63 +431,72 @@ void	Channel::join_private( Client* client, const string& password )
 // }
 
 
-int Channel::parse_modes( Message& msg )
+string Channel::parse_modes( Message& msg )
 {
 	string message = msg[2];
 	if (message.at(0) == '+')
 	{
-		for (int i = 1; i != message.length(); i++)
+		for (size_t i = 1; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
-				_mode_flags |= mode_flags::FLAG_O;
+			{
+				_mode_flags |= FLAG_O;
+			}
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(true);
-				_mode_flags |= mode_flags::FLAG_I;
+				_mode_flags |= FLAG_I;
+
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(true);
-				_mode_flags |= mode_flags::FLAG_T;
+				_mode_flags |= FLAG_T;
+
 			}
 			else if (message[i] == 'k')
 			{
 				if (get_is_password_required() == true)
 					irc::CommandManager::run_reply(ERR_KEYSET, msg);
 				set_mode_key_password_required(true);
-				_mode_flags |= mode_flags::FLAG_K;
+				_mode_flags |= FLAG_K;
+
 			}
 			else if (message[i] == 'b')
-				_mode_flags |= mode_flags::FLAG_B;
+			{
+				_mode_flags |= FLAG_B;
+			}
 		}
+		return msg.get_substr_after("+");
 	}
 	else if (message.at(0) == '-')
 	{
-		for (int i = 1; i != message.length(); i++)
+		for (size_t i = 1; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
-				_mode_flags &= mode_flags::FLAG_O;
+				_mode_flags &= FLAG_O;
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(false);
-				_mode_flags &= mode_flags::FLAG_I;
+				_mode_flags &= FLAG_I;
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(false);
-				_mode_flags &= mode_flags::FLAG_T;
+				_mode_flags &= FLAG_T;
 			}
 			else if (message[i] == 'k')
 			{
 				set_mode_key_password_required(false);
-				_mode_flags &= mode_flags::FLAG_K;
+				_mode_flags &= FLAG_K;
 				set_password("");
 			}
 			else if (message[i] == 'b')
-				_mode_flags &= mode_flags::FLAG_B;
+				_mode_flags &= FLAG_B;
 		}
+		return msg.get_substr_after("-");
 	}
-	return _mode_flags;
+	return "";
 }
 
 

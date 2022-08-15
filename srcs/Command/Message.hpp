@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:16:53 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 19:09:14 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ private:
 	Client*		_client_ptr;
 	string		_message_in;
 	string		_message_out;
+	string 		_mode_rpl;
 	
 public:
 
@@ -66,10 +67,12 @@ public:
 	const string&	get_message_out( void ) const;
 	string			get_substr_after( const string& symbol );
 	int 			get_param_count( void );
+	string			get_mode_rpl( void );
 
 	/*-----------------------SETTERS----------------------*/
 
 	void	set_client_ptr( Client* client_ptr );
+	void	set_mode_rpl( string );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/

@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/14 17:54:11 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/15 15:16:41 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include "irc_define.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME 	"10.11.7.4"	// a.k.a. "localhost" alias
+#define	HOSTNAME 	"127.0.0.1"	// a.k.a. "localhost" alias
 #define PORT 6667
 #define OPER_PASS	"Tobastine"
  

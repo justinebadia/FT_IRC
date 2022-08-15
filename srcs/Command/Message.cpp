@@ -6,7 +6,7 @@
 /*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 13:34:41 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/15 19:08:15 by jbadia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ string		Message::operator[]( int i )					// scope operator overload
 Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
 const string&	Message::get_message_in( void ) const { return _message_in; }
 const string&	Message::get_message_out( void ) const { return _message_out; }
-
+string 			Message::get_mode_rpl( void ) { return _mode_rpl; }
 
 string		Message::get_substr_after( const string& symbol )
 {
@@ -110,6 +110,7 @@ void	Message::set_client_ptr( Client* client )
 	_client_ptr = client;
 }
 
+void Message::set_mode_rpl(string test) { _mode_rpl = test;}
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
