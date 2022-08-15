@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/02 08:34:51 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 20:13:48 by tshimoda         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
@@ -134,6 +124,8 @@ string&				Channel::get_topic( void ) { return _topic; }
 string&				Channel::get_password( void ) { return _password; }
 
 t_channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
+
+int 				Channel::get_mode_flags( void ) { return _mode_flags; }
 
 //t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 
@@ -439,19 +431,57 @@ void	Channel::join_private( Client* client, const string& password )
 
 int Channel::parse_modes( string message )
 {
-	for (int i = 0; i != message.length(); i++)
+	if (message.at(0) == '+')
 	{
-		if (message[i] == 'o')
-			_mode_flags |= mode_flags::FLAG_O;
-		if (message[i] == 'i')
-			_mode_flags |= mode_flags::FLAG_I;
-		if (message[i] == 't')
-			_mode_flags |= mode_flags::FLAG_T;
-		if (message[i] == 'k')
-			_mode_flags |= mode_flags::FLAG_K;
-		if (message[i] == 'b')
-			_mode_flags |= mode_flags::FLAG_B;
+		for (int i = 1; i != message.length(); i++)
+		{
+			if (message[i] == 'o')
+				_mode_flags |= mode_flags::FLAG_O;
+			else if (message[i] == 'i')
+			{
+				set_mode_invite_only(true);
+				_mode_flags |= mode_flags::FLAG_I;
+			}
+			else if (message[i] == 't')
+			{
+				set_mode_topic_by_chanop_only(true);
+				_mode_flags |= mode_flags::FLAG_T;
+			}
+			else if (message[i] == 'k')
+			{
+				set_mode_key_password_required(true);
+				_mode_flags |= mode_flags::FLAG_K;
+			}
+			else if (message[i] == 'b')
+				_mode_flags |= mode_flags::FLAG_B;
+		}
 	}
+	else if (message.at(0) == '-')
+	{
+		for (int i = 1; i != message.length(); i++)
+		{
+			if (message[i] == 'o')
+				_mode_flags &= mode_flags::FLAG_O;
+			else if (message[i] == 'i')
+			{
+				set_mode_invite_only(false);
+				_mode_flags &= mode_flags::FLAG_I;
+			}
+			else if (message[i] == 't')
+			{
+				set_mode_topic_by_chanop_only(false);
+				_mode_flags &= mode_flags::FLAG_T;
+			}
+			else if (message[i] == 'k')
+			{
+				set_mode_key_password_required(false);
+				_mode_flags &= mode_flags::FLAG_K;
+			}
+			else if (message[i] == 'b')
+				_mode_flags &= mode_flags::FLAG_B;
+		}
+	}
+	return _mode_flags;
 }
 
 

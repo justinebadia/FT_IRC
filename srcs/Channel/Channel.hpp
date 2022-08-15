@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/02 08:24:20 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/12 20:16:53 by tshimoda         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
@@ -106,6 +96,7 @@ public:
 	string&								get_topic( void );
 	string&								get_password( void );
 	t_channel_memberlist				get_memberlist( void );
+	int 								get_mode_flags( void );
 	e_permission						get_permission( Client* client );
 	t_client_ptr_list					get_clients_matching_permissions( int type );
 	t_client_ptr_list					get_clients_not_matching_permissions( int type );
