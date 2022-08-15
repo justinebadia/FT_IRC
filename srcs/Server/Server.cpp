@@ -8,12 +8,11 @@
 // #include <poll.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
-// #include <signal.h>
+#include <signal.h>
 
 #include <string>
 #include <exception>
 #include <iostream>
-
 
 #include "CommandManager.hpp"
 #include "Message.hpp"
