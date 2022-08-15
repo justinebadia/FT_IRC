@@ -98,6 +98,7 @@ public:
 	t_channel_memberlist				get_memberlist( void );
 	int 								get_mode_flags( void );
 	e_permission						get_permission( Client* client );
+	t_client_ptr_list					get_clients_any_permissions( void );
 	t_client_ptr_list					get_clients_matching_permissions( int type );
 	t_client_ptr_list					get_clients_not_matching_permissions( int type );
 

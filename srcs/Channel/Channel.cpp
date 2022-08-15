@@ -142,12 +142,26 @@ e_permission		Channel::get_permission( Client* client )
  	return (e_permission)FAIL;														// Didn't find the Client in the channel_banlist
 }
 
-t_client_ptr_list	Channel::get_clients_matching_permissions( int type )
+t_client_ptr_list	Channel::get_clients_any_permissions( void )
 {
 	t_client_ptr_list	client_list;
 
 	iterator it = _memberlist.begin();
  	iterator ite = _memberlist.end();
+
+	for(; it != ite; it++)
+	{
+		client_list.push_back((*it).first);
+	}
+	return (client_list);
+}
+
+t_client_ptr_list	Channel::get_clients_matching_permissions( int type )
+{
+	t_client_ptr_list	client_list;
+
+	iterator it = _memberlist.begin();
+	iterator ite = _memberlist.end();
 
 	for(; it != ite; it++)
 	{

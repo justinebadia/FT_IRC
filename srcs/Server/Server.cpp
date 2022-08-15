@@ -332,7 +332,11 @@ int	Server::run_server( void )
 
 void	Server::disconnect_client( const int& fd )
 {
-	_database.remove_client_list(fd);
+	//_database.remove_client_list(fd);
+	
+	Client* client = _database.get_client(fd);
+
+	_database.delete_client_from_all_lists(client);
 	close(fd);
 	Server::log("Disconnected client of fd " + std::to_string(fd));
 }
