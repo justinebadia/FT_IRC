@@ -62,6 +62,7 @@ private:
 	int				_registration;
 	
 	void	_set_operator( bool value );
+	void	_init_client( void );
 
 public:
 
@@ -69,8 +70,7 @@ public:
 
 	Client( int fd );									// main constructor
 	// Client( t_socket client_socket );				// main constructor
-	Client( string nickname ); 								// WARNING: TESTING PURPOSE constructor
-
+	Client( int fd, string hostname );
 	Client( const Client& rhs ); 						// copy constructor
 	Client&	operator=( const Client& rhs ); 			// copy operator overload
 	~Client( void ); 									// destructor

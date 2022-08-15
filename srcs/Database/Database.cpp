@@ -384,9 +384,7 @@ void	Database::clean_database( void )
 		if ((*it).is_empty())
 			remove_channel_list((*it).get_name());
 	}
-
 }
-
 
 void	Database::create_invite_coupon( Client* client, Channel* channel )
 {

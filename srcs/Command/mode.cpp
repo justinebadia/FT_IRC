@@ -15,8 +15,6 @@ using std::endl;
 
 int parse_cmd_mode( Message& msg ) // si erreur -42
 {
-	Client*		client	= msg.get_client_ptr();
-
 	if (msg[1][0] == '#' || msg[1][0] == '&')
 	{
 		if (msg.get_param_count() < 1)
@@ -130,10 +128,10 @@ void CommandManager::cmd_mode( Message& msg ) //attention les yeux - faire une f
 					}
 				}
 			}
+		}
+		else if (parse_cmd_mode(msg) == 0)// MODE user case
+		{
+			return ;
+		}
 	}
-	else if (parse_cmd_mode(msg) == 0)// MODE user case
-	{
-		return ;
-	}
-}
 }

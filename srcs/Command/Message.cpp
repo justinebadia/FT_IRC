@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:16:53 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 11:58:26 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,11 @@ string		Message::operator[]( int i )					// scope operator overload
 		i--;
 	}
 	return _message_in.substr(start, len);
+}
+
+string		Message::operator[]( size_t i )					// scope operator overload
+{
+	return operator[](static_cast<int>(i));
 }
 
 

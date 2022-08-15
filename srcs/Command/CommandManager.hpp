@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 11:10:20 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 14:20:00 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ public:
 	// COMMANDS []WARNING[] TEMPORARILY IN ALPHABETICAL ORDER
 	static void cmd_invite( Message& msg );
 	static void cmd_join( Message& msg );
+	static void process_single_join( Message& msg );
 	static void	cmd_kick( Message& msg );
 	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );

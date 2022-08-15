@@ -10,6 +10,8 @@
 #include "Client.hpp"
 #include "typedef.hpp"
 
+#define	REGEX_CHANNEL		"^[#$]((?![ ,/\x07/]).){1,50}$"
+
 using std::string;
 using std::list;
 using std::pair;
@@ -41,7 +43,7 @@ public:
 		FLAG_I = 2,
 		FLAG_T = 4,
 		FLAG_K = 8,
-		FLAG_B = 16,
+		FLAG_B = 16
 	};
 	//typedef t_client_ptr_list::iterator	iterator;
 
@@ -64,7 +66,8 @@ private:
 	string								_password;
 	t_channel_memberlist				_memberlist;
 	int									_mode_flags;
-	//t_client_ptr_list					_banlist;
+	t_mask_list							_banmask_list;
+	// t_client_ptr_list					_banlist;
 
 
 public:
@@ -122,12 +125,15 @@ public:
 	bool	is_owner( Client* client );
 	bool	is_chanop( Client* client );
 	bool	is_banned( Client* client );
+	bool	is_banned( const string& nickname );
 	bool	is_only_banned_member_left( void );
 	bool	is_empty( void );
 
 	void	add_member( Client* client, e_permission type );
 	int		remove_member( Client* client );
 	void	empty_memberlist( void );
+	void	add_banmask( const string& mask );
+	void	remove_banmask( const string& mask );
 
 	void	transfer_ownership( void );
 	int		parse_modes( string message );

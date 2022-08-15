@@ -2,15 +2,13 @@
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
-#include "typedef.hpp"
-
-#include <iostream>
-// #include <list>
-// #include <map>
-#include <string>
-
 #include "Client.hpp"
 #include "typedef.hpp"
+#include "utils.hpp"
+
+#include <algorithm>
+#include <iostream>
+#include <string>
 
 using namespace irc;
 using std::string;
@@ -260,11 +258,25 @@ bool	Channel::is_chanop( Client* client )
 	return false;
 }
 
+// bool	Channel::is_banned( Client* client )
+// {
+// 	if (get_permission(client) == BAN )
+// 		return true;
+
+// 	return false;
+// }
+
 bool	Channel::is_banned( Client* client )
 {
-	if (get_permission(client) == BAN )
+	if (!client)
 		return true;
+	return is_banned(client->get_nickname());
+}
 
+bool	Channel::is_banned( const string& nickname )
+{
+	if (compare_to_mask_list(&_banmask_list, nickname))
+		return true;
 	return false;
 }
 
@@ -339,6 +351,19 @@ void	Channel::empty_memberlist( void )
 {
 	_memberlist.clear();
 }
+
+void	Channel::add_banmask( const string& mask )
+{
+	if (std::find(_banmask_list.begin(), _banmask_list.end(), mask) == _banmask_list.end())
+		_banmask_list.push_front(mask);
+}
+
+void	Channel::remove_banmask( const string& mask )
+{
+	if (std::find(_banmask_list.begin(), _banmask_list.end(), mask) != _banmask_list.end())
+		_banmask_list.remove(mask);
+}
+
 
 // void	Channel::transfer_ownership( void )
 // {
@@ -431,54 +456,56 @@ void	Channel::join_private( Client* client, const string& password )
 
 int Channel::parse_modes( string message )
 {
+	if (message.empty()) // WARNING
+		return -1;
 	if (message.at(0) == '+')
 	{
-		for (int i = 1; i != message.length(); i++)
+		for (unsigned long i = 1; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
-				_mode_flags |= mode_flags::FLAG_O;
+				_mode_flags |= FLAG_O;
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(true);
-				_mode_flags |= mode_flags::FLAG_I;
+				_mode_flags |= FLAG_I;
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(true);
-				_mode_flags |= mode_flags::FLAG_T;
+				_mode_flags |= FLAG_T;
 			}
 			else if (message[i] == 'k')
 			{
 				set_mode_key_password_required(true);
-				_mode_flags |= mode_flags::FLAG_K;
+				_mode_flags |= FLAG_K;
 			}
 			else if (message[i] == 'b')
-				_mode_flags |= mode_flags::FLAG_B;
+				_mode_flags |= FLAG_B;
 		}
 	}
 	else if (message.at(0) == '-')
 	{
-		for (int i = 1; i != message.length(); i++)
+		for (unsigned long i = 1; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
-				_mode_flags &= mode_flags::FLAG_O;
+				_mode_flags &= FLAG_O;
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(false);
-				_mode_flags &= mode_flags::FLAG_I;
+				_mode_flags &= FLAG_I;
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(false);
-				_mode_flags &= mode_flags::FLAG_T;
+				_mode_flags &= FLAG_T;
 			}
 			else if (message[i] == 'k')
 			{
 				set_mode_key_password_required(false);
-				_mode_flags &= mode_flags::FLAG_K;
+				_mode_flags &= FLAG_K;
 			}
 			else if (message[i] == 'b')
-				_mode_flags &= mode_flags::FLAG_B;
+				_mode_flags &= FLAG_B;
 		}
 	}
 	return _mode_flags;

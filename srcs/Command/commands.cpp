@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/15 11:36:11 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/15 17:00:53 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,75 +79,6 @@ void CommandManager::cmd_invite( Message& msg )
 	// RPL_AWAY ??? not sure
 }
 
-/*[JOIN]---------------------------------------------------------------------------------------------------------------[JOIN]*/
-void CommandManager::cmd_join( Message& msg )			
-{
-	t_client_ptr_list	client_list;
-	Channel* 			channel;
-	string topic;
-	Client* client_ptr = msg.get_client_ptr();	
-	if (msg[1].empty())
-	{
-		run_reply(ERR_NEEDMOREPARAMS, msg);
-		return;
-	}
-	if (_database->get_channel_count() >= MAX_CHANNELS)
-	{
-		run_reply(ERR_TOOMANYCHANNELS, msg);
-		return;
-	}
-	
-	channel = _database->get_channel(msg[1]);
-	if (!channel) // if channel == null : create a new one
-	{
-		_database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
-		channel = _database->get_channel(msg[1]);
-	}
-	else if (channel->get_memberlist().size() >= MAX_CLIENT_PER_CHAN)
-	{
-		run_reply(ERR_CHANNELISFULL, msg);
-		return;
-	}
-	else if (channel->is_banned(client_ptr))
-	{
-		run_reply(ERR_BANNEDFROMCHAN, msg);
-		return ;
-	}
-	else if (channel->is_member(client_ptr))
-	{
-		return ;
-	}
-	else if (channel->get_is_invite_only())
-	{
-		//if (INVITED == true)
-		//{	
-		//	INVITED = false;
-		//	channel->add_member(client_ptr, REGULAR);
-		//  
-		//}
-		//else
-		//
-			run_reply(ERR_INVITEONLYCHAN, msg);
-			return ;
-	}
-	//_database->add_client_to_channel(msg.get_client_ptr(), channel);
-	
-	channel->add_member(client_ptr, REGULAR);
-
-	topic = channel->get_topic();
-	if (topic.size() == 0)				// WARNING A VERIFIER si NULL ou string vide ""
-		run_reply(RPL_NOTOPIC, msg);
-	else
-		run_reply(RPL_TOPIC, msg);
-			
-	// WARNING ERR_BADCHANMASK ???
-	// WARNING ERR_NOSUCHCHANNEL ???
-	client_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(client_list, client_ptr->get_prefix() + " JOIN " + msg[1] + CRLF);
-
-	return;
-}
-
 /*[KICK]---------------------------------------------------------------------------------------------------------------[KICK]*/
 void CommandManager::cmd_kick( Message& msg )
 {
@@ -213,8 +144,9 @@ void	CommandManager::cmd_nick( Message& msg )
 	}
 	client.set_registration_flags(Client::NICK_SET);
 	Server::log(string() + GREEN + "Successfully set the nickname to " + msg[1] + RESET);
-	client.append_buff(BUFFOUT, ":" + client.get_nickname() + " NICK " + msg[1] + CRLF);
+	client.append_buff(BUFFOUT, client.get_prefix()+ "NICK " + msg[1] + CRLF);
 	client.set_nickname(msg[1]);
+	
 }
 
 /*[OPER]---------------------------------------------------------------------------------------------------------------[OPER]*/
@@ -231,7 +163,6 @@ void	CommandManager::cmd_oper( Message& msg )
 /*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/
 void	CommandManager::cmd_part( Message& msg )
 {
-	Client* source_client = msg.get_client_ptr();	
 	if (msg.get_param_count() < 1)				// WARNING à verfier
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
@@ -279,7 +210,7 @@ void CommandManager::cmd_ping( Message& msg )
 }
 
 /*[PRIVMSG]---------------------------------------------------------------------------------------------------------[PRIVMSG]*/
-void CommandManager::cmd_privmsg( Message& msg ) // WARNING done minimally for channel testing
+void CommandManager::cmd_privmsg( Message& msg )
 {
 	t_client_ptr_list		recipient_list;
 	Channel* 				channel;
@@ -323,7 +254,6 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 		return;
 	_server->disconnect_client(client->get_fd()); // WARNING to be changed for a queue of client to disconnect, I think?
 	msg.set_client_ptr(NULL);
-	cout << "Amount of channels client is in : " << chan_list.size() << endl;
 	if (!msg[1].empty())  // WARNING todo
 		send_to_channels(chan_list, prefix + "QUIT :" + msg.get_substr_after(":") + CRLF);	
 	if (msg[1].empty())  // WARNING todo
