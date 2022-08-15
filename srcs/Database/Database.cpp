@@ -166,6 +166,7 @@ void	Database::init_Database( void )
 
 int	Database::add_client_list( const Client& client )
 {
+	Server::log("in Database add_client_list()");
 	if (is_client_listed(client) == false)
 	{
 		_client_list.push_back(client);
@@ -176,7 +177,7 @@ int	Database::add_client_list( const Client& client )
 
 int	Database::add_channel_list( const Channel& channel )
 {
-	Server::log("in add channel_list");
+	Server::log("in Database add channel_list()");
 	if (is_channel_listed(channel) == false)
 	{
 		_channel_list.push_back(channel);
@@ -253,7 +254,15 @@ bool	Database::is_channel_listed( const string& chan_name )
 
 bool	Database::is_channel_empty( Channel* channel )
 {
-	t_channel_clients_map::iterator	it;
+	if (is_channel_listed(channel->get_name() == false)
+			return true;
+	if (channel->is_empty() == true)
+		return true;
+	else
+		return false;
+
+// OLD VERSION with map
+/*	t_channel_clients_map::iterator	it;
 
 	if (channel)
 	{
@@ -265,14 +274,93 @@ bool	Database::is_channel_empty( Channel* channel )
 		}
 	}
 	return true;
+*/
 }
 
 
+
+void	Database::delete_client_from_all_lists( Client* client )
+{
+	t_channel_list::iterator it = _channel_list.begin();
+	t_channel_list::iterator ite = _channel_list.end();
+
+	for (; it != ite; it++) // for loop to delete the client from every channel_memberlist
+	{
+		if ((*it)->is_member(client) == true)
+		{
+			(*it)->channel->remove_member(client); // removing client from one channel_memberlist;
+		}
+	}
+	if (is_client_listed(client->get_nickname() == false)
+			return ; // client is not in the database
+	else
+		_client_list.remove(*client);
+}
+
+void Database::delete_inactive_channels( void )
+{	
+	t_channel_list::iterator it = _channel_list.begin();
+	t_channel_list::iterator ite = _channel_list.end();
+
+	for (; it != ite; i++)
+	{
+		if ((*it)->is_empty() == true || (*it)->is_only_banned_member_left() == true)
+		{
+			_channel_list.remove(*(*it)); // deleting one inactive channel
+		}
+	}
+}
+
+void Database::print_client_list( void )
+{
+	t_client_list::iterator it = _client_list.begin();
+	t_client_list::iterator ite = _client_list.end();
+
+	cout << GREEN << "-----------------------------" << RESET << endl;
+	cout << GREEN << "Database::print_client_list()" << RESET << endl;
+	for (; it != ite; it++)
+	{
+		cout << (*it).get_nickname() << endl;
+	}
+	cout << GREEN << "-----------------------------" << RESET << endl;
+}
+
+void Database::print_channel_list( void )
+{
+	t_channel_list::iterator it = _channel_list.begin();
+	t_channel_list::iterator ite = _channel_list.end();
+
+	cout << BLUE << "------------------------------" << RESET << endl;
+	cout << BLUE << "Database::print_channel_list()" << RESET << endl;
+	for (; it != ite; it++)
+	{
+		cout << (*it).get_name() << endl;
+	}
+	cout << BLUE << "------------------------------" << RESET << endl;
+}
+
+void Database::print_invite_coupon_list( void )
+{
+	t_invite_coupon_list::iterator it = _invite_coupon_list.begin();
+	t_invite_coupon_list::iterator ite = _invite_coupon_list.end();
+
+	
+	cout << YELLOW << "------------------------------------" << RESET << endl;
+	cout << YELLOW << "Database::print_invite_coupon_list()" << RESET << endl;
+	for (; it != ite; it++)
+	{
+		cout << "Invite coupon for "<< (*it).first->get_nickname() << " to join channel " <<	(*it).second->get_name() << endl;
+	}	
+	cout << YELLOW << "------------------------------------" << RESET << endl;
+}
+
+/*
 int		Database::add_client_to_channel( Client* client, const string& chan_name )
 {
 	return add_client_to_channel(client, get_channel(chan_name));
 }
-
+*/
+/*
 int		Database::add_client_to_channel( Client* client, Channel* channel )
 {
 	t_channel_clients_map::iterator	it;
@@ -292,7 +380,10 @@ int		Database::add_client_to_channel( Client* client, Channel* channel )
 	}
 	return FAIL;
 }
+*/
 
+
+/*
 void	Database::remove_client_list( const string& nickname )
 {
 	Client* c;
@@ -386,7 +477,7 @@ void	Database::clean_database( void )
 	}
 
 }
-
+*/
 
 void	Database::create_invite_coupon( Client* client, Channel* channel )
 {

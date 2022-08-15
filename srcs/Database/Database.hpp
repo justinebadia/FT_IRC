@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Database.hpp                                         :+:      :+:    :+:   */
+/*   Database.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/08 14:04:35 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 11:00:28 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,19 @@ private:
 
 	t_client_list			_client_list;
 	t_channel_list			_channel_list;
-	t_channel_clients_map	_channel_clients_list_map; // TO DO
+	//t_channel_clients_map	_channel_clients_list_map; 		// TO REMOVE
 	
-	t_invite_coupon_list	_invite_coupon_list;	//NEW for INVITE
+	t_invite_coupon_list	_invite_coupon_list;			//NEW for INVITE
 
 public:
-	/*-----------------------GETTERS----------------------*/
 	
-	// static Database&		get_Database(  ); // singleton
-	Database( void );	// main constructor
-	~Database( void );	// default destructor
+	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+	// static Database&		get_Database(  ); 				// singleton
 
+	Database( void );										// main constructor
+	~Database( void );										// default destructor
+
+	/*-----------------------GETTERS----------------------*/ 
 	// [Client related getters]
 	const t_client_list&	get_client_list( void );
 	const t_client_ptr_list	get_client_ptr_list( void );
@@ -72,10 +74,18 @@ public:
 	bool		is_client_listed( const string& nickname );
 	bool		is_channel_listed( const Channel& channel );
 	bool		is_channel_listed( const string& chan_name );
-	bool		is_channel_empty( Channel* channel );
+	bool		is_channel_empty( Channel* channel );			// UPDATED
 
-	int			add_client_to_channel( Client* client, const string& chan_name );
-	int			add_client_to_channel( Client* client, Channel* channel );
+	void		delete_client_from_all_lists( Client* client );
+	void		delete_inactive_channels( void );
+
+	void		print_client_list( void );
+	void		print_channel_list( void );
+	void		print_invite_coupon_list( void );
+
+	//int			add_client_to_channel( Client* client, const string& chan_name );
+	//int			add_client_to_channel( Client* client, Channel* channel );
+	/*
 	void		remove_client_list( const int& fd );
 	void		remove_client_list( const string& nickname );
 	void		remove_client_list( Client* client );
@@ -83,6 +93,8 @@ public:
 	void		remove_client_from_channel( const string& nickname, const string& chan_name );
 	void		remove_client_from_all_channels( const string& nickname );
 	void		remove_all_clients_from_channel( const string& chan_name );
+	*/
+
 
 	void		create_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
 	void		use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
