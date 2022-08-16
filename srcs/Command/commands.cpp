@@ -144,10 +144,8 @@ void CommandManager::cmd_kill( Message& msg )
 		return;
 	target_client->set_to_be_killed(true);
 
-	msg.append_out(msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " " + msg[2] + CRLF);
-
-	// WARNING DISCONNECT!!!
 	recipient_list.push_back(_database->get_client(msg[1]));
+	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "QUIT : killed by operator" + CRLF);
 
 }
