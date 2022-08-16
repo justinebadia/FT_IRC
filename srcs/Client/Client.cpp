@@ -69,6 +69,7 @@ void	Client::_init_client( void )
 	_socket.pollfd.fd = 0;
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
+	_to_be_killed = false;
 	_registration = NONE_SET;	
 }
 

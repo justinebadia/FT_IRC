@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Database.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/15 16:30:24 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/16 17:21:31 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ public:
 	Channel*				get_channel( const Client* client );
 	size_t					get_channel_count( void );
 	t_channel_ptr_list		get_channel_list_of_client( Client* client );
+	t_client_ptr_list		get_channel_in_common_recipient_list( Client* client );
 	
 	t_invite_coupon_list	get_invite_coupon_list( void ); //NEW for INVITE
 
