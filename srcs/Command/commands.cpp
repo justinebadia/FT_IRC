@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 19:00:57 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/16 11:13:51 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,10 +358,9 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 }
 
 /*[TOPIC]-------------------------------------------------------------------------------------------------------------[TOPIC]*/
-
 void	CommandManager::cmd_topic( Message& msg )
 {
-	t_client_ptr_list	client_list;
+	t_client_ptr_list	recipient_list;
 	Client*				source_client = msg.get_client_ptr();
 	Channel*			channel = _database->get_channel(msg[1]);
 	string				topic;
@@ -384,8 +383,8 @@ void	CommandManager::cmd_topic( Message& msg )
 		else
 			run_reply(RPL_TOPIC, msg);
 			
-		client_list.push_back (source_client);
-		send_to_clients(client_list, msg.get_client_ptr()->get_prefix() + "TOPIC " + msg[1] + " " + topic + CRLF);
+		recipient_list.push_back (source_client);
+		send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "TOPIC " + msg[1] + " " + topic + CRLF);
 	}
 	else if (msg.get_param_count() == 2)
 	{
@@ -398,7 +397,9 @@ void	CommandManager::cmd_topic( Message& msg )
 			}
 		}
 		channel->set_topic(msg[2]);
-		// SEND A MESAGE ???
+			send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
+		// [RFC 2812] :WiZ!jto@tolsun.oulu.fi TOPIC #test :New topic ; User Wiz setting the topic.
+		
 	}
 }
 
