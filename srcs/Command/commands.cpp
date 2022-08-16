@@ -187,41 +187,6 @@ void	CommandManager::cmd_oper( Message& msg )
 }
 
 /*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/
-void	CommandManager::cmd_part( Message& msg )
-{
-	if (msg.get_param_count() < 1)				// WARNING à verfier
-	{
-		run_reply(ERR_NEEDMOREPARAMS, msg);
-		return;
-	}
-
-	Client* source_client = msg.get_client_ptr();	
-	// string channel_parameter = msg[1];
-	// string target_channel;
-	// string delimiter = ",";
-
-	Channel* channel = _database->get_channel(msg[1]);	// if the channel doesnt exist
-
-	if (!channel)
-	{
-		run_reply(ERR_NOSUCHCHANNEL, msg);
-	}
-	else if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
-	{	
-		run_reply(ERR_NOTONCHANNEL, msg);
-	}
-	else
-	{
-		cout << "name of the channel: " << channel->get_name() << endl;	
-		
-		t_client_ptr_list	recipient_list;
-		recipient_list = channel->get_clients_not_matching_permissions(BAN);
-		
-		send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
-		
-		channel->remove_member(source_client);
-	}
-}
 
 
 /*[PASS]---------------------------------------------------------------------------------------------------------------[PASS]*/

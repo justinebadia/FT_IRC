@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/16 14:20:12 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/16 18:03:10 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ public:
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
 	static void	cmd_part( Message& msg );
+	static void process_single_part( Message& msg );
 	static void	cmd_pass( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );

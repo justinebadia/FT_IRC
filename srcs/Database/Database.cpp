@@ -184,6 +184,34 @@ t_channel_ptr_list	Database::get_channel_list_of_client( Client *client ) // LIS
 	return (list_of_client_chan);
 }
 
+t_client_ptr_list		Database::get_channel_in_common_recipient_list( Client* client )
+{
+	t_client_ptr_list	recipient_list;
+	t_channel_ptr_list	joined_channel_list;
+
+	joined_channel_list = get_channel_list_of_client(client);
+
+	t_channel_ptr_list::iterator it = joined_channel_list.begin();
+	t_channel_ptr_list::iterator ite = joined_channel_list.end();
+
+	for (; it != ite; it++)
+	{
+		Channel* channel = (*it);
+
+		t_channel_memberlist memberlist = channel->get_memberlist();
+		t_channel_memberlist::iterator mit = memberlist.begin();
+		t_channel_memberlist::iterator mite = memberlist.end();
+
+		for (; mit != mite; mit++)
+		{
+			recipient_list.push_back((*mit).first);
+		} 
+	}
+	recipient_list.sort();
+	recipient_list.unique();
+	
+	return recipient_list;
+}
 
 t_invite_coupon_list	Database::get_invite_coupon_list( void ) { return _invite_coupon_list; }
 
@@ -333,14 +361,16 @@ void	Database::delete_client_from_all_lists( Client* client )
 
 void Database::delete_inactive_channels( void )
 {	
-	t_channel_list::iterator it = _channel_list.begin();
-	t_channel_list::iterator ite = _channel_list.end();
+	t_channel_ptr_list	channel_list;
+
+	t_channel_ptr_list::iterator it = channel_list.begin();
+	t_channel_ptr_list::iterator ite = channel_list.end();
 
 	for (; it != ite; it++)
 	{
-		if ((*it).is_empty() == true || (*it).is_only_banned_member_left() == true)
+		if ((*it)->is_empty() == true)
 		{
-			_channel_list.remove(*it); // deleting one inactive channel
+			_channel_list.remove(*(*it)); // deleting one inactive channel
 		}
 	}
 }
