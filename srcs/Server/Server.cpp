@@ -188,7 +188,7 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 			int	opt = 1;
 			setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 			_database.add_client_list(Client(client_fd, _server_name));
-			Server::log(string(GREEN) + "Server::process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
+			Server::log("process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
 		}
 	}
 }
@@ -222,7 +222,7 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
 	disconnect_client(pollfd.fd);
-	cout << GREEN << "Server::_process_client_pollerr: removed client fd " << RESET << endl; // WARNING
+	Server::log("Server::_process_client_pollerr: removed client fd " + std::to_string(pollfd.fd)); // WARNING
 }
 
 void	Server::_process_client_pollin( const t_pollfd& pollfd )
@@ -233,19 +233,15 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	
 	client = _database.get_client(pollfd.fd);
 	
-	if (client->get_to_be_killed())
+	if (!client || client->get_to_be_killed())
 		return ;
-
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
-	{
-		disconnect_client(pollfd.fd);
-		return ;
-	}
+		return disconnect_client(pollfd.fd);
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
-	Server::log(string(GREEN) + "Server::_process_client_pollin: received client fd "
-				+ std::to_string(pollfd.fd) + ": " + RESET + client->get_buff(BUFFIN)); // WARNING
+	Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
+				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN)); // WARNING
 	if (!client->is_registered())
 	{
 		CommandManager::execute_commands_registration(*client);
@@ -253,7 +249,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	}
 	else
 		CommandManager::execute_commands(*client);
-	client->clear_buff(BUFFIN);
+	Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
 }
 
 void	Server::_check_registration( Client* client )
@@ -278,14 +274,14 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 	Client*		client;
 	
 	client = _database.get_client(pollfd.fd);
-	if (!client)
-		return ;
-	if (client->get_buff(1).size() <= 0)
+	if (!client || client->get_buff(1).size() <= 0)
 		return;
-	Server::log(string(GREEN) + "Buff content before sending: " + client->get_buff(1).c_str() + RESET);
+	Server::log(string(YELLOW) + "Buff content before sending to client fd " 
+				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFOUT));
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), client->get_buff(1).length(), MSG_DONTWAIT);
 	if (bytes > 0)
 		client->clear_buff(BUFFOUT); // POUR TESTER - À CHANGER
+	Server::log(string(YELLOW) + "Buff content sent!");
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
 
@@ -382,7 +378,8 @@ void	Server::disconnect_client( const int& fd )
 	
 	Client* client = _database.get_client(fd);
 
-	_database.delete_client_from_all_lists(client);
+	if (client)
+		_database.delete_client_from_all_lists(client);
 	close(fd);
 	Server::log("Disconnected client of fd " + std::to_string(fd));
 }

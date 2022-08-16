@@ -211,8 +211,6 @@ void	CommandManager::err_useronchannel( Message& msg )
 /* ":USERS has been disabled"*/
 void	CommandManager::err_userdisabled( Message& msg )
 {
-	Client&	client = *msg.get_client_ptr();
-
 	msg.append_out(": 446 ERR_USERDISABLED :USERS has been disabled");
 }
 
@@ -227,7 +225,7 @@ void	CommandManager::err_alreadyregistered( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ": 462 ERR_ALREADYREGISTERED :You may not reregister";
+	string err_msg = ": 462 ERR_ALREADYREGISTERED " + client.get_nickname() + " :You may not reregister";
 	msg.append_out(err_msg);
 }
 

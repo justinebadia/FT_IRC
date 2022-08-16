@@ -176,6 +176,8 @@ void	CommandManager::execute_commands( Client& client )
 		msg.clear_all();
 		start = next + 2;
 	}
+	if (start != string::npos)
+		buffin.erase(0, start);
 	return ;
 }
 
@@ -184,7 +186,6 @@ void	CommandManager::execute_commands_registration( Client& client )
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
 	size_t	next = 0;
-	size_t	len	= buffin.length();
 	
 	Message	msg(&client);
 	t_cmd_function_ptr command;
@@ -206,8 +207,8 @@ void	CommandManager::execute_commands_registration( Client& client )
 		}
 		msg.clear_all();
 		start = next + 2;
-		if (start >= len)
-			return ;
 	}
+	if (start != string::npos)
+		buffin.erase(0, start);
 	return ;
 }

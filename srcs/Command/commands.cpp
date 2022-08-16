@@ -171,7 +171,7 @@ void	CommandManager::cmd_nick( Message& msg )
 		return;
 	}
 	client.set_registration_flags(Client::NICK_SET);
-	Server::log(string() + GREEN + "Successfully set the nickname to " + msg[1] + RESET);
+	Server::log("Successfully set the nickname to " + msg[1] + RESET);
 	client.append_buff(BUFFOUT, client.get_prefix()+ "NICK " + msg[1] + CRLF);
 	client.set_nickname(msg[1]);
 	
@@ -385,7 +385,7 @@ void	CommandManager::cmd_user( Message& msg )
 	else
 		client.set_hostname(msg[3]);
 	client.set_registration_flags(Client::USER_SET);
-	Server::log(string() + GREEN + "Successfully set the username to " + msg.get_substr_after(":") + RESET);
+	Server::log("Successfully set the username to " + msg.get_substr_after(":") + RESET);
 	return ;
 }
 
