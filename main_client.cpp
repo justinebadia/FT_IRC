@@ -50,10 +50,13 @@ int main(int argc, char const* argv[])
 	int res;
 	if (argc == 3)
 	{
+		input = "PASS pass\r\n";
+		send(pollfds[0].fd, input.c_str(), input.size(), 0);
 		input = "NICK " + string(argv[1]) + "\r\n";
 		send(pollfds[0].fd, input.c_str(), input.size(), 0);
 		input = "USER " + string(argv[2]) + " * * :" + string(argv[2]) + "\r\n";
 		send(pollfds[0].fd, input.c_str(), input.size(), 0);
+		
 		input.clear();
 	}
 	while(1)

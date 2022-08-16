@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc_define.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:21:32 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/10 13:44:16 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/15 13:26:23 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ namespace irc {
 
 // REGEX
 #define REGEX_NICKNAME		"^(?![&#:$])((?![.,*?!@]).)*$" // WARNING 9 characters maximum not done
-#define	REGEX_CHANNEL		"*" // WARNING not done
+
 
 // Errors
 #define	ERR_ALLOC	1

@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 10:39:27 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 20:20:07 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 12:08:04 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <regex>
 #include <string>
+#include <list>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -28,21 +29,66 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::regex;
+using std::list;
 
 namespace irc
 {
-
-int		error_log( const string& src, const string& msg, int error_code )
-{
-	cerr << "Error " << error_code << ": " << src << ": " << msg << endl;
-	return error_code;
-}
 
 bool	validate_entry( string regex_format, string entry)
 {
 	regex	reg_cmp(regex_format);
 	bool res = std::regex_match(entry, reg_cmp);
 	return res;
+}
+
+bool	compare_to_mask_list( list<string>* mask_list, const string& str )
+{
+	list<string>::iterator	it;
+
+	for(it = mask_list->begin(); it != mask_list->end(); it++)
+	{
+		if (compare_to_mask(*it, str))
+			return true; 
+	}
+	return false;
+}
+
+bool	compare_to_mask( const string& mask, const string& str )
+{
+	size_t	mask_i = 0;
+	size_t	str_i = 0;
+	size_t	next_wild;
+	size_t	find_mask;
+	size_t	sublen;
+
+	if (mask[mask_i] != '*' && mask[mask_i] != str[str_i])
+		return false;
+	if (mask[mask.length() - 1] != '*' && mask[mask.length() - 1] != str[str.length() - 1])
+		return false;
+
+	while (mask[mask_i])
+	{
+		while (mask[mask_i] == '*')
+			mask_i++;
+
+		if (!mask[mask_i])
+			return true;
+
+		// Get the index of the next (*)
+		next_wild = mask.find("*", mask_i);
+		if (next_wild == string::npos)
+			next_wild = mask.length() - 1;
+		sublen = next_wild - mask_i;
+
+		// Attempt to find the mask substr
+		find_mask = str.find(mask.substr(mask_i, sublen), str_i);
+		if (find_mask == string::npos)
+			return false;
+		
+		mask_i += sublen + 1;
+		str_i = find_mask + sublen;
+	}
+	return true;
 }
 
 const string grab_ip_address( void )
