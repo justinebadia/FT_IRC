@@ -240,9 +240,22 @@ void	CommandManager::err_badchanmask( Message& msg )
 	msg.append_out(err_msg);
 }
 
+void	CommandManager::err_noprivileges( Message& msg )
+{
+	string err_msg = ": 481 :Permission Denied- You're not an IRC operator";
+	msg.append_out(err_msg);
+}
+
 void	CommandManager::err_chanoprivsneeded( Message& msg )
 {
-	msg.append_out(": 482 " + msg[1] + " :You're not channel operator");
+	string err_msg = ": 482 " + msg[1] + " :You're not channel operator";	//PROBLEM if multiple channels in PARAMETERS
+	msg.append_out(err_msg);
+}
+
+void	CommandManager::err_cantkillserver( Message& msg )
+{
+	string err_msg = ": 483 :You can't kill a server";
+	msg.append_out(err_msg);
 }
 
 /*=[500-----------------------------------------------------------------------------------------------------------------------------------------599]=*/

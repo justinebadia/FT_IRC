@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/12 18:37:40 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/16 14:30:42 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@
 #define	ERR_BADCHANMASK			476
 #define	ERR_NOPRIVILEGES		481
 #define	ERR_CHANOPRIVSNEEDED	482
-// #define	ERR_CANTKILLSERVER		483
+#define	ERR_CANTKILLSERVER		483
 #define	ERR_NOOPERHOST			491
 // #define	ERR_UMODEUNKNOWNFLAG	501
 // #define	ERR_USERSDONTMATCH		502

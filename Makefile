@@ -79,7 +79,7 @@ PRINTED :=
 all		: $(NAME)
 
 $(NAME)	: $(HDRS) $(SRCS) $(OBJS) $(MAIN)
-		# $(C_MAIN)
+		@ $(C_MAIN)
 		# $(shell echo "\nCompiling $(EXE) done!")
 		# $(shell echo "Executable is : $(NAME)")
 

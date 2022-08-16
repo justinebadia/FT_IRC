@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 11:10:36 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/16 14:30:27 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("INVITE"), cmd_invite));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
+	_command_map.insert(std::make_pair(string("KILL"), cmd_kick));
 	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("OPER"), cmd_oper));
@@ -101,7 +102,9 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] KICK
+	_reply_map.insert(std::make_pair(ERR_NOPRIVILEGES, err_noprivileges));				//[481] KILL
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));		//[482] INVITE,KICK,TOPIC
+	_reply_map.insert(std::make_pair(ERR_CANTKILLSERVER, err_cantkillserver));			//[483] KILL
 
 }
 
