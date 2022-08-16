@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CommandManager.hpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 15:48:55 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef COMMAND_MANAGER_HPP
 #define COMMAND_MANAGER_HPP
@@ -71,6 +60,7 @@ public:
 	// COMMANDS []WARNING[] TEMPORARILY IN ALPHABETICAL ORDER
 	static void cmd_invite( Message& msg );
 	static void cmd_join( Message& msg );
+	static void process_single_join( Message& msg );
 	static void	cmd_kick( Message& msg );
 	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );

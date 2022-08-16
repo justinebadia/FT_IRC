@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/15 15:16:41 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
@@ -94,6 +83,7 @@ private:
 
 	void		_init_server( void );
 	void		_init_operators( void );
+	void		_kill_server( void );
 
 	t_pollfd*	_poll_sockets( void );
 	void		_process_connections( const t_pollfd& pollfd );
@@ -139,6 +129,7 @@ public:
 	
 	int			run_server( void );
 	void		disconnect_client( const int& fd );
+	void		disconnect_all_clients( void );
 
 	bool		attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
 	bool		is_client_operator( const int& fd );

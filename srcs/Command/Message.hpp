@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/01 10:31:25 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/15 19:09:14 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #pragma once
 #ifndef MESSAGE_HPP
@@ -59,6 +49,7 @@ public:
 
 	bool	operator==( const Message& rhs ) const;
 	string	operator[]( int rhs );
+	string	operator[]( size_t rhs );
 
 	/*-----------------------GETTERS----------------------*/
 

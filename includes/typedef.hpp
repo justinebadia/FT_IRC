@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   typedef.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/13 17:06:58 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/15 11:56:06 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ typedef list<Client*>						t_client_ptr_list;
 typedef list<Channel>						t_channel_list;
 typedef list<Channel*>						t_channel_ptr_list;
 typedef map<string, t_client_ptr_list>		t_channel_clients_map;
+
+typedef	list<string>						t_mask_list;
 
 typedef	pair<string, t_cmd_function_ptr>	t_cmd_pair;
 typedef	pair<int, t_reply_function_ptr>		t_reply_pair;

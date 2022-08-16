@@ -10,12 +10,11 @@
 #include <poll.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
-// #include <signal.h>
+#include <signal.h>
 
 #include <string>
 #include <exception>
 #include <iostream>
-
 
 #include "CommandManager.hpp"
 #include "Message.hpp"
@@ -64,6 +63,7 @@ Server&	Server::operator=( const Server& ){ return *this; }			// copy operator o
 
 Server::Server( const unsigned int& port, const string password, bool exit ) // main server constructor
 	: _server_ip(grab_ip_address())
+	, _server_name(_server_ip)
 	, _port(port)				// 6667
 	, _password(password)
 	, _exit(exit)
@@ -88,7 +88,7 @@ void	Server::_init_server( void )
 	this->get_pollfd().events = 0;
 	this->get_pollfd().revents = 0;
 
-	int opt; // to store the setsockopt options
+	int opt = 1; // to fix the binding problem, opt has to NOT be 0
 	if (setsockopt(this->get_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == FAIL) // Step 2: setsockopt()
 	{
 		throw Server::SetsockoptErrorException();
@@ -108,6 +108,7 @@ void	Server::_init_server( void )
 		throw Server::ListenErrorException();
 	}
 
+	_init_operators();
 	CommandManager::_init_command_map();
 	CommandManager::_init_reply_map();
 	CommandManager::set_server(this);
@@ -121,6 +122,12 @@ void	Server::_init_operators( void )
 	_operator_vect.push_back(Operator("sfournie", "irc"));
 	_operator_vect.push_back(Operator("jbadia", "irc"));
 	_operator_vect.push_back(Operator("tshimoda", "irc"));
+}
+
+void	Server::_kill_server( void )
+{
+	disconnect_all_clients();
+	close(get_fd());
 }
 
 t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
@@ -146,7 +153,9 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
 			if (client_fd == -1)
 				break;
-			_database.add_client_list(Client(client_fd));
+			int	opt = 1;
+			setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
+			_database.add_client_list(Client(client_fd, _server_name));
 			Server::log(string(GREEN) + "Server::process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
 		}
 	}
@@ -326,16 +335,34 @@ int	Server::run_server( void )
 			_process_clients(&pollfds[1], client_count);
 		}
 	}
-	Server::log(string(GREEN) + "Leaving with absolute grace" + RESET);
-	close(get_fd()); // Need a close function
+	_kill_server();
 	return 0;
 }
 
 void	Server::disconnect_client( const int& fd )
 {
-	_database.remove_client_list(fd);
+	//_database.remove_client_list(fd);
+	
+	Client* client = _database.get_client(fd);
+
+	_database.delete_client_from_all_lists(client);
 	close(fd);
 	Server::log("Disconnected client of fd " + std::to_string(fd));
+}
+
+void	Server::disconnect_all_clients( void )
+{
+	t_client_ptr_list			client_list;
+	t_client_ptr_list::iterator	it;
+	int							fd;
+
+	client_list = _database.get_client_ptr_list();
+	for (it = client_list.begin(); it != client_list.end(); it++)
+	{
+		fd = (*it)->get_fd();
+		_database.delete_client_from_all_lists(*it);
+		close(fd);
+	}
 }
 
 bool	Server::attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass )
@@ -346,13 +373,15 @@ bool	Server::attempt_client_as_operator( Client& client, const string& oper_name
 	{
 		if ((*it).client_fd == client.get_fd())
 		{
-			return false;
+			
 			Server::log("Client nicknamed " + client.get_nickname() + " is already an operator");
+			return false;
 		}
 	}
 	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
 	{
-		if ((*it).client_fd > 0 && (*it).name == oper_name && (*it).password == oper_pass)
+		Server::log("checking " + (*it).name + " " + oper_name + " " + (*it).password + " " + oper_pass);
+		if ((*it).client_fd > 0 && !(*it).name.compare(oper_name) && !(*it).password.compare(oper_pass))
 		{
 			(*it).client_fd = client.get_fd();
 			client._set_operator(true);

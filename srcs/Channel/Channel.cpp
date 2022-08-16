@@ -2,17 +2,15 @@
 
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
+#include "Client.hpp"
 #include "typedef.hpp"
 #include "CommandManager.hpp"
 #include "numeric_replies.hpp"
+#include "utils.hpp"
 
+#include <algorithm>
 #include <iostream>
-// #include <list>
-// #include <map>
 #include <string>
-
-#include "Client.hpp"
-#include "typedef.hpp"
 
 using namespace irc;
 using std::string;
@@ -144,12 +142,26 @@ e_permission		Channel::get_permission( Client* client )
  	return (e_permission)FAIL;														// Didn't find the Client in the channel_banlist
 }
 
-t_client_ptr_list	Channel::get_clients_matching_permissions( int type )
+t_client_ptr_list	Channel::get_clients_any_permissions( void )
 {
 	t_client_ptr_list	client_list;
 
 	iterator it = _memberlist.begin();
  	iterator ite = _memberlist.end();
+
+	for(; it != ite; it++)
+	{
+		client_list.push_back((*it).first);
+	}
+	return (client_list);
+}
+
+t_client_ptr_list	Channel::get_clients_matching_permissions( int type )
+{
+	t_client_ptr_list	client_list;
+
+	iterator it = _memberlist.begin();
+	iterator ite = _memberlist.end();
 
 	for(; it != ite; it++)
 	{
@@ -262,11 +274,25 @@ bool	Channel::is_chanop( Client* client )
 	return false;
 }
 
+// bool	Channel::is_banned( Client* client )
+// {
+// 	if (get_permission(client) == BAN )
+// 		return true;
+
+// 	return false;
+// }
+
 bool	Channel::is_banned( Client* client )
 {
-	if (get_permission(client) == BAN )
+	if (!client)
 		return true;
+	return is_banned(client->get_nickname());
+}
 
+bool	Channel::is_banned( const string& nickname )
+{
+	if (compare_to_mask_list(&_banmask_list, nickname))
+		return true;
 	return false;
 }
 
@@ -295,13 +321,20 @@ bool	Channel::is_empty( void )
 void	Channel::add_member( Client* client, e_permission type )
 {
 	if (is_member(client) == false)
+	{
 		_memberlist.push_back(std::make_pair(client, type));
+	}
+
+	// WARNING
+	print_memberlist();
+	// WARNING
 }
 
-int	Channel::remove_member( Client* client )
+void	Channel::remove_member( Client* client )
 {
 	iterator it = _memberlist.begin();
 	iterator ite = _memberlist.end();
+
 
 	for (; it != ite; it++)
 	{
@@ -312,8 +345,7 @@ int	Channel::remove_member( Client* client )
 				if (_memberlist.size() == 1)
 				{
 					empty_memberlist();
-					// RETURN INT TO DATABASE TO REMOVE THE CHANNEL
-					return 22; // WARNING
+					return;
 				}
 				else
 				{
@@ -322,25 +354,49 @@ int	Channel::remove_member( Client* client )
 
 					if (is_only_banned_member_left() == true)
 					{
-						// retourne un int pour dire a la database de detruire ce channel
-						return 1;
+						empty_memberlist();
+						return;
 					}
 					else
 						break;
 				}
 			}
-			std::cout << "BEFORE ERASE\n";
 			_memberlist.erase(it);
+			std::cout << "AFTER Channel::remove_member()\n";
+			print_memberlist();
 			break;
 		}
 	}
-	return 42; // WARNING
+}
+
+void	Channel::print_memberlist( void )
+{
+	iterator it = _memberlist.begin();
+	iterator ite = _memberlist.end();
+
+	for (; it != ite; it++)
+	{
+		std::cout << "list of members " << (*it).first->get_nickname() << std::endl;
+	}
 }
 
 void	Channel::empty_memberlist( void )
 {
 	_memberlist.clear();
 }
+
+void	Channel::add_banmask( const string& mask )
+{
+	if (std::find(_banmask_list.begin(), _banmask_list.end(), mask) == _banmask_list.end())
+		_banmask_list.push_front(mask);
+}
+
+void	Channel::remove_banmask( const string& mask )
+{
+	if (std::find(_banmask_list.begin(), _banmask_list.end(), mask) != _banmask_list.end())
+		_banmask_list.remove(mask);
+}
+
 
 // void	Channel::transfer_ownership( void )
 // {
@@ -446,13 +502,11 @@ string Channel::parse_modes( Message& msg )
 			{
 				set_mode_invite_only(true);
 				_mode_flags |= FLAG_I;
-
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(true);
 				_mode_flags |= FLAG_T;
-
 			}
 			else if (message[i] == 'k')
 			{

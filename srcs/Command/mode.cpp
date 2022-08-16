@@ -16,8 +16,6 @@ using std::endl;
 
 int parse_cmd_mode(Message &msg)
 {
-	Client *client = msg.get_client_ptr();
-
 	if (msg[1][0] == '#' || msg[1][0] == '&')
 	{
 		if (msg.get_param_count() < 1)
@@ -110,15 +108,16 @@ void CommandManager::cmd_mode(Message &msg)
 		map<string, int> pos_param = flags_need_params(parsed[0]);
 		string modes;
 		string params;
+		size_t pos;
 		if (channel->get_mode_flags() > 0)
 		{
 			for (size_t i = 0; i != parsed[0].length(); i++)
 			{
 				if (parsed[0][i] == 'o')
 				{
-					int pos = find_param_pos(pos_param, "o");
-					if (pos > 0)
+					if (find_param_pos(pos_param, "o"))
 					{
+						pos = static_cast<size_t>(find_param_pos(pos_param, "o"));
 						Client* to_chanop = _database->get_client(parsed[pos]);
 						if (to_chanop)
 						{
@@ -141,9 +140,9 @@ void CommandManager::cmd_mode(Message &msg)
 					modes += "t";
 				else if (parsed[0][i] == 'k' && !channel->get_is_password_required()) //avoir un flag si already set?
 				{
-					int pos = find_param_pos(pos_param, "k");
-					if (pos > 0)
+					if (find_param_pos(pos_param, "k"))
 					{
+						pos = static_cast<size_t>(find_param_pos(pos_param, "k"));
 						if (!parsed[pos].empty())
 						{
 							channel->set_password(parsed[pos]);
@@ -154,10 +153,10 @@ void CommandManager::cmd_mode(Message &msg)
 				}
 				else if (parsed[0][i] == 'b')
 				{
-					int pos = find_param_pos(pos_param, "b");
 					//gérer selon +b ou -b avec le FLAG_B ?
-					if (pos > 0)
+					if (find_param_pos(pos_param, "b"))
 					{
+						pos = static_cast<size_t>(find_param_pos(pos_param, "b"));
 						if (parsed[pos].empty())
 						{
 							irc::CommandManager::run_reply(RPL_BANLIST, msg);

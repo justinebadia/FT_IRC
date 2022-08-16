@@ -23,24 +23,20 @@ Client::Client( int fd ) // main constructor
 	, _realname("")
 	, _client_ip(grab_client_ip_adress())
 {
+	_init_client();
 	_socket.pollfd.fd = fd;
-	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
-	_socket_opened = true;
-	_registration = NONE_SET;
 	// _socket.addr = addr;	
 }
 
-Client::Client( string nickname ) // WARNING: TESTING PURPOSE constructor - Pourquoi on le garde pas ?
-	: _nickname(nickname)
+Client::Client( int fd, string hostname ) // WARNING: TESTING PURPOSE constructor - Pourquoi on le garde pas ?
+	: _nickname("")
 	, _username("")
-	, _hostname("")
+	, _hostname(hostname)
 	, _realname("")
 	, _client_ip(grab_client_ip_adress())  
 {
-	_socket.pollfd.fd = 0;
-	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
-	_socket_opened = true;
-	_registration = NONE_SET;	
+	_init_client();
+	_socket.pollfd.fd = fd;
 }
 
 Client::Client( const Client& rhs ) : 	_client_ip(rhs._client_ip)// copy constructor
@@ -68,6 +64,13 @@ Client::~Client( void ) // destructor
 	// freeaddrinfo( reinterpret_cast<struct addrinfo*>(&get_addr()) );
 }
 
+void	Client::_init_client( void )
+{
+	_socket.pollfd.fd = 0;
+	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	_socket_opened = true;
+	_registration = NONE_SET;	
+}
 
 /*---------------OTHER-OPERATOR-OVERLOAD--------------*/
 
@@ -146,7 +149,7 @@ void	Client::clear_buff( u_int buff_i )
 		_buff[1].clear();
 }
 
-void	Client::trim_buff( u_int buff_i, size_t len )
+void	Client::trim_buff( u_int buff_i, size_t len ) // WARNING pas utilisé
 {
 	string	*buff = NULL;
 

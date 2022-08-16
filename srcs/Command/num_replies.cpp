@@ -172,9 +172,7 @@ void	CommandManager::err_nonicknamegiven( Message& msg)
 /*"<client> <nick> :Erroneus nickname"*/
 void	CommandManager::err_erroneusnickname( Message& msg)
 {
-	Client&	client = *msg.get_client_ptr();
-
-	string err_msg = ": 432 " + client.get_nickname() + " " + msg[1] + " :Erroneus nickname";
+	string err_msg = ": 432 " + msg[1] + " :Erroneus nickname";
 	msg.append_out(err_msg);
 }
 
@@ -243,7 +241,8 @@ void	CommandManager::err_keyset( Message& msg )
 
 void	CommandManager::err_badchanmask( Message& msg )
 {
-	msg.append_out(": 476 "); // WARNING RFC DIT PAS GRAND CHOSE
+	string err_msg = ": 476 " + msg[1] + " :Invalid channel name.";
+	msg.append_out(err_msg);
 }
 
 void	CommandManager::err_chanoprivsneeded( Message& msg )

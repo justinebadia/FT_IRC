@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/15 19:08:15 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "Message.hpp"
 
@@ -71,6 +60,11 @@ string		Message::operator[]( int i )					// scope operator overload
 		i--;
 	}
 	return _message_in.substr(start, len);
+}
+
+string		Message::operator[]( size_t i )					// scope operator overload
+{
+	return operator[](static_cast<int>(i));
 }
 
 

@@ -35,7 +35,8 @@ _CLASS_SRCS	=	Channel/Channel.cpp \
 				Command/Message.cpp \
 				Command/CommandManager.cpp \
 				Command/commands.cpp \
-				Command/mode.cpp\
+				Command/join.cpp \
+				Command/mode.cpp \
 				Command/utils_commands.cpp\
 				Command/num_replies.cpp \
 				Server/Server.cpp
@@ -68,15 +69,18 @@ SRCS		= $(CLASS_SRCS) $(UTILS_SRCS)
 HDRS		= $(CLASS_HDRS) $(UTILS_HDRS)
 OBJS		= $(SRCS:.cpp=.o)
 
+PRINTED :=
 %.o : %.cpp
-		$(C_OBJS)
+		@ $(or $(PRINTED),$(eval PRINTED := :)/bin/echo -n "Compiling object files")
+		@ /bin/echo -n "."
+		@ $(C_OBJS)
 
 # Recipes
 all		: $(NAME)
 
 $(NAME)	: $(HDRS) $(SRCS) $(OBJS) $(MAIN)
-		$(C_MAIN)
-		# $(shell echo "Compiling $(EXE) done!")
+		# $(C_MAIN)
+		# $(shell echo "\nCompiling $(EXE) done!")
 		# $(shell echo "Executable is : $(NAME)")
 
 $(D_OBJS)	:

@@ -1,0 +1,12 @@
+-std=c++98
+-Wall
+-Wextra
+-Werror
+-Wconversion
+-Wpedantic
+-Iincludes
+-Isrcs/Server
+-Isrcs/Channel
+-Isrcs/Client
+-Isrcs/Command
+-Isrcs/Database
