@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef COMMAND_MANAGER_HPP
 #define COMMAND_MANAGER_HPP
 
@@ -67,6 +68,7 @@ public:
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
 	static void	cmd_part( Message& msg );
+	static void process_single_part( Message& msg );
 	static void	cmd_pass( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );
