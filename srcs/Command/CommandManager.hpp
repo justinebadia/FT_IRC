@@ -62,6 +62,7 @@ public:
 	static void cmd_join( Message& msg );
 	static void process_single_join( Message& msg );
 	static void	cmd_kick( Message& msg );
+	static void	cmd_kill( Message& msg );
 	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
@@ -81,8 +82,8 @@ public:
 	static void	rpl_welcome( Message& msg );			//[001] ????
 	static void	rpl_away( Message& msg );				//[301] INVITE
 	static void	rpl_whoisuser( Message& msg );			//[311] WHOIS
-	static void	rpl_whoisserver(Message& msg );			//[312] WHOIS
-	static void	rpl_whoisoperator(Message& msg );		//[313] WHOIS
+	static void	rpl_whoisserver( Message& msg );			//[312] WHOIS
+	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
 	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
 	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS
 	static void	rpl_channelmodeis( Message& msg );		//[324] MODE
@@ -91,10 +92,11 @@ public:
 	static void	rpl_inviting( Message& msg );			//[341] INVITE
 	static void	rpl_banlist( Message& msg );			//[367] MODE
 	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
+	static void rpl_youreoper( Message& msg );			//[381] OPER
 	static void	rpl_usersstart( Message& msg );			//[392] WHOIS
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
-	static void	err_nosuchnick( Message& msg);			//[401] INVITE
+	static void	err_nosuchnick( Message& msg);			//[401] INVITE,KILL
 	static void	err_nosuchserver( Message& msg);		//[402] USERS,WHOIS
 	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
 	static void	err_noorigin( Message& msg );			//[409] PING
@@ -105,12 +107,15 @@ public:
 	static void	err_notonchannel( Message& msg );		//[442] INVITE,KICK,PART,TOPIC
 	static void	err_useronchannel( Message& msg );		//[443] INVITE
 	static void	err_userdisabled( Message& msg );		//[446] USERS
-	static void	err_needmoreparams( Message& msg );		//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
+	static void	err_needmoreparams( Message& msg );		//[461] INVITE,KICK,KILL,PART,TOPIC,USERS_MSG
 	static void	err_alreadyregistered( Message& msg );	//[462] USERS_MSG
 	static void	err_passwdmismatch( Message& msg );		//[464] USERS_MSG
 	static void err_keyset( Message& msg ); 			//[467] MODE_ERR_KEYSET
 	static void	err_badchanmask( Message& msg );		//[476] KICK
+	static void	err_noprivileges( Message& msg );		//[481] KILL
 	static void	err_chanoprivsneeded( Message& msg );	//[482] INVITE,KICK,TOPIC
+	static void	err_cantkillserver( Message& msg );		//[483] KILL
+	static void err_nooperhost( Message& msg );			//[491] OPER
 	
 	/*------------------COMMANDS_UTILS------------------*/	
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);

@@ -38,7 +38,7 @@ private:
 		const string	password;
 		int				client_fd;
 
-		Operator( const string& name, const string& pass ) : name(name), password(pass) {  }
+		Operator( const string& name, const string& pass ) : name(name), password(pass), client_fd(-1) {  }
 	};
 	typedef vector<Operator>	t_operator_vect;
 	
@@ -82,8 +82,12 @@ private:
 	/*---------------PRIVATE-MEMBER-FUNCTIONS---------------*/
 
 	void		_init_server( void );
-	void		_init_operators( void );
 	void		_kill_server( void );
+	void		_check_for_kills( void );
+
+	void		_init_operators( void );
+	void		_clean_operators( void );
+	
 
 	t_pollfd*	_poll_sockets( void );
 	void		_process_connections( const t_pollfd& pollfd );
@@ -131,7 +135,9 @@ public:
 	void		disconnect_client( const int& fd );
 	void		disconnect_all_clients( void );
 
-	bool		attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
+	int			attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass );
+	bool		is_client_operator( Client* client );
+	bool		is_client_operator( const string& nickname );
 	bool		is_client_operator( const int& fd );
 
 	const string grab_ip_address( void );

@@ -54,6 +54,7 @@ private:
 	string			_hostname;
 	string 			_realname;
 	const string 	_client_ip;
+	bool			_to_be_killed;
 	bool			_operator;
 	
 	t_socket		_socket;
@@ -88,6 +89,7 @@ public:
 	string							get_hostname( void ) const;
 	const string&					get_realname( void ) const;
 	const string& 					get_client_ip( void ) const;
+	bool 							get_to_be_killed( void ) const;
 	string							get_prefix( void );
 	int								get_registration_flags( void ) const;
 
@@ -112,6 +114,7 @@ public:
 	void	set_realname( const string& realname );
 
 	void	set_registration_flags( const e_registration& flag );
+	void	set_to_be_killed( bool setting );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/

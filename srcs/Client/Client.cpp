@@ -87,6 +87,7 @@ const string&	Client::get_username( void ) const { return _username; }
 string			Client::get_hostname( void ) const { return _hostname; } 
 const string&	Client::get_realname( void ) const { return _realname; }
 const string&	Client::get_client_ip(void ) const { return _client_ip; }
+bool			Client::get_to_be_killed(void ) const { return _to_be_killed; }
 
 string Client::get_prefix( void ) 
 { 
@@ -130,6 +131,7 @@ void	Client::set_registration_flags( const e_registration& flag )
 	this->_registration |= flag;
 }
 
+void	Client::set_to_be_killed( bool setting ) { _to_be_killed = setting; }
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 

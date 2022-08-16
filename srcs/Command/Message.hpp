@@ -40,6 +40,7 @@ public:
 	
 	Message( void ) : _client_ptr( NULL ) {  };				// default constructor
 	Message( Client* client_ptr );							// main constructor
+	Message( Client* client, const string& buffin );
 	Message( const Message& rhs );							// copy constructor
 	Message& operator=( const Message& rhs );				// copy operator overload
 	~Message( void );										// destructor

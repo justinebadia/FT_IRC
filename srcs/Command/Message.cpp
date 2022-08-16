@@ -13,6 +13,9 @@ using namespace irc;
 Message::Message( Client* client ) : _client_ptr(client)	// main constructor
 {}
 
+Message::Message( Client* client, const string& buffin ) : _client_ptr(client), _message_in(buffin)	// main constructor
+{}
+
 Message::Message( const Message& rhs )						// copy constructor
 {
 	*this = rhs;

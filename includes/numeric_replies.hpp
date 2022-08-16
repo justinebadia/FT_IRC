@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   numeric_replies.hpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/25 14:41:04 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 15:47:36 by jbadia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #pragma once
 
@@ -122,7 +111,7 @@
 #define	ERR_BADCHANMASK			476
 #define	ERR_NOPRIVILEGES		481
 #define	ERR_CHANOPRIVSNEEDED	482
-// #define	ERR_CANTKILLSERVER		483
+#define	ERR_CANTKILLSERVER		483
 #define	ERR_NOOPERHOST			491
 // #define	ERR_UMODEUNKNOWNFLAG	501
 // #define	ERR_USERSDONTMATCH		502

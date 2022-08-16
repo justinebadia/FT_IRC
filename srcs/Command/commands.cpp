@@ -112,6 +112,45 @@ void CommandManager::cmd_kick( Message& msg )
 	// WARNING TEST TO DO try chanop kick another chanop and what happens when you kick a banned member? is removed from memberlist?
 }
 
+/*[KILL]---------------------------------------------------------------------------------------------------------------[KILL]*/
+void CommandManager::cmd_kill( Message& msg )
+{
+	Client*	source_client = msg.get_client_ptr();
+	t_client_ptr_list recipient_list;
+
+	if (source_client->is_operator() == false)
+	{
+		run_reply(ERR_NOPRIVILEGES, msg);
+		return;
+	}
+	if (msg.get_param_count() < 2)
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return;
+	}
+	if (_database->is_client_listed(msg[1]) == false)
+	{
+		run_reply(ERR_NOSUCHNICK, msg);
+		return;
+	}
+	if (_server->get_name() == msg[1])
+	{
+		run_reply(ERR_CANTKILLSERVER, msg);
+		return;
+	}
+
+	Client*	target_client = _database->get_client(msg[1]);
+	if (!target_client)
+		return;
+	target_client->set_to_be_killed(true);
+
+	// WARNING DISCONNECT!!!
+	recipient_list.push_back(_database->get_client(msg[1]));
+	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(";") + CRLF);
+	Message	quit_msg(target_client, "QUIT :Killed by operator for being naughty");
+	cmd_quit(quit_msg); //WARNING might need to append the source message with the result of quit
+	// send_to_clients(recipient_list, source_client->get_prefix() + "QUIT : killed by operator" + CRLF);
+}
 
 /*[MODE]-------------------------------------------in-seperate-file-MODE.cpp-------------------------------------------[MODE]*/
 
@@ -141,12 +180,16 @@ void	CommandManager::cmd_nick( Message& msg )
 /*[OPER]---------------------------------------------------------------------------------------------------------------[OPER]*/
 void	CommandManager::cmd_oper( Message& msg )
 {
+	int	reply;
 	if(msg[1].empty())
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
-	_server->attempt_client_as_operator(*msg.get_client_ptr(), msg[1], msg[2]);
+	reply = _server->attempt_client_as_operator(*msg.get_client_ptr(), msg[1], msg[2]);
+	if (reply != 0)
+		return run_reply(reply, msg);
+	
 }
 
 /*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/
@@ -265,10 +308,11 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 
 	if (!client)
 		return;
-	_server->disconnect_client(client->get_fd()); // WARNING to be changed for a queue of client to disconnect, I think?
+	client->set_to_be_killed(true);
+	// _server->disconnect_client(client->get_fd()); // WARNING to be changed for a queue of client to disconnect, I think?
 	msg.set_client_ptr(NULL);
 	if (!msg[1].empty())  // WARNING todo
-		send_to_channels(chan_list, prefix + "QUIT :" + msg.get_substr_after(":") + CRLF);	
+		send_to_channels(chan_list, prefix + "QUIT :Quit: " + msg.get_substr_after(":") + CRLF);	
 	if (msg[1].empty())  // WARNING todo
 		send_to_channels(chan_list, prefix + "QUIT" + CRLF);
 }
