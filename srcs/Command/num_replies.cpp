@@ -66,7 +66,7 @@ void	CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(": 313 :" + client.get_nickname() + " :is an IRC operator");
+	msg.append_out(": 313 RPL_WHOISOPERATOR :" + client.get_nickname() + " :is an IRC operator");
 }
 
 void	CommandManager::rpl_endofwhois( Message& msg )
@@ -205,7 +205,7 @@ void	CommandManager::err_notonchannel( Message& msg )
 
 void	CommandManager::err_useronchannel( Message& msg )
 {
-	msg.append_out(": 443 " + msg[1] + " " + msg[2] + " :is already on channel");
+	msg.append_out(": 443 ERR_USERONCHANNEL " + msg[1] + " " + msg[2] + " :is already on channel");
 }
 
 /* ":USERS has been disabled"*/
@@ -213,13 +213,13 @@ void	CommandManager::err_userdisabled( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	msg.append_out(":" + client.get_hostname() + " 446 :USERS has been disabled");
+	msg.append_out(": 446 ERR_USERDISABLED :USERS has been disabled");
 }
 
 /*NUM REPLIES - Users message*/
 void	CommandManager::err_needmoreparams( Message& msg )
 {
-	string err_msg = ": 461 " + msg[0] + " :Not enough parameters";
+	string err_msg = ": 461 ERR_NEEDMOREPARAMS " + msg[0] + " :Not enough parameters";
 	msg.append_out(err_msg);
 }
 
@@ -227,35 +227,48 @@ void	CommandManager::err_alreadyregistered( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ":" + client.get_hostname() + " 462 :You may not reregister";
+	string err_msg = ": 462 ERR_ALREADYREGISTERED :You may not reregister";
 	msg.append_out(err_msg);
 }
 
 void	CommandManager::err_passwdmismatch( Message& msg )
 {
-	string err_msg = ": 464 :Password incorrect";
+	string err_msg = ": 464 ERR_PASSWDMISMATCH :Password incorrect";
 	msg.append_out(err_msg);
 }
 
 void	CommandManager::err_keyset( Message& msg )
 {
-	msg.append_out(": 467 " + msg[1] + " :Channel key already set");
+	msg.append_out(": 467 ERR_KEYSET " + msg[1] + " :Channel key already set");
 }
 
 void	CommandManager::err_badchanmask( Message& msg )
 {
-	string err_msg = ": 476 " + msg[1] + " :Invalid channel name.";
+	string err_msg = ": 476 ERR_BADCHANMASK " + msg[1] + " :Invalid channel name.";
+	msg.append_out(err_msg);
+}
+
+void	CommandManager::err_noprivileges( Message& msg )
+{
+	string err_msg = ": 481 ERR_NOPRIVILEGES :Permission Denied- You're not an IRC operator";
 	msg.append_out(err_msg);
 }
 
 void	CommandManager::err_chanoprivsneeded( Message& msg )
 {
-	msg.append_out(": 482 " + msg[1] + " :You're not channel operator");
+	string err_msg = ": 482 ERR_CHANOPRIVSNEEDED " + msg[1] + " :You're not channel operator";	//PROBLEM if multiple channels in PARAMETERS
+	msg.append_out(err_msg);
+}
+
+void	CommandManager::err_cantkillserver( Message& msg )
+{
+	string err_msg = ": 483 ERR_CANTKILLSERVER :You can't kill a server";
+	msg.append_out(err_msg);
 }
 
 void 	CommandManager::err_nooperhost( Message& msg )
 {
-	msg.append_out(": 491 :Given name/host is currently unavailable as operator.");
+	msg.append_out(": 491 ERR_NOOPERHOST :Given name/host is currently unavailable as operator.");
 }
 
 /*=[500-----------------------------------------------------------------------------------------------------------------------------------------599]=*/

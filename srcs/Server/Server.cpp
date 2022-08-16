@@ -131,7 +131,7 @@ void	Server::_check_for_kills( void )
 	clients = _database.get_client_ptr_list();
 	for (it = clients.begin(); it != clients.end(); it++)
 	{
-		if ((*it).get_to_be_killed())
+		if ((*it)->get_to_be_killed())
 		{
 			if ((*it)->get_buff(BUFFOUT).empty())
 			disconnect_client((*it)->get_fd());
@@ -233,7 +233,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	
 	client = _database.get_client(pollfd.fd);
 	
-	if (client.get_to_be_killed())
+	if (client->get_to_be_killed())
 		return ;
 
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
