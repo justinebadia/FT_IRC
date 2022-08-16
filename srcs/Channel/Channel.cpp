@@ -490,6 +490,8 @@ void	Channel::join_private( Client* client, const string& password )
 string Channel::parse_modes( Message& msg )
 {
 	string message = msg[2];
+	if (message.empty())
+		return "";
 	if (message.at(0) == '+')
 	{
 		for (size_t i = 1; i != message.length(); i++)

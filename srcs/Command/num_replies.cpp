@@ -59,21 +59,21 @@ void	CommandManager::rpl_whoisserver( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out(": 312 : " + client.get_nickname() + " " + _server->get_name());
+	msg.append_out(": 312 :" + client.get_nickname() + " " + _server->get_name());
 }
 
 void	CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(": 313 : " + client.get_nickname() + " :is an IRC operator");
+	msg.append_out(": 313 :" + client.get_nickname() + " :is an IRC operator");
 }
 
 void	CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out(": 318 : " + client.get_nickname() + " :End of WHOIS list");
+	msg.append_out(": 318 :" + client.get_nickname() + " :End of WHOIS list");
 }
 
 void	CommandManager::rpl_whoischannels( Message& )
@@ -180,9 +180,7 @@ void	CommandManager::err_erroneusnickname( Message& msg)
 WARNING - est ce que client correspond à username?<>*/
 void	CommandManager::err_nicknameinuse( Message& msg)
 {
-	Client&	client = *msg.get_client_ptr();
-
-	string err_msg = ": 433 " + client.get_nickname() + " " + msg[1] + " :Nickname is already in use";
+	string err_msg = ": 433 " + msg[1] + " :Nickname is already in use";
 	msg.append_out(err_msg);
 }
 

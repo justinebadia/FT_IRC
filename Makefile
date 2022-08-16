@@ -79,9 +79,9 @@ PRINTED :=
 all		: $(NAME)
 
 $(NAME)	: $(HDRS) $(SRCS) $(OBJS) $(MAIN)
-		# $(C_MAIN)
-		# $(shell echo "\nCompiling $(EXE) done!")
-		# $(shell echo "Executable is : $(NAME)")
+		@ $(C_MAIN)
+		@ /bin/echo Compiling done!
+		@ /bin/echo Executable is : $(NAME)
 
 $(D_OBJS)	:
 		@ mkdir $(D_OBJS)
