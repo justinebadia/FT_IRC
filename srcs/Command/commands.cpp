@@ -214,8 +214,6 @@ void	CommandManager::cmd_pass( Message& msg )
 /*[PING]---------------------------------------------------------------------------------------------------------------[PING]*/
 void CommandManager::cmd_ping( Message& msg )
 {
-	// if (msg[1].empty())
-	// 	run_reply(ERR_NOORIGIN, msg);
 	if (!msg[1].empty() && msg[1] != _server->get_server_ip() && !_database->get_client(msg[1]))
 		run_reply(ERR_NOSUCHSERVER, msg);
 	else
@@ -348,17 +346,41 @@ void	CommandManager::cmd_user( Message& msg )
 /*[WHOIS]-------------------------------------------------------------------------------------------------------------[WHOIS]*/
 void CommandManager::cmd_whois( Message & msg )
 {
-	if (!msg[2].empty())
-	{
-		if (msg[2] != _server->get_name())
-			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
-		return;
-	}
-	run_reply(RPL_WHOISUSER, msg);
-	run_reply(RPL_WHOISSERVER, msg);
-	run_reply(RPL_WHOISOPERATOR, msg);
-	//get_reply_ptr(RPL_WHOISCHANNELS)(msg); WARNING A FAIRE
-	run_reply(RPL_ENDOFWHOIS, msg); //signifie que c'est la fin de la querry WHOIS
+	size_t pos = 0;
+	size_t first = 0;
+	string nick_to_test;
+	string nick_list;
+	t_channel_ptr_list channels;
 
+	if (msg.get_param_count() > 2)
+	{
+		if ( msg[1] != _server->get_server_ip())
+		{
+			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+			return ;
+		}
+		nick_list = msg[2];
+	}
+	else
+		nick_list = msg[1];
+	while (pos < nick_list.length())
+	{
+		pos = nick_list.find(",", first);
+		nick_to_test = nick_list.substr(first, pos);
+		Client* client = _database->get_client(nick_to_test);			
+		if (client)
+		{
+			run_reply(RPL_WHOISUSER, msg);
+			run_reply(RPL_WHOISSERVER, msg);
+			if (client->is_operator())
+				run_reply(RPL_WHOISOPERATOR, msg);
+			channels = _database->get_channel_list_of_client(client);
+			if (channels.size() > 0)
+				run_reply(RPL_WHOISCHANNELS, msg);
+			run_reply(RPL_ENDOFWHOIS, msg);
+
+		}
+		first = pos + 1;
+	}
 	return;
 }

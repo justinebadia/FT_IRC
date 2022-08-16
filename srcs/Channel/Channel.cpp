@@ -545,7 +545,7 @@ string Channel::parse_modes( Message& msg )
 			{
 				set_mode_key_password_required(false);
 				_mode_flags &= FLAG_K;
-				set_password("");
+				_password.clear();
 			}
 			else if (message[i] == 'b')
 				_mode_flags &= FLAG_B;

@@ -83,6 +83,8 @@ int	find_param_pos(map<string, int> pos_param, string to_find)
 
 void CommandManager::cmd_mode(Message &msg)
 {
+	string modes = "";
+	string params = "";
 	if (parse_cmd_mode(msg) == 1)
 	{
 		Channel *channel = _database->get_channel(msg[1]);
@@ -102,12 +104,9 @@ void CommandManager::cmd_mode(Message &msg)
 			run_reply(ERR_NOTONCHANNEL, msg);
 			return;
 		}
-
 		string to_parse = channel->parse_modes(msg);
 		vector<string> parsed = tokenize_params(to_parse);
 		map<string, int> pos_param = flags_need_params(parsed[0]);
-		string modes;
-		string params;
 		size_t pos;
 		if (channel->get_mode_flags() > 0)
 		{
@@ -118,7 +117,7 @@ void CommandManager::cmd_mode(Message &msg)
 					if (find_param_pos(pos_param, "o"))
 					{
 						pos = static_cast<size_t>(find_param_pos(pos_param, "o"));
-						Client* to_chanop = _database->get_client(parsed[pos]);
+						Client *to_chanop = _database->get_client(parsed[pos]);
 						if (to_chanop)
 						{
 							if (channel->is_member(to_chanop))
@@ -138,7 +137,7 @@ void CommandManager::cmd_mode(Message &msg)
 					modes += "i";
 				else if (parsed[0][i] == 't')
 					modes += "t";
-				else if (parsed[0][i] == 'k' && !channel->get_is_password_required()) //avoir un flag si already set?
+				else if (parsed[0][i] == 'k' && channel->get_password().empty()) // avoir un flag si already set?
 				{
 					if (find_param_pos(pos_param, "k"))
 					{
@@ -153,21 +152,21 @@ void CommandManager::cmd_mode(Message &msg)
 				}
 				else if (parsed[0][i] == 'b')
 				{
-					//gérer selon +b ou -b avec le FLAG_B ?
+					// gérer selon +b ou -b avec le FLAG_B ?
 					if (find_param_pos(pos_param, "b"))
 					{
 						pos = static_cast<size_t>(find_param_pos(pos_param, "b"));
 						if (parsed[pos].empty())
 						{
 							irc::CommandManager::run_reply(RPL_BANLIST, msg);
-							//ajouter la banlist
+							// ajouter la banlist
 							irc::CommandManager::run_reply(RPL_ENDOFBANLIST, msg);
 						}
 						else
 						{
 							modes += "b";
-							params += parsed[pos]; //le param vq devenir le ban mask
-							//ajouter le banmask à une liste ?
+							params += parsed[pos]; // le param vq devenir le ban mask
+							// ajouter le banmask à une liste ?
 						}
 					}
 				}

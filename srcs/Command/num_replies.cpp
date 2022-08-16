@@ -51,41 +51,52 @@ void	CommandManager::rpl_whoisuser( Message& msg)
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(": 311 : " + client.get_nickname() + " " + client.get_username() + " " + client.get_hostname() + " * " + client.get_realname());
-
+	msg.append_out(": 311 " + client.get_nickname() + " " + client.get_username() + " " + client.get_client_ip() + " * " + client.get_realname());
 }
 
 void	CommandManager::rpl_whoisserver( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out(": 312 :" + client.get_nickname() + " " + _server->get_name());
+	msg.append_out(": 312 " + client.get_nickname() + " " + _server->get_server_ip() + " :" + _server->get_server_ip());
 }
 
 void	CommandManager::rpl_whoisoperator( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(": 313 :" + client.get_nickname() + " :is an IRC operator");
+	msg.append_out(": 313 " + client.get_nickname() + " " + client.get_username() + " :is an IRC operator");
 }
 
 void	CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 	
-	msg.append_out(": 318 :" + client.get_nickname() + " :End of WHOIS list");
+	msg.append_out(": 318 " + client.get_nickname() + " :End of /WHOIS list");
 }
 
-void	CommandManager::rpl_whoischannels( Message& )
+void	CommandManager::rpl_whoischannels( Message& msg )
 {
-	// Client& client = *msg.get_client_ptr();
-
-	//if client est dans channel
-		//if client est chanop
-			//msg.append_out("319 " + client.get_nickname() + " :@channel"get_name()");
-		//
-		//else
-			//msg.append_out("319 " + client.get_nickname() + " :");
+	Client *client = msg.get_client_ptr();
+	t_channel_ptr_list channels = _database->get_channel_list_of_client(client);
+	string channels_param;
+	t_channel_ptr_list::iterator it;
+ 
+	for (it = channels.begin(); it != channels.end(); it++)
+	{
+		if ((*it)->is_chanop(client) || (*it)->is_owner(client))
+		{
+			channels_param += "@";
+			channels_param += (*it)->get_name();
+		}
+		else 
+		{
+			channels_param += (*it)->get_name();
+		}
+		channels_param += " ";
+	}
+	msg.append_out(": 319 " + client->get_nickname() + " " + client->get_username() + " " + ":" + channels_param);
+		
 }
 
 void	CommandManager::rpl_channelmodeis( Message& msg )
