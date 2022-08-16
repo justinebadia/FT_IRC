@@ -141,12 +141,16 @@ void	CommandManager::cmd_nick( Message& msg )
 /*[OPER]---------------------------------------------------------------------------------------------------------------[OPER]*/
 void	CommandManager::cmd_oper( Message& msg )
 {
+	int	reply;
 	if(msg[1].empty())
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
-	_server->attempt_client_as_operator(*msg.get_client_ptr(), msg[1], msg[2]);
+	reply = _server->attempt_client_as_operator(*msg.get_client_ptr(), msg[1], msg[2]);
+	if (reply != 0)
+		return run_reply(reply, msg);
+	
 }
 
 /*[PART]---------------------------------------------------------------------------------------------------------------[PART]*/

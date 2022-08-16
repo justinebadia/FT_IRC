@@ -118,6 +118,11 @@ void	CommandManager::rpl_endofbanlist( Message& msg )
 	msg.append_out(": 368 " + msg[1] + " :End of channel ban list");
 }
 
+void	CommandManager::rpl_youreoper( Message& msg )
+{
+	msg.append_out(": 381 :You are now an IRC operator");
+}
+
 /* WARNING pas fini 
 ":UserID   Terminal  Host"*/
 void	CommandManager::rpl_usersstart( Message&  )
@@ -228,7 +233,7 @@ void	CommandManager::err_alreadyregistered( Message& msg )
 
 void	CommandManager::err_passwdmismatch( Message& msg )
 {
-	string err_msg = ": 464 :Not enough parameters";
+	string err_msg = ": 464 :Password incorrect";
 	msg.append_out(err_msg);
 }
 
@@ -246,6 +251,11 @@ void	CommandManager::err_badchanmask( Message& msg )
 void	CommandManager::err_chanoprivsneeded( Message& msg )
 {
 	msg.append_out(": 482 " + msg[1] + " :You're not channel operator");
+}
+
+void 	CommandManager::err_nooperhost( Message& msg )
+{
+	msg.append_out(": 491 :Given name/host is currently unavailable as operator.");
 }
 
 /*=[500-----------------------------------------------------------------------------------------------------------------------------------------599]=*/

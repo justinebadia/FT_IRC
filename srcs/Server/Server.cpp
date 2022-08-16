@@ -117,6 +117,28 @@ void	Server::_init_server( void )
 	this->get_pollfd().events = POLLIN;
 }
 
+void	Server::_kill_server( void )
+{
+	disconnect_all_clients();
+	close(get_fd());
+}
+
+void	Server::_check_for_kills( void )
+{
+	t_client_ptr_list			clients;
+	t_client_ptr_list::iterator	it;
+
+	clients = _database.get_client_ptr_list();
+	for (it = clients.begin(); it != clients.end(); it++)
+	{
+		if ((*it).get_to_be_killed())
+		{
+			if ((*it)->get_buff(BUFFOUT).empty())
+			disconnect_client((*it)->get_fd());
+		}
+	}
+}
+
 void	Server::_init_operators( void )
 {
 	_operator_vect.push_back(Operator("sfournie", "irc"));
@@ -124,11 +146,21 @@ void	Server::_init_operators( void )
 	_operator_vect.push_back(Operator("tshimoda", "irc"));
 }
 
-void	Server::_kill_server( void )
+void	Server::_clean_operators( void )
 {
-	disconnect_all_clients();
-	close(get_fd());
+	t_operator_vect::iterator	it;
+
+	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
+	{
+		if ((*it).client_fd != -1 && _database.get_client((*it).client_fd) == NULL)
+		{
+			Server::log("Operator " + (*it).name + " has been cleaned");
+			(*it).client_fd = -1;
+		}
+	}
 }
+
+
 
 t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
 {
@@ -182,6 +214,8 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 			_process_client_pollout(pollfd_array[i]);
 		}
 		_database.clean_database();
+		_check_for_kills();
+		_clean_operators();
 	}
 }
 
@@ -198,6 +232,9 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	Client		*client;
 	
 	client = _database.get_client(pollfd.fd);
+	
+	if (client.get_to_be_killed())
+		return ;
 
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
@@ -365,7 +402,7 @@ void	Server::disconnect_all_clients( void )
 	}
 }
 
-bool	Server::attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass )
+int		Server::attempt_client_as_operator( Client& client, const string& oper_name, const string& oper_pass )
 {
 	t_operator_vect::iterator	it;
 
@@ -373,22 +410,44 @@ bool	Server::attempt_client_as_operator( Client& client, const string& oper_name
 	{
 		if ((*it).client_fd == client.get_fd())
 		{
-			
 			Server::log("Client nicknamed " + client.get_nickname() + " is already an operator");
-			return false;
+			return ERR_NOOPERHOST;;
 		}
 	}
 	for (it = _operator_vect.begin(); it != _operator_vect.end(); it++)
 	{
 		Server::log("checking " + (*it).name + " " + oper_name + " " + (*it).password + " " + oper_pass);
-		if ((*it).client_fd > 0 && !(*it).name.compare(oper_name) && !(*it).password.compare(oper_pass))
+		if ((*it).client_fd != -1 && !(*it).name.compare(oper_name) && !(*it).password.compare(oper_pass))
+			return ERR_NOOPERHOST;
+		if ((*it).client_fd == -1)
 		{
-			(*it).client_fd = client.get_fd();
-			client._set_operator(true);
-			Server::log("Client nicknamed " + client.get_nickname() + " is now an operator");
-			return true;
+			if (!(*it).name.compare(oper_name))
+			{
+				if ((*it).password.compare(oper_pass))
+					return ERR_PASSWDMISMATCH;
+				(*it).client_fd = client.get_fd();
+				client._set_operator(true);
+				Server::log("Client nicknamed " + client.get_nickname() + " is now an operator");
+				return RPL_YOUREOPER;
+			}
 		}
 	}
+	return ERR_NOOPERHOST;
+}
+
+bool	Server::is_client_operator( Client* client )
+{
+	if (client)
+		return is_client_operator(client->get_fd());
+	return false;
+}
+
+bool	Server::is_client_operator( const string& nickname )
+{
+	Client* client = _database.get_client(nickname);
+
+	if (client)
+		return is_client_operator(client->get_fd());
 	return false;
 }
 

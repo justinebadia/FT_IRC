@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbadia <jbadia@student.42quebec.com>       +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 10:46:41 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/14 15:46:46 by jbadia           ###   ########.fr       */
+/*   Updated: 2022/08/16 14:58:46 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_INVITING, rpl_inviting));						//[341] INVITE
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
+	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
 	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));				//[392] WHOIS
 	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));				//[394] WHOIS
 	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));						//[395] WHOIS
@@ -99,10 +100,11 @@ void	CommandManager::_init_reply_map( void )
 	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));			//[446] USERS
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));			//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
-	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG,OPER
 	_reply_map.insert(std::make_pair(ERR_KEYSET, err_keyset));							//[467] MODE_KEY_SET
 	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] KICK
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));		//[482] INVITE,KICK,TOPIC
+	_reply_map.insert(std::make_pair(ERR_NOOPERHOST, err_nooperhost));					//[491] OPER
 
 }
 

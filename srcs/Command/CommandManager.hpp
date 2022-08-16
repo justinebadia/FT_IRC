@@ -91,6 +91,7 @@ public:
 	static void	rpl_inviting( Message& msg );			//[341] INVITE
 	static void	rpl_banlist( Message& msg );			//[367] MODE
 	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
+	static void rpl_youreoper( Message& msg );			//[381] OPER
 	static void	rpl_usersstart( Message& msg );			//[392] WHOIS
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
@@ -111,6 +112,7 @@ public:
 	static void err_keyset( Message& msg ); 			//[467] MODE_ERR_KEYSET
 	static void	err_badchanmask( Message& msg );		//[476] KICK
 	static void	err_chanoprivsneeded( Message& msg );	//[482] INVITE,KICK,TOPIC
+	static void err_nooperhost( Message& msg );			//[491] OPER
 	
 	/*------------------COMMANDS_UTILS------------------*/	
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
