@@ -1,5 +1,3 @@
-
-
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
@@ -24,17 +22,6 @@ class Channel {
 public:
 
 	/*--------------------TYPEDEF-&-ENUM-------------------*/
-	
-	// enum e_permission									// Usage-> Channel::OWNER, not sure
-	// {
-	// 	BAN = 0,
-	// 	INVITE = 1,
-	// 	REGULAR = 2,
-	// 	CHANOP = 4,
-	// 	OWNER = 8
-	// };
-	
-	// typedef	std::list<std::pair<Client*, e_permission> >			channel_memberlist;
 	typedef	t_channel_memberlist::iterator	iterator;
 
 	enum mode_flags
@@ -45,16 +32,12 @@ public:
 		FLAG_K = 8,
 		FLAG_B = 16
 	};
-	//typedef t_client_ptr_list::iterator	iterator;
 
 private:
 
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
-	
-
 	/*---------------------ATTRIBUTES---------------------*/
-	
 	string								_name;						// channel_name
 	Client*								_owner;
 	bool								_private;					// ±p
@@ -67,13 +50,12 @@ private:
 	t_channel_memberlist				_memberlist;
 	int									_mode_flags;
 	t_mask_list							_banmask_list;
-	// t_client_ptr_list					_banlist;
+
 
 
 public:
 
 	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
-	
 	Channel( void ); 												// default constructor
 	Channel( const string& channel_name, Client* channel_owner ); 									// no password constructor
 	Channel( const string& channel_name, Client* channel_owner, const string& channel_password );	// password required constructor
@@ -83,12 +65,10 @@ public:
 
 
 	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
-
 	bool	operator==( const Channel& rhs) const;
 
 
 	/*-----------------------GETTERS----------------------*/
-	
 	const string&						get_name( void ) const;
 	Client*								get_owner( void ) const;
 	bool								get_is_private( void ) const;
@@ -108,7 +88,6 @@ public:
 
 
 	/*-----------------------SETTERS----------------------*/
-	
 	int		set_permission( Client* client, e_permission type );
 	void	set_mode_private( bool setting );
 	void	set_mode_secret( bool setting );
@@ -121,7 +100,6 @@ public:
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
-
 	bool	is_member( Client* client );
 	bool	is_owner( Client* client );
 	bool	is_chanop( Client* client );
@@ -149,4 +127,3 @@ public:
 } // namespace irc end bracket
 
 #endif
-

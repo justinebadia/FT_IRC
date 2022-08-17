@@ -1,5 +1,3 @@
-
-
 #include "Channel.hpp" // includes <iostream><list><map><string>
 #include "Message.hpp"
 #include "Client.hpp"
@@ -274,14 +272,6 @@ bool	Channel::is_chanop( Client* client )
 	return false;
 }
 
-// bool	Channel::is_banned( Client* client )
-// {
-// 	if (get_permission(client) == BAN )
-// 		return true;
-
-// 	return false;
-// }
-
 bool	Channel::is_banned( Client* client )
 {
 	if (!client)
@@ -429,64 +419,6 @@ void	Channel::remove_banmask( const string& mask )
 	
 // }
 
-
-
-
-
-
-/*
-void	Channel::join_public( Client* client )
-{
-	if (this->_invite_only == true)
-	{
-		std::cout << "invite only" << std::endl;
-		return ;
-	}
-	this->add(client);
-}
-
-void	Channel::join_private( Client* client, const string& password )
-{
-	if (this->_invite_only == true)
-	{
-		std::cout << "invite only" << std::endl;
-		return ;
-	}
-	
-	if (this->_password != password)
-	{
-		std::cout << "wrong password" << std::endl;
-		return ;
-	}
-	this->add(client);
-}
-*/
-
-// void	Channel::kick( Client* source, Client* target )
-// {
-// 	if ( this->is_operator(source) == true )
-// 	{
-// 		if (this->get_permission(source) < this->get_permission(target))
-// 		{
-// 			std::cout << "don't have the permission to kick" << std::endl;
-// 	 		return ;
-// 		}
-// 	}
-// }
-
-// void	Channel::ban( Client* source, Client* target )
-// {
-// 	if ( this->is_operator(source) == true )
-// 	{
-// 		if (this->get_permission(source) < this->get_permission(target))
-// 		{
-// 			std::cout << "don't have the permission to ban" << std::endl;
-// 	 		return ;
-// 		}
-// 	}
-// }
-
-
 string Channel::parse_modes( Message& msg )
 {
 	string message = msg[2];
@@ -555,7 +487,6 @@ string Channel::parse_modes( Message& msg )
 	return "";
 }
 
-
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 
 std::ostream& operator<<( std::ostream& o, const Channel& obj ) 
@@ -563,4 +494,3 @@ std::ostream& operator<<( std::ostream& o, const Channel& obj )
 	o << "Channel name: " << obj.get_name() << std::endl;
 	return o; 
 }
-
