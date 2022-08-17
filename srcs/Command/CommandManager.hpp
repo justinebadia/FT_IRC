@@ -120,9 +120,9 @@ public:
 	/*------------------COMMANDS_UTILS------------------*/	
 	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
 	static void send_to_channels(t_channel_ptr_list list_of_chan, string output);
-	static void handle_o_mode(string& modes, string& params, std::vector<string> parsed, Channel* channel, map<string, int> pos_param, Message& msg);
-	static void handle_k_mode(string& modes, string& params, std::vector<string> parsed, Channel* channel, map<string, int> pos_param, Message& msg);
-	static void handle_b_mode(string& modes, string& params, std::vector<string> parsed, map<string, int> pos_param, Message& msg);
+	static void handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static void handle_k_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static void handle_b_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
 
 };
 

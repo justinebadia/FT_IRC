@@ -28,105 +28,61 @@ vector<string> tokenize_params(string const& str)
 	return res;
 }
 
-map<string, int> flags_need_params( string to_parse )
+void CommandManager::handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel *channel, Message& msg)
 {
-	int pos = 1;
-	map<string, int> pos_param;
-
-	for (size_t i = 0; i != to_parse.length(); i++)
+	pos_it++;
+	Client *to_chanop = _database->get_client(parsed[pos_it]);
+	if (to_chanop)
 	{
-		if (to_parse[i] == 'o')
+		if (channel->is_member(to_chanop))
 		{
-			pos_param.insert(std::make_pair("o", pos));
-			pos++;
+			channel->set_permission(to_chanop, CHANOP);
+			modes += "o";
+			params += parsed[pos_it];
 		}
-		if (to_parse[i] == 'k')
+		else
 		{
-			pos_param.insert(std::make_pair("k", pos));
-			pos++;
-		}
-		if (to_parse[i] == 'b')
-		{
-			pos_param.insert(std::make_pair("b", pos));
-			pos++;
-		}
-	}
-	return pos_param;
-}
-
-int	find_param_pos(map<string, int> pos_param, string to_find)
-{
-	map<string, int>::iterator it = pos_param.begin();
-	map<string, int>::iterator ite = pos_param.end();
-
-	for(; it != ite; it++)
-	{
-		if ((*it).first == to_find)
-			return (*it).second;
-	}
-	return -1;
-}
-
-void CommandManager::handle_o_mode(string& modes, string& params, std::vector<string> parsed, Channel *channel, map<string, int> pos_param, Message& msg)
-{
-	size_t pos = static_cast<size_t>(find_param_pos(pos_param, "o"));
-	Client *to_chanop = _database->get_client(parsed[pos]);
-	if (find_param_pos(pos_param, "o"))
-	{
-		if (to_chanop)
-		{
-			if (channel->is_member(to_chanop))
-			{
-				channel->set_permission(to_chanop, CHANOP);
-				modes += "o";
-				params += parsed[pos];
-			}
-			else
-			{
-				irc::CommandManager::run_reply(ERR_NOTONCHANNEL, msg);
-				return;
-			}
+			irc::CommandManager::run_reply(ERR_NOTONCHANNEL, msg);
+			return;
 		}
 	}
 	return;
 }
 
-void CommandManager::handle_k_mode(string& modes, string& params, std::vector<string> parsed, Channel* channel, map<string, int> pos_param, Message& msg)
+void CommandManager::handle_k_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg)
 {
-	size_t pos = static_cast<size_t>(find_param_pos(pos_param, "k"));
+	pos_it++;
 	if (!channel->get_password().empty())
 	{
 		run_reply(ERR_KEYSET, msg);
 		return;
 	}
-	else if (find_param_pos(pos_param, "k"))
+	if (msg[2][0] == '-')
+		modes += "k";
+	else if (!parsed[pos_it].empty())
 	{
-		if (!parsed[pos].empty())
-		{
-			channel->set_password(parsed[pos]);
-			modes += "k";
-			params += parsed[pos];
-		}
+		channel->set_password(parsed[pos_it]);
+		modes += "k";
+		channel->set_mode_str("k");
+		params += parsed[pos_it];
 	}
 	return;
 }
 
-void CommandManager::handle_b_mode(string& modes, string& params, std::vector<string> parsed, map<string, int> pos_param, Message& msg)
+void CommandManager::handle_b_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg)
 {
-	size_t pos = static_cast<size_t>(find_param_pos(pos_param, "b"));
-	if (find_param_pos(pos_param, "b"))
+	pos_it++;
+	if (parsed[pos_it].empty())
 	{
-		if (parsed[pos].empty())
-		{
-			irc::CommandManager::run_reply(RPL_BANLIST, msg);
-			irc::CommandManager::run_reply(RPL_ENDOFBANLIST, msg);
-			return;
-		}
-		else
-		{
-			modes += "b";
-			params += parsed[pos];
-		}
+		irc::CommandManager::run_reply(RPL_BANLIST, msg);
+		irc::CommandManager::run_reply(RPL_ENDOFBANLIST, msg);
+		return;
+	}
+	else
+	{
+		modes += "b";
+		params += parsed[pos_it];
+		channel->set_mode_str("b");
 	}
 	return;
 }
@@ -136,21 +92,28 @@ void CommandManager::cmd_mode(Message &msg)
 {
 	string modes = "";
 	string params = "";
+	size_t pos_it = 0;
 	/*Checking for channel's errors*/
+	if (msg.get_param_count() < 1)
+	{
+		run_reply(ERR_NEEDMOREPARAMS, msg);
+		return;
+	}
 	if (msg[1][0] == '#' || msg[1][0] == '&')
 	{
-		if (msg.get_param_count() < 1)
-		{
-			run_reply(ERR_NEEDMOREPARAMS, msg);
-			return ;
-		}
 		Channel *channel = _database->get_channel(msg[1]);
 		if (!channel)
 		{
 			run_reply(ERR_NOSUCHCHANNEL, msg);
 			return;
 		}
-	/*if there are more than 2 parameters, it means there are flags, so the client need to be chanop/owner */	
+		if (msg.get_param_count() == 1) // j'affiche les modes du channel
+		{
+			run_reply(RPL_CHANNELMODEIS, msg);
+			return;
+		}
+
+		/*if there are more than 2 parameters, it means there are flags, so the client need to be chanop/owner */
 		if (msg.get_param_count() >= 2)
 		{
 			Client *client = msg.get_client_ptr();
@@ -164,29 +127,34 @@ void CommandManager::cmd_mode(Message &msg)
 				run_reply(ERR_NOTONCHANNEL, msg);
 				return;
 			}
-	/*Parsing the string*/
-			//string to_parse = channel->parse_modes(msg); //return the substring after + or -
-			vector<string> parsed = tokenize_params(channel->parse_modes(msg));	// tokenize the flags and their parameters
-			map<string, int> pos_param = flags_need_params(parsed[0]);
-			if (channel->get_mode_flags() > 0)
+		}
+
+		/*Parsing the string*/
+		vector<string> parsed = tokenize_params(channel->parse_modes(msg)); // tokenize the flags and their parameters
+		if (channel->get_mode_flags() > 0)
+		{
+			for (size_t i = 0; i < parsed[0].length(); i++)
 			{
-				for (size_t i = 0; i != parsed[0].length(); i++)
+				if (parsed[0][i] == 'o')
+					handle_o_mode(pos_it, modes, params, parsed, channel, msg);
+				else if (parsed[0][i] == 'i')
 				{
-					if (parsed[0][i] == 'o')
-						handle_o_mode(modes, params, parsed, channel, pos_param, msg);
-					else if (parsed[0][i] == 'i')
-						modes += "i";
-					else if (parsed[0][i] == 't')
-						modes += "t";
-					else if (parsed[0][i] == 'k')
-						handle_k_mode(modes, params, parsed, channel, pos_param, msg);
-					else if (parsed[0][i] == 'b')
-						handle_b_mode(modes, params, parsed, pos_param, msg);
+					modes += "i";
+					channel->set_mode_str("i");
 				}
+				else if (parsed[0][i] == 't')
+				{
+					modes += "t";
+					channel->set_mode_str("t");
+				}
+				else if (parsed[0][i] == 'k')
+					handle_k_mode(pos_it, modes, params, parsed, channel, msg);
+				else if (parsed[0][i] == 'b')
+					handle_b_mode(pos_it, modes, params, parsed, channel, msg);
 			}
 			msg.set_mode_rpl(msg[2][0] + modes + " " + params);
 		}
-	irc::CommandManager::run_reply(RPL_CHANNELMODEIS, msg);
+		run_reply(RPL_CHANNELMODEIS, msg);
 	}
-	return ;
+	return;
 }

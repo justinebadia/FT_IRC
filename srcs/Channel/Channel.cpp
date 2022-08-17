@@ -132,7 +132,7 @@ t_channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
 
 int 				Channel::get_mode_flags( void ) { return _mode_flags; }
 
-string				Channel::get_mode_str( void ) { return _mode_str; }
+string&				Channel::get_mode_str( void ) { return _mode_str; }
 
 //t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 
@@ -254,9 +254,11 @@ void	Channel::set_password( const string& password )
 	_password = password;
 }
 
-void	Channel::set_mode_str( string str) // WARNING peut etre a remove
+void	Channel::set_mode_str( const string& flag)
 {
-	_mode_str = str;
+	size_t it;
+	if ((it = _mode_str.find(flag, 0)) == string::npos)
+			_mode_str += flag;
 }
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
@@ -512,27 +514,19 @@ string Channel::parse_modes( Message& msg )
 		return "";
 	if (message.at(0) == '+')
 	{
-		for (size_t i = 1; i != message.length(); i++)
+		for (size_t i = 0; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
-			{
 				_mode_flags |= FLAG_O;
-				if ((it = _mode_str.find('o', 0)) != string::npos)
-					_mode_str += "o";
-			}
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(true);
 				_mode_flags |= FLAG_I;
-				if ((it = _mode_str.find('i', 0)) != string::npos)
-					_mode_str += "i";
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(true);
 				_mode_flags |= FLAG_T;
-				if ((it = _mode_str.find('t', 0)) != string::npos)
-					_mode_str += "t";
 			}
 			else if (message[i] == 'k')
 			{
@@ -540,17 +534,11 @@ string Channel::parse_modes( Message& msg )
 					continue ;
 				set_mode_key_password_required(true);
 				_mode_flags |= FLAG_K;
-				if ((it = _mode_str.find('k', 0)) != string::npos)
-					_mode_str += "k";
-
 			}
 			else if (message[i] == 'b')
 			{
 				_mode_flags |= FLAG_B;
-				if ((it = _mode_str.find('b', 0)) != string::npos)
-					_mode_str += "b";
 				this->add_banmask(mask);
-				
 			}
 		}
 		return msg.get_substr_after("+");

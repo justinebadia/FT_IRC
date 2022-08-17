@@ -35,7 +35,7 @@ void	CommandManager::rpl_welcome( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
 
-	msg.append_out(": 001 " + client.get_nickname() + " :Welcome to the Internet Relay Network " + client.get_hostname());
+	msg.append_out(": 001 " + client.get_nickname() + " :Welcome to the Internet Relay Network " + client.get_client_ip());
 }
 
 /*=[100-----------------------------------------------------------------------------------------------------------------------------------------199]=*/
@@ -102,7 +102,12 @@ void	CommandManager::rpl_whoischannels( Message& msg )
 void	CommandManager::rpl_channelmodeis( Message& msg )
 {
 	if (msg.get_param_count() == 1)
-		msg.append_out(": 324 " + msg[1] + " " + _database->get_channel(msg[1])->get_mode_str());
+	{
+		if (!_database->get_channel(msg[1])->get_password().empty())
+			msg.append_out(": 324 " + msg[1] + " +" + _database->get_channel(msg[1])->get_mode_str() + " " + _database->get_channel(msg[1])->get_password());
+		else
+			msg.append_out(": 324 " + msg[1] + " +" + _database->get_channel(msg[1])->get_mode_str());
+	}
 	else
 		msg.append_out(": 324 " + msg[1] + " " + msg.get_mode_rpl());
 }

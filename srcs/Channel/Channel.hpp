@@ -101,7 +101,7 @@ public:
 	string&								get_password( void );
 	t_channel_memberlist				get_memberlist( void );
 	int 								get_mode_flags( void );
-	string 								get_mode_str( void );
+	string&								get_mode_str( void );
 	e_permission						get_permission( Client* client );
 	t_client_ptr_list					get_clients_any_permissions( void );
 	t_client_ptr_list					get_clients_matching_permissions( int type );
@@ -121,7 +121,7 @@ public:
 
 	void	set_topic( const string& topic );
 	void	set_password( const string& password );
-	void	set_mode_str( string str );
+	void	set_mode_str( const string& flag );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
