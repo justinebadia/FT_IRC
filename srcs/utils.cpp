@@ -72,7 +72,6 @@ bool	compare_to_mask( const string& mask, const string& str )
 	}
 	return true;
 }
-
 // template < class Cont, typename value_type>
 // Allocated on the stack; works with most STL containers
 // value_type*	convert_stl_to_array ( const Cont & cont )

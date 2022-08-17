@@ -101,7 +101,10 @@ void	CommandManager::rpl_whoischannels( Message& msg )
 
 void	CommandManager::rpl_channelmodeis( Message& msg )
 {
-	msg.append_out(": 324 " + msg[1] + " " + msg.get_mode_rpl());
+	if (msg.get_param_count() == 1)
+		msg.append_out(": 324 " + msg[1] + " " + _database->get_channel(msg[1])->get_mode_str());
+	else
+		msg.append_out(": 324 " + msg[1] + " " + msg.get_mode_rpl());
 }
 
 void	CommandManager::rpl_notopic( Message& msg )
@@ -121,7 +124,20 @@ void	CommandManager::rpl_inviting( Message& msg )
 
 void	CommandManager::rpl_banlist( Message& msg )
 {
-	msg.append_out(": 367 " + msg[1] + " " + msg[3]); 
+	Channel* channel = _database->get_channel(msg[1]);
+	if (!channel->get_banmask_list().empty())
+	{
+		t_mask_list::iterator it = channel->get_banmask_list().begin();
+		t_mask_list::iterator ite = channel->get_banmask_list().end();
+
+		for (; it != ite; it++)
+		{
+			msg.append_out(": 367 " + msg[1] + " " + (*it)); 
+		}
+	}
+	else
+		msg.append_out(": 367 " + msg[1]); 
+
 }
 
 void	CommandManager::rpl_endofbanlist( Message& msg )

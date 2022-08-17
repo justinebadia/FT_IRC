@@ -7,6 +7,7 @@
 #include "CommandManager.hpp"
 #include "numeric_replies.hpp"
 #include "utils.hpp"
+#include "Database.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -30,6 +31,7 @@ Channel::Channel( void ) // default constructor
 	, _password("")
 	, _memberlist(0) 
 	, _mode_flags(0)
+	,_mode_str("")
 	{}
 
 Channel::Channel( const Channel& rhs ) // copy constructor
@@ -50,6 +52,7 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_password = rhs._password;
 	_memberlist = t_channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
 	_mode_flags = rhs._mode_flags;
+	_mode_str = rhs._mode_str;
 
 	return *this;
 }							
@@ -66,6 +69,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	, _password("")
 	, _memberlist(0) 
 	, _mode_flags(0)
+	,_mode_str("")
 {
 	add_member(channel_owner, OWNER);
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
@@ -82,6 +86,7 @@ Channel::Channel( const string& channel_name, Client* channel_owner, const strin
 	, _password(channel_password)
 	, _memberlist(0) 
 	, _mode_flags(0)
+	,_mode_str("")
 {
 	add_member(channel_owner, OWNER);
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
@@ -126,6 +131,8 @@ string&				Channel::get_password( void ) { return _password; }
 t_channel_memberlist	Channel::get_memberlist( void ) { return _memberlist; }
 
 int 				Channel::get_mode_flags( void ) { return _mode_flags; }
+
+string				Channel::get_mode_str( void ) { return _mode_str; }
 
 //t_client_ptr_list	Channel::get_banlist( void ) { return _banlist; }
 
@@ -190,6 +197,11 @@ t_client_ptr_list	Channel::get_clients_not_matching_permissions( int type )
 	return (client_list);
 }
 
+t_mask_list		Channel::get_banmask_list( void )
+{
+	return _banmask_list;
+}
+
 /*-----------------------SETTERS----------------------*/
 
 
@@ -240,6 +252,11 @@ void	Channel::set_topic( const string& topic )
 void	Channel::set_password( const string& password )
 {
 	_password = password;
+}
+
+void	Channel::set_mode_str( string str) // WARNING peut etre a remove
+{
+	_mode_str = str;
 }
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
@@ -397,7 +414,6 @@ void	Channel::remove_banmask( const string& mask )
 		_banmask_list.remove(mask);
 }
 
-
 // void	Channel::transfer_ownership( void )
 // {
 // 	Channel::iterator it = _memberlist.begin();
@@ -489,7 +505,9 @@ void	Channel::join_private( Client* client, const string& password )
 
 string Channel::parse_modes( Message& msg )
 {
-	string message = msg[2];
+	string 	message = msg[2];
+	string 	mask = " ";
+	size_t		it;
 	if (message.empty())
 		return "";
 	if (message.at(0) == '+')
@@ -499,28 +517,40 @@ string Channel::parse_modes( Message& msg )
 			if (message[i] == 'o')
 			{
 				_mode_flags |= FLAG_O;
+				if ((it = _mode_str.find('o', 0)) != string::npos)
+					_mode_str += "o";
 			}
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(true);
 				_mode_flags |= FLAG_I;
+				if ((it = _mode_str.find('i', 0)) != string::npos)
+					_mode_str += "i";
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(true);
 				_mode_flags |= FLAG_T;
+				if ((it = _mode_str.find('t', 0)) != string::npos)
+					_mode_str += "t";
 			}
 			else if (message[i] == 'k')
 			{
 				if (get_is_password_required() == true)
-					irc::CommandManager::run_reply(ERR_KEYSET, msg);
+					continue ;
 				set_mode_key_password_required(true);
 				_mode_flags |= FLAG_K;
+				if ((it = _mode_str.find('k', 0)) != string::npos)
+					_mode_str += "k";
 
 			}
 			else if (message[i] == 'b')
 			{
 				_mode_flags |= FLAG_B;
+				if ((it = _mode_str.find('b', 0)) != string::npos)
+					_mode_str += "b";
+				this->add_banmask(mask);
+				
 			}
 		}
 		return msg.get_substr_after("+");
@@ -530,31 +560,40 @@ string Channel::parse_modes( Message& msg )
 		for (size_t i = 1; i != message.length(); i++)
 		{
 			if (message[i] == 'o')
+			{
 				_mode_flags &= FLAG_O;
+				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'o'));
+			}
 			else if (message[i] == 'i')
 			{
 				set_mode_invite_only(false);
 				_mode_flags &= FLAG_I;
+				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'i'));
 			}
 			else if (message[i] == 't')
 			{
 				set_mode_topic_by_chanop_only(false);
 				_mode_flags &= FLAG_T;
+				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 't'));
 			}
 			else if (message[i] == 'k')
 			{
 				set_mode_key_password_required(false);
 				_mode_flags &= FLAG_K;
+				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'k'));
 				_password.clear();
 			}
 			else if (message[i] == 'b')
+			{
 				_mode_flags &= FLAG_B;
+				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'b'));
+				this->remove_banmask(mask);
+			}
 		}
 		return msg.get_substr_after("-");
 	}
 	return "";
 }
-
 
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 

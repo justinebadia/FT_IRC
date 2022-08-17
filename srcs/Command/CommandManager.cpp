@@ -44,7 +44,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
 	_command_map.insert(std::make_pair(string("KILL"), cmd_kill));
-	// _command_map.insert(std::make_pair(string("MODE"), cmd_mode));
+	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("OPER"), cmd_oper));
 	_command_map.insert(std::make_pair(string("PART"), cmd_part));

@@ -67,6 +67,7 @@ private:
 	t_channel_memberlist				_memberlist;
 	int									_mode_flags;
 	t_mask_list							_banmask_list;
+	string								_mode_str;
 	// t_client_ptr_list					_banlist;
 
 
@@ -100,10 +101,12 @@ public:
 	string&								get_password( void );
 	t_channel_memberlist				get_memberlist( void );
 	int 								get_mode_flags( void );
+	string 								get_mode_str( void );
 	e_permission						get_permission( Client* client );
 	t_client_ptr_list					get_clients_any_permissions( void );
 	t_client_ptr_list					get_clients_matching_permissions( int type );
 	t_client_ptr_list					get_clients_not_matching_permissions( int type );
+	t_mask_list							get_banmask_list( void );
 
 
 
@@ -118,6 +121,7 @@ public:
 
 	void	set_topic( const string& topic );
 	void	set_password( const string& password );
+	void	set_mode_str( string str );
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
@@ -138,7 +142,7 @@ public:
 	void	remove_banmask( const string& mask );
 
 	void	transfer_ownership( void );
-	string		parse_modes( Message& msg );
+	string	parse_modes( Message& msg );
 
 };
 
