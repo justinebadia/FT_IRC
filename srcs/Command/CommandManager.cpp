@@ -54,6 +54,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
 	_command_map.insert(std::make_pair(string("TOPIC"), cmd_topic));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
+	_command_map.insert(std::make_pair(string("WHO"), cmd_who));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
 
 }
@@ -65,12 +66,14 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));					//[311] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));				//[312] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));			//[313] WHOIS
+	_reply_map.insert(std::make_pair(RPL_ENDOFWHO, rpl_endofwho));						//[315] WHO
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));					//[318] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));			//[319] WHOIS
 	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));			//[324] MODE
 	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));						//[331] JOIN
 	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));							//[332] JOIN
 	_reply_map.insert(std::make_pair(RPL_INVITING, rpl_inviting));						//[341] INVITE
+	_reply_map.insert(std::make_pair(RPL_WHOREPLY, rpl_whoreply));						//[352] WHO
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
@@ -161,7 +164,6 @@ void	CommandManager::execute_commands( Client& client )
 	
 	Message	msg(&client);
 	t_cmd_function_ptr command;
-
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
@@ -176,6 +178,8 @@ void	CommandManager::execute_commands( Client& client )
 		msg.clear_all();
 		start = next + 2;
 	}
+	if (start != string::npos)
+		buffin.erase(0, start);
 	return ;
 }
 
@@ -184,10 +188,12 @@ void	CommandManager::execute_commands_registration( Client& client )
 	string&	buffin = client.get_buff(BUFFIN);
 	size_t	start = 0;
 	size_t	next = 0;
-	size_t	len	= buffin.length();
 	
 	Message	msg(&client);
 	t_cmd_function_ptr command;
+std::cout << "dans cmd execute registr\n" << std::endl;
+std::cout << "le find = " <<  buffin.find("\r\n", start) << std::endl;
+
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
@@ -196,9 +202,13 @@ void	CommandManager::execute_commands_registration( Client& client )
 		{
 			if (client.is_password_validated() || msg[0] == "PASS" || msg[0] == "QUIT")
 			{
+			std::cout << "je suis register\n" << std::endl;
+
 				command = get_command_ptr(msg[0]);
 				if (command)
 				{
+				std::cout << "jao la commande\n" << std::endl;
+
 					command(msg);
 					client.append_buff(BUFFOUT, msg.get_message_out());
 				}
@@ -206,8 +216,8 @@ void	CommandManager::execute_commands_registration( Client& client )
 		}
 		msg.clear_all();
 		start = next + 2;
-		if (start >= len)
-			return ;
 	}
+	if (start != string::npos)
+		buffin.erase(0, start);
 	return ;
 }

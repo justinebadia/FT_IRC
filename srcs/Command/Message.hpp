@@ -69,9 +69,9 @@ public:
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 
-	void	append_in( const string& str );
-	void	append_out( const string& str );
-	void	clear_all( void );
+	void			append_in( const string& str );
+	void			append_out( const string& str );
+	void			clear_all( void );
 
 	friend std::ostream&	operator<<( std::ostream& o, const Message& obj );
 };

@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef COMMAND_MANAGER_HPP
 #define COMMAND_MANAGER_HPP
 
@@ -67,12 +68,14 @@ public:
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
 	static void	cmd_part( Message& msg );
+	static void process_single_part( Message& msg );
 	static void	cmd_pass( Message& msg );
 	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );
 	static void cmd_quit( Message& msg );
 	static void	cmd_topic( Message& msg );
 	static void	cmd_user( Message& msg );
+	static void cmd_who( Message& msg );
 	static void	cmd_whois( Message& msg );
 
 	/*------------------REPLIES-FUNCTIONS-----------------*/
@@ -82,14 +85,16 @@ public:
 	static void	rpl_welcome( Message& msg );			//[001] ????
 	static void	rpl_away( Message& msg );				//[301] INVITE
 	static void	rpl_whoisuser( Message& msg );			//[311] WHOIS
-	static void	rpl_whoisserver( Message& msg );			//[312] WHOIS
+	static void	rpl_whoisserver( Message& msg );		//[312] WHOIS
 	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
+	static void rpl_endofwho( Message& msg );			//[315] WHO
 	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
 	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS
 	static void	rpl_channelmodeis( Message& msg );		//[324] MODE
 	static void	rpl_notopic( Message& msg );			//[331] JOIN,TOPIC
 	static void	rpl_topic( Message& msg );				//[332] JOIN,TOPIC
 	static void	rpl_inviting( Message& msg );			//[341] INVITE
+	static void rpl_whoreply( Message& msg );			//[352] WHO
 	static void	rpl_banlist( Message& msg );			//[367] MODE
 	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
 	static void rpl_youreoper( Message& msg );			//[381] OPER

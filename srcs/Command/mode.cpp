@@ -80,9 +80,16 @@ void CommandManager::handle_b_mode(size_t &pos_it, string& modes, string& params
 	}
 	else
 	{
+		std::cout << "banmask is = " << parsed[pos_it] << std::endl;
+		if (msg[2][0] == '-')
+			channel->remove_banmask(parsed[pos_it]);
+		else if (msg[2][0] == '+')
+		{
+			channel->add_banmask(parsed[pos_it]);
+			channel->set_mode_str("b");
+		}
 		modes += "b";
 		params += parsed[pos_it];
-		channel->set_mode_str("b");
 	}
 	return;
 }

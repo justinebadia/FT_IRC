@@ -127,7 +127,6 @@ void Message::clear_all( void )
 	_message_out.clear();
 }
 
-
 /*----------------NON-MEMBER-FUNCTIONS----------------*/
 
 std::ostream&	irc::operator<<( std::ostream& o, const Message& obj )

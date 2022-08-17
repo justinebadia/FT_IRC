@@ -68,6 +68,11 @@ void	CommandManager::rpl_whoisoperator( Message& msg )
 	msg.append_out(": 313 " + client.get_nickname() + " " + client.get_username() + " :is an IRC operator");
 }
 
+void 	CommandManager::rpl_endofwho( Message& msg )
+{
+	msg.append_out(": 315 " + msg.get_client_ptr()->get_nickname() + " :End of WHO list");
+}
+
 void	CommandManager::rpl_endofwhois( Message& msg )
 {
 	Client& client = *msg.get_client_ptr();
@@ -125,6 +130,41 @@ void	CommandManager::rpl_topic( Message& msg )
 void	CommandManager::rpl_inviting( Message& msg )
 {
 	msg.append_out(": 341 " + msg[2] + " " + msg[1]);
+}
+
+void CommandManager::rpl_whoreply( Message& msg )
+{
+	Client* client = msg.get_client_ptr(); 
+	string reply; client->get_username() + " " + client->get_client_ip() + " " + _server->get_server_ip() + " :0" + client->get_realname();
+
+	if (msg.get_param_count() >= 1)
+	{
+		if (msg[1][0] == '&' && msg[1][0] == '#')
+		{
+			Channel* channel = _database->get_channel(msg[1]);
+			t_channel_memberlist::iterator it = channel->get_memberlist().begin();
+			t_channel_memberlist::iterator ite = channel->get_memberlist().end();
+
+			for (; it != ite; it++)
+			{
+				reply = (*it).first->get_username() + " " + (*it).first->get_client_ip() + " " + _server->get_server_ip() + " :0 " + (*it).first->get_realname();
+				msg.append_out(": 352 " + reply);
+			}
+		}
+		else
+		{
+			Client* target = _database->get_client(msg[1]);
+			if (target)
+				msg.append_out(": 352 " + client->get_username() + " " + client->get_client_ip() + " " + _server->get_server_ip() + " :0 " + client->get_realname());
+		}
+	}
+	else 
+	{
+		t_client_ptr_list::const_iterator it = _database->get_client_ptr_list().begin();
+		t_client_ptr_list::const_iterator ite = _database->get_client_ptr_list().end();
+		for (; it != ite; it++)
+			msg.append_out(": 352 " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " :0" + (*it)->get_realname());
+	}
 }
 
 void	CommandManager::rpl_banlist( Message& msg )
@@ -243,8 +283,6 @@ void	CommandManager::err_useronchannel( Message& msg )
 /* ":USERS has been disabled"*/
 void	CommandManager::err_userdisabled( Message& msg )
 {
-	Client&	client = *msg.get_client_ptr();
-
 	msg.append_out(": 446 ERR_USERDISABLED :USERS has been disabled");
 }
 
@@ -259,7 +297,7 @@ void	CommandManager::err_alreadyregistered( Message& msg )
 {
 	Client&	client = *msg.get_client_ptr();
 
-	string err_msg = ": 462 ERR_ALREADYREGISTERED :You may not reregister";
+	string err_msg = ": 462 ERR_ALREADYREGISTERED " + client.get_nickname() + " :You may not reregister";
 	msg.append_out(err_msg);
 }
 
