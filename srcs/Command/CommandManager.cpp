@@ -44,7 +44,9 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
 	_command_map.insert(std::make_pair(string("KILL"), cmd_kill));
+	_command_map.insert(std::make_pair(string("LIST"), cmd_list));
 	// _command_map.insert(std::make_pair(string("MODE"), cmd_mode));
+	_command_map.insert(std::make_pair(string("NAMES"), cmd_names));
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
 	_command_map.insert(std::make_pair(string("OPER"), cmd_oper));
 	_command_map.insert(std::make_pair(string("PART"), cmd_part));
@@ -67,10 +69,15 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));			//[313] WHOIS
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));					//[318] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));			//[319] WHOIS
+	_reply_map.insert(std::make_pair(RPL_LISTSTART, rpl_liststart));					//[321] LIST
+	_reply_map.insert(std::make_pair(RPL_LIST, rpl_list));								//[322] LIST
+	_reply_map.insert(std::make_pair(RPL_LISTEND, rpl_listend));						//[323] LIST
 	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));			//[324] MODE
 	_reply_map.insert(std::make_pair(RPL_NOTOPIC, rpl_notopic));						//[331] JOIN
 	_reply_map.insert(std::make_pair(RPL_TOPIC, rpl_topic));							//[332] JOIN
 	_reply_map.insert(std::make_pair(RPL_INVITING, rpl_inviting));						//[341] INVITE
+	_reply_map.insert(std::make_pair(RPL_NAMREPLY, rpl_namreply));						//[353] NAMES
+	_reply_map.insert(std::make_pair(RPL_ENDOFNAMES, rpl_endofnames));					//[366] NAMES
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
@@ -78,7 +85,7 @@ void	CommandManager::_init_reply_map( void )
 	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));				//[394] WHOIS
 	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));						//[395] WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
-	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] USERS,WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,USERS,WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] KICK,PART
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
 	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK

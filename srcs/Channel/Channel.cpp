@@ -340,8 +340,7 @@ void	Channel::remove_member( Client* client )
 				else
 				{
 					_memberlist.erase(it);
-					//transfer_ownership(); WARNING INCORECCT!!!!!
-
+					transfer_ownership(); 
 					if (is_only_banned_member_left() == true)
 					{
 						empty_memberlist();
@@ -388,36 +387,31 @@ void	Channel::remove_banmask( const string& mask )
 }
 
 
-// void	Channel::transfer_ownership( void )
-// {
-// 	Channel::iterator it = _memberlist.begin();
-// 	Channel::iterator ite = _memberlist.end();
+void	Channel::transfer_ownership( void )
+{
+	Channel::iterator it = _memberlist.begin();
+ 	Channel::iterator ite = _memberlist.end();
 
-// 	for (; it != ite; it++)
-// 	{
-// 		if (get_permission((*it).first) == CHANOP)
-// 		{
-// 			(*it).second = OWNER;
-// 			return ;
-// 		}
-	
-// 	}
-// 	it = _memberlist.begin();
-// 	ite = _memberlist.end();
+ 	for (; it != ite; it++)
+ 	{
+ 		if (get_permission((*it).first) == CHANOP)
+ 		{
+			(*it).second = OWNER;
+ 			return ;
+ 		}
+ 	}
+ 	it = _memberlist.begin();
+ 	ite = _memberlist.end();
 
-// 	for (; it != ite; it++)
-// 	{
-// 		if (get_permission((*it).first) == REGULAR)
-// 		{
-// 			(*it).second = OWNER;
-// 			return ;
-// 		}
-// 	}
-
-// 	// ELSE IL NE RESTE QUE DU MONDE BAN DANS LA MEMBERLIST, IL FAUT ENVOYER UN INT POUR REMOVE LE CHANNEL DE LA DATABASE
-// 	// OU FAIRE UNE FONCTION IS ONLY BANNED_MEMBER_LEFT
-	
-// }
+ 	for (; it != ite; it++)
+ 	{
+ 		if (get_permission((*it).first) == REGULAR)
+		{
+ 			(*it).second = OWNER;
+			return ;
+ 		}
+ 	}
+}
 
 string Channel::parse_modes( Message& msg )
 {

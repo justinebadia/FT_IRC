@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/16 21:15:10 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/17 11:56:13 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ public:
 	void		print_invite_coupon_list( void );
 
 	void		create_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
-	void		use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
+	int			use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
 
 	void		clean_database( void );
 };

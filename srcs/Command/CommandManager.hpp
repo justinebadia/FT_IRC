@@ -64,7 +64,10 @@ public:
 	static void process_single_join( Message& msg );
 	static void	cmd_kick( Message& msg );
 	static void	cmd_kill( Message& msg );
+	static void	cmd_list( Message& msg );
 	static void cmd_mode( Message& msg );
+	static void cmd_names( Message& msg );
+	static void process_single_names( Message& msg );
 	static void	cmd_nick( Message& msg );
 	static void	cmd_oper( Message& msg );
 	static void	cmd_part( Message& msg );
@@ -88,10 +91,15 @@ public:
 	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
 	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
 	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS
+	static void	rpl_liststart( Message& msg );			//[321] LIST
+	static void rpl_list( Message& msg );				//[322] LIST
+	static void	rpl_listend( Message& msg );			//[323] LIST
 	static void	rpl_channelmodeis( Message& msg );		//[324] MODE
 	static void	rpl_notopic( Message& msg );			//[331] JOIN,TOPIC
 	static void	rpl_topic( Message& msg );				//[332] JOIN,TOPIC
 	static void	rpl_inviting( Message& msg );			//[341] INVITE
+	static void	rpl_namreply( Message& msg );			//[353] NAMES
+	static void	rpl_endofnames( Message& msg );			//[366] NAMES
 	static void	rpl_banlist( Message& msg );			//[367] MODE
 	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
 	static void rpl_youreoper( Message& msg );			//[381] OPER
@@ -99,7 +107,7 @@ public:
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
 	static void	err_nosuchnick( Message& msg);			//[401] INVITE,KILL
-	static void	err_nosuchserver( Message& msg);		//[402] USERS,WHOIS
+	static void	err_nosuchserver( Message& msg);		//[402] LIST,USERS,WHOIS
 	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
 	static void	err_noorigin( Message& msg );			//[409] PING
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK

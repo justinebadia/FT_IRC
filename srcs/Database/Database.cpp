@@ -410,11 +410,12 @@ void	Database::clean_database( void )
 
 void	Database::create_invite_coupon( Client* client, Channel* channel )
 {
-	// WARNING VERIFY IF INVITE_COUPON IS UNIQUE ???
 	_invite_coupon_list.push_back(std::make_pair(client, channel));
+	_invite_coupon_list.sort();
+	_invite_coupon_list.unique();	// WARNING Not sure if invite_coupon_must_be_unique
 }
 
-void	Database::use_invite_coupon( Client* client, Channel* channel )
+int	Database::use_invite_coupon( Client* client, Channel* channel )
 {
 	t_invite_coupon_list::iterator it = _invite_coupon_list.begin();
 	t_invite_coupon_list::iterator ite = _invite_coupon_list.end();
@@ -425,9 +426,10 @@ void	Database::use_invite_coupon( Client* client, Channel* channel )
 			(*it).second->get_name() == channel->get_name())
 		{
 			_invite_coupon_list.erase(it);
-			return;
+			return SUCCESS;
 		}
 	}	
+	return FAIL;
 }
 
 } // namespace irc end bracket
