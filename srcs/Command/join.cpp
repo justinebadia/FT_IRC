@@ -23,7 +23,7 @@ void CommandManager::process_single_join( Message& msg )
 	{
 		return run_reply(ERR_TOOMANYCHANNELS, msg);
 	}
-	if (!validate_entry(REGEX_CHANNEL, msg[1]))
+	if (!validate_with_regex(REGEX_CHANNEL, msg[1]))
 	{
 		return run_reply(ERR_BADCHANMASK, msg);
 	}

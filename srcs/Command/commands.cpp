@@ -160,7 +160,7 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 	
-	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
+	if ( !validate_with_regex(REGEX_NICKNAME, msg[1]) )
 	{
 		run_reply(ERR_ERRONEUSNICKNAME, msg);
 		return;

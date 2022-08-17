@@ -1,7 +1,9 @@
 
+#pragma once
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <time.h>
 #include <string>
 #include <utility>
 #include <exception>
@@ -11,9 +13,9 @@
 #include "irc_define.hpp"
 #include "typedef.hpp"
 
-#define	HOSTNAME 	"127.0.0.1"	// a.k.a. "localhost" alias
 #define PORT 6667
-#define OPER_PASS	"Tobastine"
+#define CLIENT_TIMEOUT	60	// seconds
+#define PING_INTERVAL	25	// seconds
  
 class Channel;
 
@@ -26,8 +28,6 @@ namespace irc {
 class CommandManager;
 
 class Server {
-
-
 
 private:
 
@@ -64,6 +64,7 @@ private:
 	t_reply_map			_reply_map;
 	t_operator_vect		_operator_vect;
 
+	time_t				_last_ping;
 	static int			log_level;
 
 	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
@@ -84,6 +85,7 @@ private:
 	void		_init_server( void );
 	void		_kill_server( void );
 	void		_check_for_kills( void );
+	void		_check_for_timeouts( void );
 
 	void		_init_operators( void );
 	void		_clean_operators( void );

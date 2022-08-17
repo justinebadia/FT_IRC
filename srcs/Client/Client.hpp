@@ -6,10 +6,10 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <poll.h>
+#include <time.h>
 
 #include <list>
 
@@ -61,6 +61,7 @@ private:
 	string			_buff[2]; // 0 == read and 1 == write
 	bool			_socket_opened;
 	int				_registration;
+	time_t			_last_read;
 	
 	void	_set_operator( bool value );
 	void	_init_client( void );
@@ -92,6 +93,7 @@ public:
 	bool 							get_to_be_killed( void ) const;
 	string							get_prefix( void );
 	int								get_registration_flags( void ) const;
+	const time_t&					get_last_read( void ) const;
 
 	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
@@ -112,6 +114,7 @@ public:
 	void	set_username( const string& username );
 	void	set_hostname( const string& hostname );
 	void	set_realname( const string& realname );
+	void	set_last_read_to_now( void );
 
 	void	set_registration_flags( const e_registration& flag );
 	void	set_to_be_killed( bool setting );
