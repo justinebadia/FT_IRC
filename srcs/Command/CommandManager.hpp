@@ -66,6 +66,7 @@ public:
 	static void	cmd_kill( Message& msg );
 	static void cmd_mode( Message& msg );
 	static void	cmd_nick( Message& msg );
+	static void	cmd_notice( Message& msg );
 	static void	cmd_oper( Message& msg );
 	static void	cmd_part( Message& msg );
 	static void process_single_part( Message& msg );
