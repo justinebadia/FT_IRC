@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/16 17:21:31 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/16 21:15:10 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ public:
 	~Database( void );										// default destructor
 
 	/*-----------------------GETTERS----------------------*/ 
-	// [Client related getters]
 	const t_client_list&	get_client_list( void );
 	const t_client_ptr_list	get_client_ptr_list( void );
 	size_t					get_client_count( void );
@@ -84,26 +83,10 @@ public:
 	void		print_channel_list( void );
 	void		print_invite_coupon_list( void );
 
-	//int			add_client_to_channel( Client* client, const string& chan_name );
-	//int			add_client_to_channel( Client* client, Channel* channel );
-	/*
-	void		remove_client_list( const int& fd );
-	void		remove_client_list( const string& nickname );
-	void		remove_client_list( Client* client );
-	void		remove_channel_list( const string& chan_name );
-	void		remove_client_from_channel( const string& nickname, const string& chan_name );
-	void		remove_client_from_all_channels( const string& nickname );
-	void		remove_all_clients_from_channel( const string& chan_name );
-	*/
-
-
 	void		create_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
 	void		use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
 
 	void		clean_database( void );
-
-
-	
 };
 
 

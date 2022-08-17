@@ -15,7 +15,6 @@
 using namespace irc;
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
-
 Client::Client( int fd ) // main constructor
 	: _nickname("")
 	, _username("")

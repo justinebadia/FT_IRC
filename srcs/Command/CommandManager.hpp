@@ -84,7 +84,7 @@ public:
 	static void	rpl_welcome( Message& msg );			//[001] ????
 	static void	rpl_away( Message& msg );				//[301] INVITE
 	static void	rpl_whoisuser( Message& msg );			//[311] WHOIS
-	static void	rpl_whoisserver( Message& msg );			//[312] WHOIS
+	static void	rpl_whoisserver( Message& msg );		//[312] WHOIS
 	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
 	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
 	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS

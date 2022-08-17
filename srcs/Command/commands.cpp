@@ -108,8 +108,6 @@ void CommandManager::cmd_kick( Message& msg )
 	if (!target_client)	// WARNING what are we supposed to do? its not ERR_NOTONCHANNEL
 		return;
 	channel->remove_member(target_client);
-
-	// WARNING TEST TO DO try chanop kick another chanop and what happens when you kick a banned member? is removed from memberlist?
 }
 
 /*[KILL]---------------------------------------------------------------------------------------------------------------[KILL]*/
