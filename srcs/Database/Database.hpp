@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/16 21:15:10 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/17 21:26:13 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ public:
 	Channel*				get_channel( const string& chan_name );
 	Channel*				get_channel( const Client* client );
 	size_t					get_channel_count( void );
+	t_channel_list			get_channel_list( void );
 	t_channel_ptr_list		get_channel_list_of_client( Client* client );
 	t_client_ptr_list		get_channel_in_common_recipient_list( Client* client );
 	
@@ -84,7 +85,7 @@ public:
 	void		print_invite_coupon_list( void );
 
 	void		create_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
-	void		use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
+	int			use_invite_coupon( Client* client, Channel* channel ); //NEW for INVITE
 
 	void		clean_database( void );
 };

@@ -99,6 +99,26 @@ void	CommandManager::rpl_whoischannels( Message& msg )
 		
 }
 
+void	CommandManager::rpl_list( Message& msg )
+{
+	Channel* channel = _database->get_channel(msg[1]);
+	if (!channel)
+		return;
+	Client*	target_client = msg.get_client_ptr();
+	string	names = ": 322 " + target_client->get_nickname() + " " + channel->get_name() +  " :" + channel->get_topic();
+
+	msg.append_out(names);
+}
+
+void	CommandManager::rpl_listend( Message& msg )
+{
+	Channel* channel = _database->get_channel(msg[1]);
+	if (!channel)
+		return;
+	Client*	target_client = msg.get_client_ptr();
+	msg.append_out(": 323 " + target_client->get_nickname() + " " + channel->get_name() + " :End of LIST");
+}
+
 void	CommandManager::rpl_channelmodeis( Message& msg )
 {
 	msg.append_out(": 324 " + msg[1] + " " + msg.get_mode_rpl());
@@ -117,6 +137,34 @@ void	CommandManager::rpl_topic( Message& msg )
 void	CommandManager::rpl_inviting( Message& msg )
 {
 	msg.append_out(": 341 " + msg[2] + " " + msg[1]);
+}
+
+void	CommandManager::rpl_namreply( Message& msg )
+{
+	Channel* channel = _database->get_channel(msg[1]);
+	if (!channel)
+		return;
+	Client*	target_client = msg.get_client_ptr();
+	string	names = ": 353 " + target_client->get_nickname() + " = " + channel->get_name() +  " :";
+
+	t_channel_memberlist memberlist = channel->get_memberlist();
+	t_channel_memberlist::iterator it = memberlist.begin();
+	t_channel_memberlist::iterator ite = memberlist.end();
+	for (; it != ite; it++)
+	{
+		names += " " + ((*it).first->get_nickname());
+	}
+	msg.append_out(names);
+}
+
+void	CommandManager::rpl_endofnames( Message& msg )
+{
+	Channel* channel = _database->get_channel(msg[1]);
+	if (!channel)
+		return;
+	
+	Client*	target_client = msg.get_client_ptr();
+	msg.append_out(": 366 " + target_client->get_nickname() + " " + channel->get_name() + " :End of NAMES list");
 }
 
 void	CommandManager::rpl_banlist( Message& msg )

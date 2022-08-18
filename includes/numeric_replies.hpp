@@ -44,9 +44,9 @@
 #define	RPL_ENDOFWHOIS			318
 #define	RPL_WHOISCHANNELS		319
 // #define	RPL_WHOISSPECIAL		320
-//#define	RPL_LISTSTART			321
-//#define	RPL_LIST				322
-//#define	RPL_LISTEND				323
+#define	RPL_LISTSTART			321
+#define	RPL_LIST				322
+#define	RPL_LISTEND				323
 #define	RPL_CHANNELMODEIS		324
 // #define	RPL_CREATIONTIME		329
 // #define	RPL_WHOISACCOUNT		330
@@ -62,10 +62,10 @@
 // #define	RPL_EXCEPTLIST			348	
 // #define	RPL_ENDOFEXCEPTLIST		349
 // #define	RPL_VERSION				351
-//#define	RPL_NAMREPLY			353
+#define	RPL_NAMREPLY				353
 // #define	RPL_LINKS				364
 // #define	RPL_ENDOFLINKS			365
-//#define	RPL_ENDOFNAMES			366
+#define	RPL_ENDOFNAMES			366
 #define	RPL_BANLIST				367
 #define	RPL_ENDOFBANLIST		368
 // #define	RPL_ENDOFWHOWAS			369
