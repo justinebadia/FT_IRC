@@ -66,8 +66,14 @@ void CommandManager::process_single_join( Message& msg )
 			if (channel->get_password() != msg[2])
 				return run_reply(ERR_BADCHANNELKEY, msg);
 		}
-
 		channel->add_member(source_client, OWNER);
+		topic = channel->get_topic();
+		if (topic.empty() == true)
+			run_reply(RPL_NOTOPIC, msg);
+		else
+			run_reply(RPL_TOPIC, msg);
+		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
 	else	// the channel doesn't exist
 	{
@@ -79,7 +85,7 @@ void CommandManager::process_single_join( Message& msg )
 		channel = _database->get_channel(msg[1]);
 		channel->add_member(source_client, OWNER);
 		topic = channel->get_topic();
-		if (topic.empty() == true)				// WARNING A VERIFIER si NULL ou string vide ""
+		if (topic.empty() == true)
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);

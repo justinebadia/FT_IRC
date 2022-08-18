@@ -158,6 +158,7 @@ Channel*	Database::get_channel( const string& chan_name )
 
 size_t		Database::get_channel_count( void ) { return _channel_list.size(); }
 
+t_channel_list	Database::get_channel_list( void ) { return _channel_list; }
 
 t_channel_ptr_list	Database::get_channel_list_of_client( Client *client ) // LIST DE CHANNELS WHERE THE CLIENT IS                  	                              
 {

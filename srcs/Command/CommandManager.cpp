@@ -85,7 +85,7 @@ void	CommandManager::_init_reply_map( void )
 	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));				//[394] WHOIS
 	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));						//[395] WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
-	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,USERS,WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,USERS,WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] KICK,PART
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
 	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK

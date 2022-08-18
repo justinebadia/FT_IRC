@@ -107,7 +107,7 @@ public:
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
 	static void	err_nosuchnick( Message& msg);			//[401] INVITE,KILL
-	static void	err_nosuchserver( Message& msg);		//[402] LIST,USERS,WHOIS
+	static void	err_nosuchserver( Message& msg);		//[402] LIST,NAMES,USERS,WHOIS
 	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
 	static void	err_noorigin( Message& msg );			//[409] PING
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK

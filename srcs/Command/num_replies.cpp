@@ -124,7 +124,6 @@ void	CommandManager::rpl_namreply( Message& msg )
 	Channel* channel = _database->get_channel(msg[1]);
 	if (!channel)
 		return;
-
 	Client*	target_client = msg.get_client_ptr();
 	string	names = ": 353 " + target_client->get_nickname() + " = " + channel->get_name() +  " :";
 

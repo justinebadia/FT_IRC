@@ -19,8 +19,11 @@ void CommandManager::process_single_names( Message& msg )
 	Channel* 			channel = NULL;
 	string topic;
 
-		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
-	}
+	run_reply(RPL_NAMREPLY, msg);
+	run_reply(RPL_ENDOFNAMES, msg);
+	recipient_list.push_back(source_client);
+	send_to_clients(recipient_list, source_client->get_prefix() + "NAMES " + msg[1] + CRLF);
+	
 }
 
 void CommandManager::cmd_names( Message& msg )			
@@ -32,9 +35,17 @@ void CommandManager::cmd_names( Message& msg )
 	Message		single_join_msg(msg.get_client_ptr());
 
 	channels = msg[1];
-	if (channels.empty())
+	if (channels.empty())	//make a string of all channels
 	{
+		t_channel_list channel_list = _database->get_channel_list();
+		t_channel_list::iterator it = channel_list.begin();
+		t_channel_list::iterator ite = channel_list.end();
 
+		for (; it != ite; it++)
+		{
+			channels += (*it).get_name();
+			channels += ",";
+		}
 	}
 	while (pos < channels.length())
 	{
