@@ -142,8 +142,9 @@ void CommandManager::rpl_whoreply( Message& msg )
 		if (msg[1][0] == '&' && msg[1][0] == '#')
 		{
 			Channel* channel = _database->get_channel(msg[1]);
-			t_channel_memberlist::iterator it = channel->get_memberlist().begin();
-			t_channel_memberlist::iterator ite = channel->get_memberlist().end();
+			t_channel_memberlist member_list = channel->get_memberlist();
+			t_channel_memberlist::iterator it = member_list.begin();
+			t_channel_memberlist::iterator ite = member_list.end();
 
 			for (; it != ite; it++)
 			{
@@ -160,8 +161,9 @@ void CommandManager::rpl_whoreply( Message& msg )
 	}
 	else 
 	{
-		t_client_ptr_list::const_iterator it = _database->get_client_ptr_list().begin();
-		t_client_ptr_list::const_iterator ite = _database->get_client_ptr_list().end();
+		t_client_ptr_list client_list = _database->get_client_ptr_list();
+		t_client_ptr_list::const_iterator it = client_list.begin();
+		t_client_ptr_list::const_iterator ite = client_list.end();
 		for (; it != ite; it++)
 			msg.append_out(": 352 " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " :0" + (*it)->get_realname());
 	}
@@ -170,15 +172,14 @@ void CommandManager::rpl_whoreply( Message& msg )
 void	CommandManager::rpl_banlist( Message& msg )
 {
 	Channel* channel = _database->get_channel(msg[1]);
-	if (!channel->get_banmask_list().empty())
+	if (channel && !channel->get_banmask_list().empty())
 	{
-		t_mask_list::iterator it = channel->get_banmask_list().begin();
-		t_mask_list::iterator ite = channel->get_banmask_list().end();
+		t_mask_list ban_mask = channel->get_banmask_list();
+		t_mask_list::iterator it = ban_mask.begin();
+		t_mask_list::iterator ite = ban_mask.end();
 
 		for (; it != ite; it++)
-		{
 			msg.append_out(": 367 " + msg[1] + " " + (*it)); 
-		}
 	}
 	else
 		msg.append_out(": 367 " + msg[1]); 

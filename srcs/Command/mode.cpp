@@ -72,7 +72,7 @@ void CommandManager::handle_k_mode(size_t &pos_it, string& modes, string& params
 void CommandManager::handle_b_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg)
 {
 	pos_it++;
-	if (parsed[pos_it].empty())
+	if (pos_it >= parsed.size())
 	{
 		irc::CommandManager::run_reply(RPL_BANLIST, msg);
 		irc::CommandManager::run_reply(RPL_ENDOFBANLIST, msg);
@@ -80,14 +80,10 @@ void CommandManager::handle_b_mode(size_t &pos_it, string& modes, string& params
 	}
 	else
 	{
-		std::cout << "banmask is = " << parsed[pos_it] << std::endl;
 		if (msg[2][0] == '-')
 			channel->remove_banmask(parsed[pos_it]);
 		else if (msg[2][0] == '+')
-		{
 			channel->add_banmask(parsed[pos_it]);
-			channel->set_mode_str("b");
-		}
 		modes += "b";
 		params += parsed[pos_it];
 	}
