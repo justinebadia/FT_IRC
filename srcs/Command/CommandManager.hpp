@@ -65,6 +65,7 @@ public:
 	static void	cmd_kick( Message& msg );
 	static void	cmd_kill( Message& msg );
 	static void	cmd_list( Message& msg );
+	static void process_single_list( Message& msg );
 	static void cmd_mode( Message& msg );
 	static void cmd_names( Message& msg );
 	static void process_single_names( Message& msg );
@@ -91,7 +92,7 @@ public:
 	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
 	static void	rpl_endofwhois( Message& msg );			//[318] WHOIS
 	static void	rpl_whoischannels( Message& msg );		//[319] WHOIS
-	static void	rpl_liststart( Message& msg );			//[321] LIST
+	// static void	rpl_liststart( Message& msg );			//[321] LIST   OBSOLETE RFC 2812
 	static void rpl_list( Message& msg );				//[322] LIST
 	static void	rpl_listend( Message& msg );			//[323] LIST
 	static void	rpl_channelmodeis( Message& msg );		//[324] MODE

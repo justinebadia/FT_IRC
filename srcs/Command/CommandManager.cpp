@@ -69,7 +69,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));			//[313] WHOIS
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));					//[318] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));			//[319] WHOIS
-	_reply_map.insert(std::make_pair(RPL_LISTSTART, rpl_liststart));					//[321] LIST
+	// _reply_map.insert(std::make_pair(RPL_LISTSTART, rpl_liststart));					//[321] LIST		OBSOLETE RFC 2812
 	_reply_map.insert(std::make_pair(RPL_LIST, rpl_list));								//[322] LIST
 	_reply_map.insert(std::make_pair(RPL_LISTEND, rpl_listend));						//[323] LIST
 	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));			//[324] MODE

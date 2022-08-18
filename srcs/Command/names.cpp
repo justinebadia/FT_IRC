@@ -16,7 +16,6 @@ void CommandManager::process_single_names( Message& msg )
 {
 	Client* source_client = msg.get_client_ptr();
 	t_client_ptr_list	recipient_list;
-	Channel* 			channel = NULL;
 	string topic;
 
 	run_reply(RPL_NAMREPLY, msg);

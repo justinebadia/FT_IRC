@@ -12,15 +12,14 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-void CommandManager::process_single_names( Message& msg )
+void CommandManager::process_single_list( Message& msg )
 {
 	Client* source_client = msg.get_client_ptr();
 	t_client_ptr_list	recipient_list;
-	Channel* 			channel = NULL;
 	string topic;
 
-	run_reply(RPL_NAMREPLY, msg);
-	run_reply(RPL_ENDOFNAMES, msg);
+	run_reply(RPL_LIST, msg);
+	run_reply(RPL_LISTEND, msg);
 	recipient_list.push_back(source_client);
 	send_to_clients(recipient_list, source_client->get_prefix() + "NAMES " + msg[1] + CRLF);
 	
@@ -58,7 +57,7 @@ void CommandManager::cmd_list( Message& msg )
 		if (next_pos == string::npos)
 			next_pos = channels.length();
 		single_join_msg.append_in("NAMES " + channels.substr(pos, next_pos - pos));
-		process_single_names(single_join_msg);
+		process_single_list(single_join_msg);
 		msg.append_out(single_join_msg.get_message_out());
 		single_join_msg.clear_all();
 		pos = next_pos + 1;
