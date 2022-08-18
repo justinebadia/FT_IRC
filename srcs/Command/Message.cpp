@@ -86,7 +86,7 @@ string		Message::get_substr_after( const string& symbol )
 	pos = _message_in.find(symb, 1);
 	if (pos == string::npos)
 		return string("");
-	return _message_in.substr(pos + 1);
+	return _message_in.substr(pos + 2);
 }
 
 

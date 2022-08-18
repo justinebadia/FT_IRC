@@ -92,6 +92,7 @@ public:
 	const string& 					get_client_ip( void ) const;
 	bool 							get_to_be_killed( void ) const;
 	string							get_prefix( void );
+	string							get_full_id( void );
 	int								get_registration_flags( void ) const;
 	const time_t&					get_last_read( void ) const;
 

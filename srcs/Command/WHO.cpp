@@ -20,7 +20,7 @@ void 	CommandManager::cmd_who( Message& msg )
 
 	if (msg.get_param_count() >= 1)
 	{
-		if (msg[1][0] == '&' && msg[1][0] == '#')
+		if (msg[1][0] == '&' || msg[1][0] == '#')
 		{
 			Channel* channel = _database->get_channel(msg[1]);
 			if (channel)
@@ -28,7 +28,7 @@ void 	CommandManager::cmd_who( Message& msg )
 				if (channel->is_member(client))
 				{
 					run_reply(RPL_WHOREPLY, msg);
-					run_reply(RPL_ENDOFWHO, msg);
+					//run_reply(RPL_ENDOFWHO, msg);
 					return ;	
 				}
 			}
@@ -39,7 +39,7 @@ void 	CommandManager::cmd_who( Message& msg )
 			if (target)
 			{
 				run_reply(RPL_WHOREPLY, msg);
-				run_reply(RPL_ENDOFWHO, msg);
+				//run_reply(RPL_ENDOFWHO, msg);
 				return;	
 			}
 		}

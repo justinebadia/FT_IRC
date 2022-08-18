@@ -39,13 +39,12 @@ CommandManager::~CommandManager( void )									// destructor
 
 void	CommandManager::_init_command_map( void )
 {			
-			// WARNING TEMPORARILY IN ALPHABETICAL ORDER
 	_command_map.insert(std::make_pair(string("INVITE"), cmd_invite));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
 	_command_map.insert(std::make_pair(string("KILL"), cmd_kill));
-	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
 	_command_map.insert(std::make_pair(string("LIST"), cmd_list));
+	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
 	_command_map.insert(std::make_pair(string("NOTICE"), cmd_notice));
 	_command_map.insert(std::make_pair(string("NAMES"), cmd_names));
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
@@ -59,20 +58,17 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHO"), cmd_who));
 	_command_map.insert(std::make_pair(string("WHOIS"), cmd_whois));
-
 }
 
 void	CommandManager::_init_reply_map( void )
 {
 	_reply_map.insert(std::make_pair(RPL_WELCOME, rpl_welcome));						//[001] ????
-	_reply_map.insert(std::make_pair(RPL_AWAY, rpl_away));								//[301] INVITE
 	_reply_map.insert(std::make_pair(RPL_WHOISUSER, rpl_whoisuser));					//[311] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISSERVER, rpl_whoisserver));				//[312] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISOPERATOR, rpl_whoisoperator));			//[313] WHOIS
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHO, rpl_endofwho));						//[315] WHO
 	_reply_map.insert(std::make_pair(RPL_ENDOFWHOIS, rpl_endofwhois));					//[318] WHOIS
 	_reply_map.insert(std::make_pair(RPL_WHOISCHANNELS, rpl_whoischannels));			//[319] WHOIS
-	// _reply_map.insert(std::make_pair(RPL_LISTSTART, rpl_liststart));					//[321] LIST		OBSOLETE RFC 2812
 	_reply_map.insert(std::make_pair(RPL_LIST, rpl_list));								//[322] LIST
 	_reply_map.insert(std::make_pair(RPL_LISTEND, rpl_listend));						//[323] LIST
 	_reply_map.insert(std::make_pair(RPL_CHANNELMODEIS, rpl_channelmodeis));			//[324] MODE
@@ -85,20 +81,15 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
-	// _reply_map.insert(std::make_pair(RPL_USERSSTART, rpl_usersstart));				//[392] WHOIS
-	// _reply_map.insert(std::make_pair(RPL_ENDOFUSERS, rpl_endofusers));				//[394] WHOIS
-	// _reply_map.insert(std::make_pair(ERR_NOUSERS, rpl_nousers));						//[395] WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
 	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,USERS,WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] KICK,PART
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
-	// _reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK
+	_reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK
 	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));		//[432] NICK
 	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));			//[433] NICK
-	// _reply_map.insert(std::make_pair(ERR_NICKCOLLISION, err_nickcollision));			//[436] NICK
 	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));				//[442] INVITE,KICK,PART,TOPIC
 	_reply_map.insert(std::make_pair(ERR_USERONCHANNEL, err_useronchannel));			//[443] INVITE
-	// _reply_map.insert(std::make_pair(ERR_USERDISABLED, *err_userdisabled));			//[446] USERS
 	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));			//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG,OPER
