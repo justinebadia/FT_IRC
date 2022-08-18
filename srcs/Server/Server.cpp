@@ -308,7 +308,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFOUT));
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), client->get_buff(1).length(), MSG_DONTWAIT);
 	if (bytes > 0)
-		client->clear_buff(BUFFOUT); // WARNING - REMOVE ONLY SENT n
+		client->get_buff(BUFFOUT).erase(0, static_cast<unsigned long>(bytes));
 	Server::log(string(YELLOW) + "Buff content sent!");
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }
