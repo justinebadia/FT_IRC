@@ -52,6 +52,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 	_socket.pollfd.fd = rhs.get_fd();
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = rhs.is_opened();
+	_last_read = rhs.get_last_read();
 	
 	_registration = rhs.get_registration_flags();
 	// _socket.addr = rhs.get_addr_copy();
@@ -69,7 +70,8 @@ void	Client::_init_client( void )
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 	_socket_opened = true;
 	_to_be_killed = false;
-	_registration = NONE_SET;	
+	_registration = NONE_SET;
+	std::time(&_last_read);
 }
 
 /*---------------OTHER-OPERATOR-OVERLOAD--------------*/
@@ -96,6 +98,7 @@ string Client::get_prefix( void )
 
 
 int				Client::get_registration_flags( void ) const { return _registration; }
+const time_t&	Client::get_last_read( void ) const { return _last_read; }
 
 // where is t_pollfd*	Client::get_pollfd_array( void ) ???
 t_pollfd&		Client::get_pollfd( void ) { return _socket.pollfd; }
@@ -130,7 +133,7 @@ void	Client::set_registration_flags( const e_registration& flag )
 {
 	this->_registration |= flag;
 }
-
+void	Client::set_last_read_to_now( void ) { std::time(&_last_read); }
 void	Client::set_to_be_killed( bool setting ) { _to_be_killed = setting; }
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/

@@ -14,58 +14,84 @@ using std::endl;
 
 void CommandManager::process_single_join( Message& msg )
 {
-	t_client_ptr_list	client_list;
-	Channel* 			channel;
+	Client* source_client = msg.get_client_ptr();
+	t_client_ptr_list	recipient_list;
+	Channel* 			channel = NULL;
 	string topic;
-	Client* client_ptr = msg.get_client_ptr();
 
-	if (_database->get_channel_count() >= MAX_CHANNELS)
+	// JOIN ZERO
+	if (msg[1] == "0")
 	{
-		return run_reply(ERR_TOOMANYCHANNELS, msg);
+		// source_client PART all joined channels
+		t_channel_ptr_list joined_channel_list = _database->get_channel_list_of_client(source_client);
+		t_channel_ptr_list::iterator it = joined_channel_list.begin();
+		t_channel_ptr_list::iterator ite = joined_channel_list.end();
+
+		for (; it != ite; it++)
+		{
+			recipient_list = channel->get_clients_any_permissions();
+			send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
+			(*it)->remove_member(source_client);
+		}
+		return;
 	}
-	if (!validate_entry(REGEX_CHANNEL, msg[1]))
+	channel = _database->get_channel(msg[1]);
+	if (!validate_with_regex(REGEX_CHANNEL, msg[1]))
 	{
 		return run_reply(ERR_BADCHANMASK, msg);
 	}
-	channel = _database->get_channel(msg[1]);
-	if (!channel) // if channel doesn't exist : create a new one
+	if (_database->is_channel_listed(msg[1]) == true)
 	{
-		_database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
-		channel = _database->get_channel(msg[1]);
-	}
-	else if (channel->get_memberlist().size() >= MAX_CLIENT_PER_CHAN)
-	{
-		return run_reply(ERR_CHANNELISFULL, msg);
-	}
-	else if (channel->is_banned(client_ptr))
-	{
-		return run_reply(ERR_BANNEDFROMCHAN, msg);
-	}
-	else if (channel->get_is_invite_only())
-	{
-		// if (INVITED == true)
-		// {	
-		// 	INVITED = false;
-		// 	channel->add_member(client_ptr, REGULAR);
-		 
-		// }
-		// else
-		
-			
-			return run_reply(ERR_INVITEONLYCHAN, msg);
-	}
-	if (!channel->is_member(client_ptr))
-	{
-		channel->add_member(client_ptr, REGULAR);
+		if (channel->get_memberlist().size() >= MAX_CLIENT_PER_CHAN)
+		{
+			return run_reply(ERR_CHANNELISFULL, msg);
+		}
+		if (channel->get_is_invite_only())
+		{
+			if (_database->use_invite_coupon(source_client, channel) == SUCCESS)
+			{
+				// cout << "found the invite coupon!" << endl;
+			}
+			else
+			{
+				return run_reply(ERR_INVITEONLYCHAN, msg);
+			}
+		}
+		else if (channel->is_banned(source_client))// WARNING Ne fonctionne plus avec le banmask
+		{
+			return run_reply(ERR_BANNEDFROMCHAN, msg);
+		}
+		if (channel->get_is_password_required() == true)
+		{
+			if (channel->get_password() != msg[2])
+				return run_reply(ERR_BADCHANNELKEY, msg);
+		}
+		channel->add_member(source_client, OWNER);
 		topic = channel->get_topic();
-		if (topic.size() == 0)				// WARNING A VERIFIER si NULL ou string vide ""
+		if (topic.empty() == true)
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
+		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
-	// WARNING ERR_NOSUCHCHANNEL ???
-	client_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(client_list, client_ptr->get_prefix() + "JOIN " + msg[1] + CRLF);
+	else	// the channel doesn't exist
+	{
+		if (_database->get_channel_count() >= MAX_CHANNELS)
+		{
+			return run_reply(ERR_TOOMANYCHANNELS, msg);
+		}	
+		_database->add_channel_list(Channel(string(msg[1]), msg.get_client_ptr()));
+		channel = _database->get_channel(msg[1]);
+		channel->add_member(source_client, OWNER);
+		topic = channel->get_topic();
+		if (topic.empty() == true)
+			run_reply(RPL_NOTOPIC, msg);
+		else
+			run_reply(RPL_TOPIC, msg);
+		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
+	}
 }
 
 void CommandManager::cmd_join( Message& msg )			

@@ -6,7 +6,7 @@
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 12:54:52 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/15 11:56:06 by sfournie         ###   ########.fr       */
+/*   Updated: 2022/08/17 16:11:41 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Operator;
 
 using std::pair;
 
-enum e_permission									// Usage-> Channel::OWNER, not sure
+enum e_permission
 {
        BAN = 0,
        INVITE = 1,
@@ -46,8 +46,8 @@ enum e_permission									// Usage-> Channel::OWNER, not sure
        OWNER = 8
 };
 
-typedef	std::list<std::pair<Client*, e_permission> >			t_channel_memberlist;
-typedef       std::list<std::pair<Client*, Channel*> >                       t_invite_coupon_list;
+typedef	std::list<std::pair<Client*, e_permission> >	t_channel_memberlist;
+typedef       std::list<std::pair<Client*, Channel*> >	t_invite_coupon_list;
 
 typedef	void(*t_cmd_function_ptr)(Message&);
 typedef	void(*t_reply_function_ptr)(Message&);
@@ -66,15 +66,9 @@ typedef	pair<int, t_reply_function_ptr>		t_reply_pair;
 typedef map<string, t_cmd_function_ptr>		t_command_map;
 typedef map<int, t_reply_function_ptr>		t_reply_map;
 
-// typedef map<int, 
-
-// typedef map<string, string>				t_message_info; // WARNING: might not use it
 
 typedef struct	pollfd					t_pollfd;
 typedef struct	sockaddr_in6			t_addr6;
-//typedef struct	sockaddr_in				t_addr;
-
-
 
 typedef struct s_socket
 {

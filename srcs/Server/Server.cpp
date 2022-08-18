@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sys/fcntl.h>
 #include <signal.h>
+#include <time.h>
 
 #include <string>
 #include <exception>
@@ -115,6 +116,7 @@ void	Server::_init_server( void )
 	CommandManager::set_database(&_database);
 	fcntl(this->get_fd(), F_SETFL, O_NONBLOCK);
 	this->get_pollfd().events = POLLIN;
+	std::time(&this->_last_ping);
 }
 
 void	Server::_kill_server( void )
@@ -136,6 +138,30 @@ void	Server::_check_for_kills( void )
 			if ((*it)->get_buff(BUFFOUT).empty())
 			disconnect_client((*it)->get_fd());
 		}
+	}
+}
+
+void	Server::_check_for_timeouts( void )
+{
+	t_client_ptr_list			clients;
+	t_client_ptr_list::iterator	it;
+	time_t						current_time;
+
+	clients = _database.get_client_ptr_list();
+	std::time(&current_time);
+	// Server::log("TIME - LAST_PING: " + std::to_string(current_time - _last_ping));
+	for (it = clients.begin(); it != clients.end(); it++)
+	{
+		if (current_time - (*it)->get_last_read() >= CLIENT_TIMEOUT)
+		{
+			if ((*it)->get_buff(BUFFOUT).empty())
+			disconnect_client((*it)->get_fd());
+		}
+	}
+	if ((current_time - _last_ping) >= PING_INTERVAL)
+	{
+		CommandManager::send_to_clients(clients, ": PING" + CRLF);
+		_last_ping = current_time;
 	}
 }
 
@@ -214,6 +240,7 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 			_process_client_pollout(pollfd_array[i]);
 		}
 		_database.clean_database();
+		_check_for_timeouts();
 		_check_for_kills();
 		_clean_operators();
 	}
@@ -238,6 +265,7 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
 	if (bytes <= 0)
 		return disconnect_client(pollfd.fd);
+	client->set_last_read_to_now();
 	buffer[bytes] = '\0';
 	client->append_buff(BUFFIN, string(buffer));
 	Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
@@ -280,7 +308,7 @@ void	Server::_process_client_pollout( const t_pollfd& pollfd )
 				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFOUT));
 	bytes = send( pollfd.fd, client->get_buff(1).c_str(), client->get_buff(1).length(), MSG_DONTWAIT);
 	if (bytes > 0)
-		client->clear_buff(BUFFOUT); // POUR TESTER - À CHANGER
+		client->get_buff(BUFFOUT).erase(0, static_cast<unsigned long>(bytes));
 	Server::log(string(YELLOW) + "Buff content sent!");
 	// client->trim_buff(1, static_cast<size_t>(bytes));
 }

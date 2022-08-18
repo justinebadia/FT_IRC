@@ -21,12 +21,12 @@ void CommandManager::cmd_invite( Message& msg )
 	// NOTE INVITE ONLY WORKS FOR INVITE_ONLY CHANNEL (+i)
 	
 	Client* source_client = msg.get_client_ptr();	
-	if (msg.get_param_count() < 2)				// WARNING à verfier
+	if (msg.get_param_count() < 2)
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return;
 	}
-	if (_database->is_client_listed(msg[1]) == false)		// if target is not in the client list
+	if (_database->is_client_listed(msg[1]) == false)
 	{
 		run_reply(ERR_NOSUCHNICK, msg);
 		return;
@@ -36,14 +36,14 @@ void CommandManager::cmd_invite( Message& msg )
 	if (!channel)
 		return; // Not sure if its also ERR_NOSUCHNICK
 		
-	if (channel->is_member(source_client) == false)		// if the source is not a member of the channel
+	if (channel->is_member(source_client) == false)
 	{	
 		run_reply(ERR_NOTONCHANNEL, msg);
 		return;
 	}
 
 	Client* target_client = _database->get_client(msg[1]);
-	if (channel->is_member(target_client) && channel->get_permission(target_client) != BAN)	// if target user is already a member of the channel && is also not ban!!!
+	if (channel->is_member(target_client))
 	{
 		run_reply(ERR_USERONCHANNEL, msg);
 		return;
@@ -65,13 +65,12 @@ void CommandManager::cmd_invite( Message& msg )
 		recipient_list.push_back(target_client);
 		send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
 	}
-	// RPL_AWAY ??? not sure
 }
 
 /*[KICK]---------------------------------------------------------------------------------------------------------------[KICK]*/
 void CommandManager::cmd_kick( Message& msg )
 {
-	if (msg.get_param_count() < 2)				// WARNING à verfier
+	if (msg.get_param_count() < 2)
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return;
@@ -158,7 +157,7 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 	
-	if ( !validate_entry(REGEX_NICKNAME, msg[1]) )
+	if ( !validate_with_regex(REGEX_NICKNAME, msg[1]) )
 	{
 		run_reply(ERR_ERRONEUSNICKNAME, msg);
 		return;
@@ -172,6 +171,35 @@ void	CommandManager::cmd_nick( Message& msg )
 	Server::log("Successfully set the nickname to " + msg[1] + RESET);
 	client.append_buff(BUFFOUT, client.get_prefix()+ "NICK " + msg[1] + CRLF);
 	client.set_nickname(msg[1]);
+	
+}
+
+/*[NOTICE]----------------------------------------------------------------------------------------------------------[NOTICE]*/
+void	CommandManager::cmd_notice( Message& msg )
+{ 
+	t_client_ptr_list		recipient_list;
+	Channel* 				channel;
+	Client*					client;
+	string					prefix;
+
+	if (msg[1][0] == '#' || msg[1][0] == '&')
+	{
+		channel = _database->get_channel(msg[1]);
+		if (channel)
+		{
+			client = msg.get_client_ptr();
+			recipient_list = channel->get_clients_not_matching_permissions(BAN);
+			recipient_list.remove(client);
+			send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "NOTICE " + channel->get_name() + " " + msg.get_substr_after(":") + CRLF);
+		}
+	}
+	else
+	{
+		client = _database->get_client(msg[1]);
+		if (client)
+			client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "NOTICE " + msg[1] + " " + msg.get_substr_after(":") + CRLF);
+	}
+	return;
 	
 }
 
@@ -258,7 +286,6 @@ void CommandManager::cmd_privmsg( Message& msg )
 		if (client)
 			client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + msg[1] + " " + msg.get_substr_after(":") + CRLF);
 	}
-	
 	return;
 }
 
@@ -288,7 +315,7 @@ void	CommandManager::cmd_topic( Message& msg )
 	Channel*			channel = _database->get_channel(msg[1]);
 	string				topic;
 
-	if (msg.get_param_count() < 1)				// WARNING à verfier
+	if (msg.get_param_count() < 1)
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 
 	if (!channel || channel->is_member(source_client) == false)
@@ -296,12 +323,10 @@ void	CommandManager::cmd_topic( Message& msg )
 		run_reply(ERR_NOTONCHANNEL, msg);
 		return;
 	}
-
 	topic = channel->get_topic();
-
 	if (msg.get_param_count() == 1)				// SHOW TOPIC
 	{
-		if (topic.size() == 0)				// WARNING A VERIFIER si NULL ou string vide ""
+		if (topic.empty() == true)				// WARNING A VERIFIER si NULL ou string vide ""
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
@@ -321,8 +346,6 @@ void	CommandManager::cmd_topic( Message& msg )
 		}
 		channel->set_topic(msg[2]);
 			send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
-		// [RFC 2812] :WiZ!jto@tolsun.oulu.fi TOPIC #test :New topic ; User Wiz setting the topic.
-		
 	}
 }
 

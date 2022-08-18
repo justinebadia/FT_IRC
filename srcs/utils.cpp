@@ -16,7 +16,7 @@ using std::list;
 namespace irc
 {
 
-bool	validate_entry( string regex_format, string entry)
+bool	validate_with_regex( string regex_format, string entry)
 {
 	regex	reg_cmp(regex_format);
 	bool res = std::regex_match(entry, reg_cmp);
@@ -35,7 +35,7 @@ bool	compare_to_mask_list( list<string>* mask_list, const string& str )
 	return false;
 }
 
-bool	compare_to_mask( const string& mask, const string& str )
+bool	compare_to_mask( const string& mask, const string& str )// WARNING missing '?'
 {
 	size_t	mask_i = 0;
 	size_t	str_i = 0;
@@ -56,6 +56,14 @@ bool	compare_to_mask( const string& mask, const string& str )
 		if (!mask[mask_i])
 			return true;
 
+		// Accept any one character if (?) is found. 
+		if (mask[mask_i] == '?')
+		{
+			mask_i++;
+			if (!str[str_i++])
+				return false;
+			continue;
+		}
 		// Get the index of the next (*)
 		next_wild = mask.find("*", mask_i);
 		if (next_wild == string::npos)
