@@ -67,48 +67,6 @@ void CommandManager::cmd_invite( Message& msg )
 	}
 }
 
-/*[KICK]---------------------------------------------------------------------------------------------------------------[KICK]*/
-void CommandManager::cmd_kick( Message& msg )
-{
-	if (msg.get_param_count() < 2)
-	{
-		run_reply(ERR_NEEDMOREPARAMS, msg);
-		return;
-	}
-	
-	Client*	source_client = msg.get_client_ptr();
-	t_client_ptr_list recipient_list;
-	
-	Channel* channel = _database->get_channel(msg[1]);
-	if (!channel)
-	{
-		run_reply(ERR_NOSUCHCHANNEL, msg);
-		return ;
-	}
-	if (msg[1][0] != '&' && msg[1][0] != '#')
-	{
-		run_reply(ERR_BADCHANMASK, msg); 
-		return;
-	}
-	if (channel->is_member(source_client) == false)
-	{	
-		run_reply(ERR_NOTONCHANNEL, msg);
-		return;
-	}
-	if (!channel->is_owner(source_client) && !channel->is_chanop(source_client))
-	{	
-		run_reply(ERR_CHANOPRIVSNEEDED, msg);
-		return;
-	}
-	recipient_list = channel->get_clients_not_matching_permissions(BAN);
-	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KICK " + msg[1] + " " + msg[2] + CRLF);
-	
-	Client* target_client = _database->get_client(msg[2]);
-	if (!target_client)	// WARNING what are we supposed to do? its not ERR_NOTONCHANNEL
-		return;
-	channel->remove_member(target_client);
-}
-
 /*[KILL]---------------------------------------------------------------------------------------------------------------[KILL]*/
 void CommandManager::cmd_kill( Message& msg )
 {
@@ -148,9 +106,6 @@ void CommandManager::cmd_kill( Message& msg )
 	cmd_quit(quit_msg); //WARNING might need to append the source message with the result of quit
 	// send_to_clients(recipient_list, source_client->get_prefix() + "QUIT : killed by operator" + CRLF);
 }
-
-/*[MODE]-------------------------------------------in-seperate-file-MODE.cpp-------------------------------------------[MODE]*/
-
 
 /*[NICK]---------------------------------------------------------------------------------------------------------------[NICK]*/
 void	CommandManager::cmd_nick( Message& msg )

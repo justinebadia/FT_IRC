@@ -73,7 +73,7 @@ public:
 	void			append_out( const string& str );
 	void			clear_all( void );
 
-	friend std::ostream&	operator<<( std::ostream& o, const Message& obj );
+	friend	std::ostream&	operator<<( std::ostream& o, const Message& obj );
 };
 
 	/*----------------NON-MEMBER-FUNCTIONS----------------*/

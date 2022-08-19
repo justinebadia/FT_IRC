@@ -36,6 +36,7 @@ _CLASS_SRCS	=	Channel/Channel.cpp \
 				Command/CommandManager.cpp \
 				Command/commands.cpp \
 				Command/join.cpp \
+				Command/kick.cpp \
 				Command/list.cpp \
 				Command/mode.cpp \
 				Command/names.cpp \

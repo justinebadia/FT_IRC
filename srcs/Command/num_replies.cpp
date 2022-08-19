@@ -336,6 +336,12 @@ void	CommandManager::err_nicknameinuse( Message& msg)
 	msg.append_out(err_msg);
 }
 
+void	CommandManager::err_usernotinchannel( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 441 " + client->get_nickname() + " " + msg[2] + " " + msg[1] + " :They aren't on that channel");
+}
+
 void	CommandManager::err_notonchannel( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();

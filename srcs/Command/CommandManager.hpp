@@ -63,6 +63,7 @@ public:
 	static void cmd_join( Message& msg );
 	static void process_single_join( Message& msg );
 	static void	cmd_kick( Message& msg );
+	static void process_single_kick( Message& msg );
 	static void	cmd_kill( Message& msg );
 	static void	cmd_list( Message& msg );
 	static void process_single_list( Message& msg );
@@ -117,6 +118,7 @@ public:
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK
 	static void	err_erroneusnickname( Message& msg);	//[432] NICK
 	static void	err_nicknameinuse( Message& msg);		//[433] NICK
+	static void	err_usernotinchannel( Message& msg);	//[441] KICK
 	static void	err_notonchannel( Message& msg );		//[442] INVITE,KICK,PART,TOPIC
 	static void	err_useronchannel( Message& msg );		//[443] INVITE
 	static void	err_userdisabled( Message& msg );		//[446] USERS
@@ -131,11 +133,12 @@ public:
 	static void err_nooperhost( Message& msg );			//[491] OPER
 	
 	/*------------------COMMANDS_UTILS------------------*/	
-	static void send_to_clients( t_client_ptr_list list_of_client, string command_in);
-	static void send_to_channels(t_channel_ptr_list list_of_chan, string output);
-	static void handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
-	static void handle_k_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
-	static void handle_b_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static void		send_to_clients( t_client_ptr_list list_of_client, string command_in);
+	static void 	send_to_channels(t_channel_ptr_list list_of_chan, string output);
+	static void 	handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static void 	handle_k_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static void 	handle_b_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel* channel, Message& msg);
+	static size_t	count_elements_in_param( const string& param);
 
 };
 

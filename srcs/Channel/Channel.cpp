@@ -202,6 +202,7 @@ t_mask_list		Channel::get_banmask_list( void )
 
 /*-----------------------SETTERS----------------------*/
 
+void	Channel::set_channel_owner( Client* new_owner ) { _owner = new_owner; }
 
 int		Channel::set_permission( Client* client, e_permission type )
 {	
@@ -416,6 +417,7 @@ void	Channel::transfer_ownership( void )
  		if (get_permission((*it).first) == CHANOP)
  		{
 			(*it).second = OWNER;
+			set_channel_owner((*it).first);
  			return ;
  		}
  	}
@@ -427,6 +429,7 @@ void	Channel::transfer_ownership( void )
  		if (get_permission((*it).first) == REGULAR)
 		{
  			(*it).second = OWNER;
+			set_channel_owner((*it).first);
 			return ;
  		}
  	}

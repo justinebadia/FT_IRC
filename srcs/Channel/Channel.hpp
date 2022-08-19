@@ -90,6 +90,7 @@ public:
 
 
 	/*-----------------------SETTERS----------------------*/
+	void	set_channel_owner( Client* new_owner );
 	int		set_permission( Client* client, e_permission type );
 	void	set_mode_private( bool setting );
 	void	set_mode_secret( bool setting );
