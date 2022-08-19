@@ -99,6 +99,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
 	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG,OPER
 	_reply_map.insert(std::make_pair(ERR_KEYSET, err_keyset));							//[467] MODE_KEY_SET
+	_reply_map.insert(std::make_pair(ERR_BANNEDFROMCHAN, err_bannedfromchan));			//[474] JOIN
 	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] KICK
 	_reply_map.insert(std::make_pair(ERR_NOPRIVILEGES, err_noprivileges));				//[481] KILL
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));		//[482] INVITE,KICK,TOPIC

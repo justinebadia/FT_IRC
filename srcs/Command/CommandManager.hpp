@@ -130,6 +130,7 @@ public:
 	static void	err_alreadyregistered( Message& msg );	//[462] USERS_MSG
 	static void	err_passwdmismatch( Message& msg );		//[464] USERS_MSG
 	static void err_keyset( Message& msg ); 			//[467] MODE_ERR_KEYSET
+	static void	err_bannedfromchan( Message& msg );		//[474] JOIN
 	static void	err_badchanmask( Message& msg );		//[476] KICK
 	static void	err_noprivileges( Message& msg );		//[481] KILL
 	static void	err_chanoprivsneeded( Message& msg );	//[482] INVITE,KICK,TOPIC

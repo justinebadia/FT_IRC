@@ -89,12 +89,13 @@ void CommandManager::process_single_join( Message& msg )
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
-		Message	msg_names(source_client, "NAMES " + msg[1]);
-		cmd_names(msg_names);
-		msg.append_out(msg_names.get_message_out()); // WARNING
 		recipient_list = channel->get_clients_not_matching_permissions(BAN);
 		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
+	Message	msg_names(source_client, "NAMES " + msg[1]);
+	cmd_names(msg_names);
+	msg.append_out(msg_names.get_message_out()); // WARNING
+
 }
 
 void CommandManager::cmd_join( Message& msg )			
@@ -123,6 +124,7 @@ void CommandManager::cmd_join( Message& msg )
 		single_join_msg.append_in("JOIN " + channels.substr(pos, next_pos - pos));
 		process_single_join(single_join_msg);
 		msg.append_out(single_join_msg.get_message_out());
+		Server::log(msg.get_message_out());
 		single_join_msg.clear_all();
 		pos = next_pos + 1;
 	}

@@ -28,7 +28,7 @@ void 	CommandManager::cmd_who( Message& msg )
 				if (channel->is_member(client))
 				{
 					run_reply(RPL_WHOREPLY, msg);
-					//run_reply(RPL_ENDOFWHO, msg);
+					run_reply(RPL_ENDOFWHO, msg);
 					return ;	
 				}
 			}
@@ -39,7 +39,7 @@ void 	CommandManager::cmd_who( Message& msg )
 			if (target)
 			{
 				run_reply(RPL_WHOREPLY, msg);
-				//run_reply(RPL_ENDOFWHO, msg);
+				run_reply(RPL_ENDOFWHO, msg);
 				return;	
 			}
 		}

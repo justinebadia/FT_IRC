@@ -187,12 +187,12 @@ void CommandManager::rpl_whoreply( Message& msg )
 			t_channel_memberlist::iterator it = member_list.begin();
 			t_channel_memberlist::iterator ite = member_list.end();
 
-			for (; it != ite; it++)
+			for (;it != ite;)
 			{
 				reply = channel->get_name() + " " + (*it).first->get_username() + " " + (*it).first->get_client_ip() + " " + _server->get_server_ip() + " " + (*it).first->get_nickname() + " H :0 " + (*it).first->get_realname();
-				msg.append_out(": 352 " + client->get_nickname()  + " " + reply + " ");
-				msg.append_out(CRLF);
-				run_reply(RPL_ENDOFWHO, msg);
+				msg.append_out(": 352 " + client->get_nickname()  + " " + reply);
+				if (++it != ite)
+					msg.append_out(CRLF);
 			}
 		}
 		else
@@ -207,12 +207,11 @@ void CommandManager::rpl_whoreply( Message& msg )
 		t_client_ptr_list client_list = _database->get_client_ptr_list();
 		t_client_ptr_list::const_iterator it = client_list.begin();
 		t_client_ptr_list::const_iterator ite = client_list.end();
-		for (; it != ite; it++)
+		for (;it != ite;)
 		{
 			msg.append_out(": 352 " + client->get_nickname() + " * " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " H :0" + (*it)->get_realname());
-			msg.append_out(CRLF);
-			run_reply(RPL_ENDOFWHO, msg);
-			
+			if (++it != ite)
+				msg.append_out(CRLF);			
 		}
 	}
 }
@@ -230,6 +229,8 @@ void	CommandManager::rpl_namreply( Message& msg )
 	t_channel_memberlist::iterator ite = memberlist.end();
 	for (; it != ite;)
 	{
+		if ((*it).second == CHANOP || (*it).second == OWNER)
+			names += "@";
 		names += ((*it).first->get_nickname());
 		if (++it != ite)
 			names += " ";
@@ -258,8 +259,13 @@ void	CommandManager::rpl_banlist( Message& msg )
 		t_mask_list::iterator it = ban_mask.begin();
 		t_mask_list::iterator ite = ban_mask.end();
 
-		for (; it != ite; it++)
-			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it)); 
+		for (; it != ite;)
+		{
+			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it));
+			if (++it != ite)
+				msg.append_out(CRLF);
+
+		}
 	}
 	else
 		msg.append_out(": 367 " + client->get_nickname() + " " + msg[1]); 
@@ -402,6 +408,12 @@ void	CommandManager::err_keyset( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 	msg.append_out(": 467 " + client->get_nickname() + " " + msg[1] + " :Channel key already set");
+}
+
+void	CommandManager::err_bannedfromchan( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 474 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (+b)");
 }
 
 void	CommandManager::err_badchanmask( Message& msg )
