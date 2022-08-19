@@ -39,6 +39,7 @@ CommandManager::~CommandManager( void )									// destructor
 
 void	CommandManager::_init_command_map( void )
 {			
+	_command_map.insert(std::make_pair(string("ERROR"), cmd_error));
 	_command_map.insert(std::make_pair(string("INVITE"), cmd_invite));
 	_command_map.insert(std::make_pair(string("JOIN"), cmd_join));
 	_command_map.insert(std::make_pair(string("KICK"), cmd_kick));
@@ -83,8 +84,11 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
 	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,USERS,WHOIS
-	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] KICK,PART
+	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] PRIVMSG, KICK,PART
+	_reply_map.insert(std::make_pair(ERR_CANNOTSENDTOCHAN, err_cannotsendtochan));		//[404] PRIVMSG
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
+	_reply_map.insert(std::make_pair(ERR_NORECIPIENT, err_norecipient));				//[411] PRIVMSG
+	_reply_map.insert(std::make_pair(ERR_NOTEXTTOSEND, err_notexttosend));				//[412] PRIVMSG
 	_reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK
 	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));		//[432] NICK
 	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));			//[433] NICK
