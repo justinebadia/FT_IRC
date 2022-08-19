@@ -189,7 +189,7 @@ void CommandManager::rpl_whoreply( Message& msg )
 
 			for (; it != ite; it++)
 			{
-				reply = channel->get_name() + " " + (*it).first->get_username() + " " + (*it).first->get_client_ip() + " " + _server->get_server_ip() + " " + (*it).first->get_nickname() + " * :0 " + (*it).first->get_realname();
+				reply = channel->get_name() + " " + (*it).first->get_username() + " " + (*it).first->get_client_ip() + " " + _server->get_server_ip() + " " + (*it).first->get_nickname() + " H :0 " + (*it).first->get_realname();
 				msg.append_out(": 352 " + client->get_nickname()  + " " + reply + " ");
 				msg.append_out(CRLF);
 				run_reply(RPL_ENDOFWHO, msg);
@@ -199,7 +199,7 @@ void CommandManager::rpl_whoreply( Message& msg )
 		{
 			Client* target = _database->get_client(msg[1]);
 			if (target)
-				msg.append_out(": 352 " + client->get_nickname() + " * " + target->get_username() + " " + target->get_client_ip() + " " + _server->get_server_ip() + " " + target->get_nickname() + " * :0 " + target->get_realname());
+				msg.append_out(": 352 " + client->get_nickname() + " * " + target->get_username() + " " + target->get_client_ip() + " " + _server->get_server_ip() + " " + target->get_nickname() + " H :0 " + target->get_realname());
 		}
 	}
 	else 
@@ -209,7 +209,7 @@ void CommandManager::rpl_whoreply( Message& msg )
 		t_client_ptr_list::const_iterator ite = client_list.end();
 		for (; it != ite; it++)
 		{
-			msg.append_out(": 352 " + client->get_nickname() + " * " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " * :0" + (*it)->get_realname());
+			msg.append_out(": 352 " + client->get_nickname() + " * " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " H :0" + (*it)->get_realname());
 			msg.append_out(CRLF);
 			run_reply(RPL_ENDOFWHO, msg);
 			
