@@ -34,9 +34,13 @@ void CommandManager::handle_o_mode(size_t &pos_it, string& modes, string& params
 	Client *to_chanop = _database->get_client(parsed[pos_it]);
 	if (to_chanop)
 	{
+		
 		if (channel->is_member(to_chanop))
 		{
-			channel->set_permission(to_chanop, CHANOP);
+			if (msg[2][0] == '-')
+				channel->set_permission(to_chanop, REGULAR);
+			else
+				channel->set_permission(to_chanop, CHANOP);
 			modes += "o";
 			params += parsed[pos_it];
 		}
@@ -93,9 +97,11 @@ void CommandManager::handle_b_mode(size_t &pos_it, string& modes, string& params
 
 void CommandManager::cmd_mode(Message &msg)
 {
-	string modes = "";
-	string params = "";
-	size_t pos_it = 0;
+	string				modes = "";
+	string				params = "";
+	size_t				pos_it = 0;
+	Client*				source_client = msg.get_client_ptr();
+	t_client_ptr_list	recipient_list;
 	/*Checking for channel's errors*/
 	if (msg.get_param_count() < 1)
 	{
@@ -158,6 +164,9 @@ void CommandManager::cmd_mode(Message &msg)
 			msg.set_mode_rpl(msg[2][0] + modes + " " + params);
 		}
 		run_reply(RPL_CHANNELMODEIS, msg);
+		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		send_to_clients(recipient_list, source_client->get_prefix() + "MODE " + msg[1] + " " + msg[2] + " " + msg[3] + CRLF);
+		
 	}
 	return;
 }

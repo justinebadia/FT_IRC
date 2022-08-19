@@ -211,9 +211,11 @@ int		Channel::set_permission( Client* client, e_permission type )
 
  	for (; it != ite; it++)
  	{
- 		if ((*it).first == client)					// pair's first == Client*
+ 		if ((*it).first->get_nickname() == client->get_nickname())					// pair's first == Client*
+		{
  			(*it).second = type;					// pair's second == e_permission
- 		return SUCCESS;
+			return SUCCESS;
+		}
  	}
  	return FAIL;
 }

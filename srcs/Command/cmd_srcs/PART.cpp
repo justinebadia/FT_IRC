@@ -8,14 +8,12 @@
 
 
 using namespace irc;
-using std::cout;
-using std::cerr;
-using std::endl;
 
 void    CommandManager::process_single_part( Message& msg )
 {
 	Client*				source_client = msg.get_client_ptr();	
 	Channel*			channel = _database->get_channel(msg[1]);
+	string				reason;
 	
 	if (!channel)
 	{
@@ -29,18 +27,21 @@ void    CommandManager::process_single_part( Message& msg )
 	{
 		t_client_ptr_list	recipient_list;
 		recipient_list = channel->get_clients_not_matching_permissions(BAN);
-		send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
+		reason = msg.get_substr_after(":");
+		if (reason.empty())
+			reason = "No reason given";
+		send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + " :" + reason + CRLF);
 		channel->remove_member(source_client);
 	}
 }
 
 void	CommandManager::cmd_part( Message& msg )
 {
-	//Channel* channel = _database->get_channel(msg[1]);	// if the channel doesnt exist
 	size_t		next_pos = 0;
 	size_t		pos = 0;
 	string		channels;
 	string		chan_name;
+	string		reason;
 	Message		single_join_msg(msg.get_client_ptr());
 
 	channels = msg[1];
@@ -48,6 +49,9 @@ void	CommandManager::cmd_part( Message& msg )
 	{
 		return run_reply(ERR_NEEDMOREPARAMS, msg);
 	}
+	reason = msg.get_substr_after(":");
+	if (!reason.empty())
+		reason.insert(0, " :");
 	while (pos < channels.length())
 	{
 		if (channels[pos] == ',')
@@ -59,10 +63,8 @@ void	CommandManager::cmd_part( Message& msg )
 		if (next_pos == string::npos)
 			next_pos = channels.length();
 
-		single_join_msg.append_in("PART " + channels.substr(pos, next_pos - pos));
-
+		single_join_msg.append_in("PART " + channels.substr(pos, next_pos - pos) + reason);
 		process_single_part(single_join_msg);
-
 		msg.append_out(single_join_msg.get_message_out());
 		single_join_msg.clear_all();
 		pos = next_pos + 1;
