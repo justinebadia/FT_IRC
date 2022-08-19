@@ -66,7 +66,7 @@ void CommandManager::process_single_join( Message& msg )
 			if (channel->get_password() != msg[2])
 				return run_reply(ERR_BADCHANNELKEY, msg);
 		}
-		channel->add_member(source_client, OWNER);
+		channel->add_member(source_client, REGULAR);
 		topic = channel->get_topic();
 		if (topic.empty() == true)
 			run_reply(RPL_NOTOPIC, msg);

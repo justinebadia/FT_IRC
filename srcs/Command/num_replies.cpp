@@ -306,11 +306,31 @@ void	CommandManager::err_nosuchchannel( Message& msg )
 	msg.append_out(": 403 " + client->get_nickname() + " " + msg[1] + " :No such channel");
 }
 
+void	CommandManager::err_cannotsendtochan( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+
+	msg.append_out(": 404 " + client->get_nickname() + " " + msg[1] + " :can not send to channel.");
+}
+
 void	CommandManager::err_noorigin( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 	msg.append_out(": 409 " + client->get_nickname() + " :No origin specified");
 }
+
+void	CommandManager::err_norecipient( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 411 " + client->get_nickname() + " :No recipient given (" + msg[0] + ")");
+}
+
+void	CommandManager::err_notexttosend( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 411 " + client->get_nickname() + " :No text to send");
+}
+
 /* ":No nickname given"*/
 void	CommandManager::err_nonicknamegiven( Message& msg)
 {
@@ -334,6 +354,12 @@ void	CommandManager::err_nicknameinuse( Message& msg)
 
 	string err_msg = ": 433 " + client->get_nickname() + " " + msg[1] + " :Nickname is already in use";
 	msg.append_out(err_msg);
+}
+
+void	CommandManager::err_usernotinchannel( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 441 " + client->get_nickname() + " " + msg[2] + " " + msg[1] + " :They aren't on that channel");
 }
 
 void	CommandManager::err_notonchannel( Message& msg )

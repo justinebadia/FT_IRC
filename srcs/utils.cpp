@@ -3,6 +3,7 @@
 #include <regex>
 #include <string>
 #include <list>
+#include "Server.hpp"
 
 
 #include "utils.hpp"
@@ -60,7 +61,7 @@ bool	compare_to_mask( const string& mask, const string& str )// WARNING missing 
 		if (mask[mask_i] == '?')
 		{
 			mask_i++;
-			if (!str[str_i++])
+			if (!str[str_i++] && !mask[mask_i])
 				return false;
 			continue;
 		}
@@ -80,23 +81,6 @@ bool	compare_to_mask( const string& mask, const string& str )// WARNING missing 
 	}
 	return true;
 }
-// template < class Cont, typename value_type>
-// Allocated on the stack; works with most STL containers
-// value_type*	convert_stl_to_array ( const Cont & cont )
-// {
-// 	value_type array[cont.size()];
-// 	try
-// 	{
-//     	std::copy(cont.begin(), cont.end(), array);
-// 	}
-// 	catch (std::exception & e)
-// 	{
-// 		string msg = e.what();
-// 		msg.append(" Returning NULL");
-// 		error_log("convert_stl_to_array", msg , errno );
-// 	}
-// 	return array;
-// }
 
 } // namespace irc end bracket
 
