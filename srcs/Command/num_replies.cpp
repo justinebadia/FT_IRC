@@ -381,7 +381,12 @@ void	CommandManager::err_keyset( Message& msg )
 void	CommandManager::err_badchanmask( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
-	string err_msg = ": 476 " + client->get_nickname() + " " + msg[1] + " :Invalid channel name.";
+	string err_msg;
+
+	if (!msg[1].empty() && msg[1][0] == '&')
+		err_msg = ": 476 " + client->get_nickname() + " " + msg[1] + " :Invalid channel name: private channels not supported.";
+	else
+		err_msg = ": 476 " + client->get_nickname() + " " + msg[1] + " :Invalid channel name.";
 	msg.append_out(err_msg);
 }
 
