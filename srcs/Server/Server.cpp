@@ -136,7 +136,7 @@ void	Server::_check_for_kills( void )
 		if ((*it)->get_to_be_killed())
 		{
 			if ((*it)->get_buff(BUFFOUT).empty())
-			disconnect_client((*it)->get_fd());
+				disconnect_client((*it)->get_fd());
 		}
 	}
 }
@@ -155,7 +155,7 @@ void	Server::_check_for_timeouts( void )
 		if (current_time - (*it)->get_last_read() >= CLIENT_TIMEOUT)
 		{
 			if ((*it)->get_buff(BUFFOUT).empty())
-			disconnect_client((*it)->get_fd());
+				disconnect_client((*it)->get_fd());
 		}
 	}
 	if ((current_time - _last_ping) >= PING_INTERVAL)

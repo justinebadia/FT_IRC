@@ -14,15 +14,8 @@ using std::endl;
 
 void CommandManager::process_single_names( Message& msg )
 {
-	Client* source_client = msg.get_client_ptr();
-	t_client_ptr_list	recipient_list;
-	string topic;
-
 	run_reply(RPL_NAMREPLY, msg);
 	run_reply(RPL_ENDOFNAMES, msg);
-	recipient_list.push_back(source_client);
-	send_to_clients(recipient_list, source_client->get_prefix() + "NAMES " + msg[1] + CRLF);
-	
 }
 
 void CommandManager::cmd_names( Message& msg )			
@@ -34,18 +27,21 @@ void CommandManager::cmd_names( Message& msg )
 	Message		single_join_msg(msg.get_client_ptr());
 
 	channels = msg[1];
-	if (channels.empty())	//make a string of all channels
+	if (channels.empty() || msg[1] == _server->get_server_ip())	//make a string of all channels
 	{
 		t_channel_list channel_list = _database->get_channel_list();
 		t_channel_list::iterator it = channel_list.begin();
 		t_channel_list::iterator ite = channel_list.end();
 
+		channels.clear();
 		for (; it != ite; it++)
 		{
 			channels += (*it).get_name();
 			channels += ",";
 		}
 	}
+	if (channels.empty())
+		return run_reply(RPL_ENDOFNAMES, msg);
 	while (pos < channels.length())
 	{
 		if (channels[pos] == ',')

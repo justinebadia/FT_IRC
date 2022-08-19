@@ -143,7 +143,7 @@ void CommandManager::cmd_kill( Message& msg )
 
 	// WARNING DISCONNECT!!!
 	recipient_list.push_back(_database->get_client(msg[1]));
-	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(";") + CRLF);
+	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	Message	quit_msg(target_client, "QUIT :Killed by operator for being naughty");
 	cmd_quit(quit_msg); //WARNING might need to append the source message with the result of quit
 	// send_to_clients(recipient_list, source_client->get_prefix() + "QUIT : killed by operator" + CRLF);
@@ -157,6 +157,8 @@ void	CommandManager::cmd_nick( Message& msg )
 { 
 	Client& client			= *msg.get_client_ptr();
 	
+	if (msg.get_param_count() == 0)
+		return run_reply(ERR_NONICKNAMEGIVEN, msg);
 	if ( !validate_with_regex(REGEX_NICKNAME, msg[1]) )
 	{
 		run_reply(ERR_ERRONEUSNICKNAME, msg);
@@ -171,7 +173,6 @@ void	CommandManager::cmd_nick( Message& msg )
 	Server::log("Successfully set the nickname to " + msg[1] + RESET);
 	client.append_buff(BUFFOUT, client.get_prefix()+ "NICK " + msg[1] + CRLF);
 	client.set_nickname(msg[1]);
-	
 }
 
 /*[NOTICE]----------------------------------------------------------------------------------------------------------[NOTICE]*/
@@ -207,7 +208,7 @@ void	CommandManager::cmd_notice( Message& msg )
 void	CommandManager::cmd_oper( Message& msg )
 {
 	int	reply;
-	if(msg[1].empty())
+	if(msg.get_param_count() < 2)
 	{
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
@@ -231,7 +232,7 @@ void	CommandManager::cmd_pass( Message& msg )
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
-	if ( client.is_registered() )
+	if ( client.is_password_validated()) 
 	{
 		run_reply(ERR_ALREADYREGISTERED, msg);
 		return ;
@@ -330,11 +331,8 @@ void	CommandManager::cmd_topic( Message& msg )
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
-			
-		recipient_list.push_back (source_client);
-		send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "TOPIC " + msg[1] + " " + topic + CRLF);
 	}
-	else if (msg.get_param_count() == 2)
+	else if (msg.get_param_count() >= 2)
 	{
 		if (channel->get_is_topic_by_chanop_only() == true)
 		{
@@ -344,8 +342,9 @@ void	CommandManager::cmd_topic( Message& msg )
 				return;
 			}
 		}
-		channel->set_topic(msg[2]);
-			send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
+		channel->set_topic(msg.get_substr_after(":"));
+		recipient_list = channel->get_clients_any_permissions();
+		send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	}
 }
 
@@ -360,6 +359,8 @@ void	CommandManager::cmd_user( Message& msg )
 		run_reply(ERR_NEEDMOREPARAMS, msg);
 		return ;
 	}
+	if(!client.get_username().empty())
+		return(run_reply(ERR_ALREADYREGISTERED, msg));
 	if (!msg[1].empty())
 		client.set_username(msg[1]);
 	if ( !msg.get_substr_after(":").empty() )
@@ -386,7 +387,7 @@ void CommandManager::cmd_whois( Message & msg )
 	{
 		if ( msg[1] != _server->get_server_ip())
 		{
-			get_reply_ptr(ERR_NOSUCHSERVER)(msg);
+			run_reply(ERR_NOSUCHSERVER, msg);
 			return ;
 		}
 		nick_list = msg[2];

@@ -88,7 +88,6 @@ public:
 
 	// NUMERIC REPLIES
 	static void	rpl_welcome( Message& msg );			//[001] ????
-	static void	rpl_away( Message& msg );				//[301] INVITE
 	static void	rpl_whoisuser( Message& msg );			//[311] WHOIS
 	static void	rpl_whoisserver( Message& msg );		//[312] WHOIS
 	static void	rpl_whoisoperator( Message& msg );		//[313] WHOIS
@@ -118,7 +117,6 @@ public:
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK
 	static void	err_erroneusnickname( Message& msg);	//[432] NICK
 	static void	err_nicknameinuse( Message& msg);		//[433] NICK
-	static void	err_nickcollision( Message& msg);		//[436] NICK
 	static void	err_notonchannel( Message& msg );		//[442] INVITE,KICK,PART,TOPIC
 	static void	err_useronchannel( Message& msg );		//[443] INVITE
 	static void	err_userdisabled( Message& msg );		//[446] USERS

@@ -436,7 +436,7 @@ string Channel::parse_modes( Message& msg )
 {
 	string 	message = msg[2];
 	string 	mask = " ";
-	size_t		it;
+
 	if (message.empty())
 		return "";
 	if (message.at(0) == '+')
