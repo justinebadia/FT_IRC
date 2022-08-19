@@ -59,6 +59,7 @@ public:
 	static void	execute_commands_registration( Client& client );
 
 	// COMMANDS []WARNING[] TEMPORARILY IN ALPHABETICAL ORDER
+	static void cmd_error( Message& msg );
 	static void cmd_invite( Message& msg );
 	static void cmd_join( Message& msg );
 	static void process_single_join( Message& msg );
@@ -110,10 +111,13 @@ public:
 	static void	rpl_usersstart( Message& msg );			//[392] WHOIS
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
 	static void	rpl_nousers( Message& msg );			//[395] WHOIS
-	static void	err_nosuchnick( Message& msg);			//[401] INVITE,KILL
+	static void	err_nosuchnick( Message& msg);			//[401] PRIVMSG INVITE,KILL
 	static void	err_nosuchserver( Message& msg);		//[402] LIST,NAMES,USERS,WHOIS
-	static void	err_nosuchchannel( Message& msg );		//[403] KICK,PART
+	static void	err_nosuchchannel( Message& msg );		//[403] PRIVMSG KICK,PART
+	static void	err_cannotsendtochan( Message& msg );	//[404] PRIVMSG
 	static void	err_noorigin( Message& msg );			//[409] PING
+	static void	err_norecipient( Message& msg );		//[411] PRIVMSG
+	static void	err_notexttosend( Message& msg );		//[412] PRIVMSG
 	static void	err_nonicknamegiven( Message& msg);		//[431] NICK
 	static void	err_erroneusnickname( Message& msg);	//[432] NICK
 	static void	err_nicknameinuse( Message& msg);		//[433] NICK

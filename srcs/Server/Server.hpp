@@ -14,8 +14,8 @@
 #include "typedef.hpp"
 
 #define PORT 6667
-#define CLIENT_TIMEOUT	6000	// seconds
-#define PING_INTERVAL	2500	// seconds
+#define CLIENT_TIMEOUT	240	// seconds
+#define PING_INTERVAL	120	// seconds
  
 class Channel;
 

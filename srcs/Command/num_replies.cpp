@@ -306,11 +306,31 @@ void	CommandManager::err_nosuchchannel( Message& msg )
 	msg.append_out(": 403 " + client->get_nickname() + " " + msg[1] + " :No such channel");
 }
 
+void	CommandManager::err_cannotsendtochan( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+
+	msg.append_out(": 404 " + client->get_nickname() + " " + msg[1] + " :can not send to channel.");
+}
+
 void	CommandManager::err_noorigin( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 	msg.append_out(": 409 " + client->get_nickname() + " :No origin specified");
 }
+
+void	CommandManager::err_norecipient( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 411 " + client->get_nickname() + " :No recipient given (" + msg[0] + ")");
+}
+
+void	CommandManager::err_notexttosend( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 411 " + client->get_nickname() + " :No text to send");
+}
+
 /* ":No nickname given"*/
 void	CommandManager::err_nonicknamegiven( Message& msg)
 {

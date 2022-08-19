@@ -20,6 +20,7 @@ D_INCS	:= $(D_MAKE)includes
 D_CLI	:= $(D_SRCS)/Client
 D_SERV	:= $(D_SRCS)/Server
 D_CMD	:= $(D_SRCS)/Command
+D_CMDS	:= $(D_CMD)/cmd_srcs
 D_CHAN	:= $(D_SRCS)/Channel
 D_DB	:= $(D_SRCS)/Database
 D_OBJS	:= obj # not used
@@ -29,33 +30,40 @@ INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_CMD) -I$(D_CHAN) -I$(D_DB)
 # Files
 MAIN		= 	test_files/main_loop.cpp
 
-_CLASS_SRCS	=	Channel/Channel.cpp \
-				Client/Client.cpp \
-				Database/Database.cpp \
-				Command/Message.cpp \
-				Command/CommandManager.cpp \
-				Command/commands.cpp \
-				Command/join.cpp \
-				Command/list.cpp \
-				Command/mode.cpp \
-				Command/names.cpp \
-				Command/part.cpp \
-				Command/WHO.cpp \
-				Command/utils_commands.cpp\
-				Command/num_replies.cpp \
-				Server/Server.cpp
+_CLASS_SRCS	=	$(D_CHAN)/Channel.cpp \
+				$(D_CLI)/Client.cpp \
+				$(D_DB)/Database.cpp \
+				$(D_CMD)/Message.cpp \
+				$(D_CMD)/CommandManager.cpp \
+				$(D_SERV)/Server.cpp
 				
-CLASS_SRCS	=	$(patsubst %.cpp, $(D_SRCS)/%.cpp, $(_CLASS_SRCS))
+CLASS_SRCS	=	$(patsubst %.cpp, %.cpp, $(_CLASS_SRCS))
 
-_CLASS_HDRS	=	Channel/Channel.hpp \
-				Client/Client.hpp \
-				Database/Database.hpp \
-				Command/Message.hpp \
-				Command/CommandManager.hpp \
-				Server/Server.hpp
+_CMDS_SRCS	=	$(D_CMD)/commands.cpp \
+				$(D_CMD)/utils_commands.cpp \
+				$(D_CMD)/num_replies.cpp \
+				$(D_CMDS)/error.cpp \
+				$(D_CMDS)/join.cpp \
+				$(D_CMDS)/list.cpp \
+				$(D_CMDS)/mode.cpp \
+				$(D_CMDS)/names.cpp \
+				$(D_CMDS)/part.cpp \
+				$(D_CMDS)/privmsg.cpp \
+				$(D_CMDS)/WHO.cpp 
 				
+
+CMDS_SRCS	=	$(patsubst %.cpp, %.cpp, $(_CMDS_SRCS))
+
+_CLASS_HDRS	=	$(D_CHAN)/Channel.hpp \
+				$(D_CLI)/Client.hpp \
+				$(D_DB)/Database.hpp \
+				$(D_CMD)/Message.hpp \
+				$(D_CMD)/CommandManager.hpp \
+				$(D_SERV)/Server.hpp
 				
-CLASS_HDRS	= $(patsubst %.hpp, $(D_SRCS)/%.hpp, $(_CLASS_HDRS))
+
+
+CLASS_HDRS	= $(patsubst %.hpp, %.hpp, $(_CLASS_HDRS))
 
 _UTILS_SRCS	=	utils.cpp
 
@@ -69,7 +77,7 @@ _UTILS_HDRS =	color.hpp \
 
 UTILS_HDRS	= $(patsubst %.hpp, $(D_INCS)/%.hpp, $(_UTILS_HDRS))
 
-SRCS		= $(CLASS_SRCS) $(UTILS_SRCS)
+SRCS		= $(CLASS_SRCS) $(CMDS_SRCS) $(UTILS_SRCS)
 HDRS		= $(CLASS_HDRS) $(UTILS_HDRS)
 OBJS		= $(SRCS:.cpp=.o)
 

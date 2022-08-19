@@ -113,7 +113,6 @@ void CommandManager::cmd_kick( Message& msg )
 void CommandManager::cmd_kill( Message& msg )
 {
 	Client*	source_client = msg.get_client_ptr();
-	t_client_ptr_list recipient_list;
 
 	if (source_client->is_operator() == false)
 	{
@@ -140,13 +139,12 @@ void CommandManager::cmd_kill( Message& msg )
 	if (!target_client)
 		return;
 	target_client->set_to_be_killed(true);
-
-	// WARNING DISCONNECT!!!
-	recipient_list.push_back(_database->get_client(msg[1]));
-	send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
-	Message	quit_msg(target_client, "QUIT :Killed by operator for being naughty");
-	cmd_quit(quit_msg); //WARNING might need to append the source message with the result of quit
-	// send_to_clients(recipient_list, source_client->get_prefix() + "QUIT : killed by operator" + CRLF);
+;
+	target_client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "KILL " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
+	msg.append_out("KILL " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
+	Message	quit_msg(target_client, "QUIT :Killed by operator " + source_client->get_nickname() + " for being naughty");
+	cmd_quit(quit_msg);
+	target_client->append_buff(BUFFOUT, "Error :Connection will close due to being killed by an operator" + CRLF);
 }
 
 /*[MODE]-------------------------------------------in-seperate-file-MODE.cpp-------------------------------------------[MODE]*/
@@ -257,38 +255,6 @@ void CommandManager::cmd_ping( Message& msg )
 	return;
 }
 
-/*[PRIVMSG]---------------------------------------------------------------------------------------------------------[PRIVMSG]*/
-void CommandManager::cmd_privmsg( Message& msg )
-{
-	t_client_ptr_list		recipient_list;
-	Channel* 				channel;
-	Client*					client;
-	string					prefix;
-
-	if (msg[1].empty())
-	{
-		// run_reply(ERR_NORECIPIENT, msg);
-		return;
-	}
-	if (msg[1][0] == '#' || msg[1][0] == '&')
-	{
-		channel = _database->get_channel(msg[1]);
-		if (channel)
-		{
-			client = msg.get_client_ptr();
-			recipient_list = channel->get_clients_not_matching_permissions(BAN);
-			recipient_list.remove(client);
-			send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + channel->get_name() + " " + msg.get_substr_after(":") + CRLF);
-		}
-	}
-	else
-	{
-		client = _database->get_client(msg[1]);
-		if (client)
-			client->append_buff(BUFFOUT, msg.get_client_ptr()->get_prefix() + "PRIVMSG " + msg[1] + " " + msg.get_substr_after(":") + CRLF);
-	}
-	return;
-}
 
 /*[QUIT]---------------------------------------------------------------------------------------------------------------[QUIT]*/
 void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right stuff at all
@@ -300,12 +266,12 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 	if (!client)
 		return;
 	client->set_to_be_killed(true);
-	// _server->disconnect_client(client->get_fd()); // WARNING to be changed for a queue of client to disconnect, I think?
 	msg.set_client_ptr(NULL);
 	if (!msg[1].empty())  // WARNING todo
 		send_to_channels(chan_list, prefix + "QUIT :Quit: " + msg.get_substr_after(":") + CRLF);	
 	if (msg[1].empty())  // WARNING todo
-		send_to_channels(chan_list, prefix + "QUIT" + CRLF);
+		send_to_channels(chan_list, prefix + "QUIT :Quit: No reason given" + CRLF);
+	msg.append_out("Error :connection will be closed..." + CRLF);
 }
 
 /*[TOPIC]-------------------------------------------------------------------------------------------------------------[TOPIC]*/
