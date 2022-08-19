@@ -96,6 +96,10 @@ string Client::get_prefix( void )
 	return (":" + get_nickname() + "!" + get_username() + "@" + get_client_ip() + " ");
 }
 
+string Client::get_full_id( void )
+{
+	return (get_nickname() + "!" + get_username() + "@" + get_client_ip());
+}
 
 int				Client::get_registration_flags( void ) const { return _registration; }
 const time_t&	Client::get_last_read( void ) const { return _last_read; }
