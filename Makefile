@@ -39,18 +39,28 @@ _CLASS_SRCS	=	$(D_CHAN)/Channel.cpp \
 				
 CLASS_SRCS	=	$(patsubst %.cpp, %.cpp, $(_CLASS_SRCS))
 
-_CMDS_SRCS	=	$(D_CMD)/commands.cpp \
-				$(D_CMD)/utils_commands.cpp \
+_CMDS_SRCS	=	$(D_CMD)/utils_commands.cpp \
 				$(D_CMD)/num_replies.cpp \
 				$(D_CMDS)/ERROR.cpp \
+				$(D_CMDS)/INVITE.cpp \
 				$(D_CMDS)/JOIN.cpp \
 				$(D_CMDS)/KICK.cpp \
+				$(D_CMDS)/KILL.cpp \
 				$(D_CMDS)/LIST.cpp \
 				$(D_CMDS)/MODE.cpp \
 				$(D_CMDS)/NAMES.cpp \
+				$(D_CMDS)/NICK.cpp \
+				$(D_CMDS)/NOTICE.cpp \
+				$(D_CMDS)/OPER.cpp \
 				$(D_CMDS)/PART.cpp \
+				$(D_CMDS)/PASS.cpp \
+				$(D_CMDS)/PING.cpp \
 				$(D_CMDS)/PRIVMSG.cpp \
-				$(D_CMDS)/WHO.cpp 
+				$(D_CMDS)/QUIT.cpp \
+				$(D_CMDS)/TOPIC.cpp \
+				$(D_CMDS)/USER.cpp \
+				$(D_CMDS)/WHO.cpp \
+				$(D_CMDS)/WHOIS.cpp
 				
 
 CMDS_SRCS	=	$(patsubst %.cpp, %.cpp, $(_CMDS_SRCS))
