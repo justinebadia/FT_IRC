@@ -147,7 +147,8 @@ void CommandManager::process_single_kick( Message& msg )
 		}
 		else
 		{
-			recipient_list = channel->get_clients_any_permissions();
+			//recipient_list = channel->get_clients_any_permissions();WARNING
+			recipient_list = channel->get_clients_not_banned();
 			if (msg[3].empty() == false)
 			{
 				send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "KICK " + msg[1] + " " + target_client->get_nickname() + " :" + msg.get_substr_after(":") + CRLF);

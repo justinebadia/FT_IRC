@@ -85,6 +85,7 @@ public:
 	t_client_ptr_list					get_clients_any_permissions( void );
 	t_client_ptr_list					get_clients_matching_permissions( int type );
 	t_client_ptr_list					get_clients_not_matching_permissions( int type );
+	t_client_ptr_list					get_clients_not_banned( void );
 	t_mask_list							get_banmask_list( void );
 
 

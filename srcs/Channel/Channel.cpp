@@ -195,6 +195,23 @@ t_client_ptr_list	Channel::get_clients_not_matching_permissions( int type )
 	return (client_list);
 }
 
+t_client_ptr_list	Channel::get_clients_not_banned( void )
+{
+	t_client_ptr_list	client_list;
+
+	iterator it = _memberlist.begin();
+ 	iterator ite = _memberlist.end();
+
+	for(; it != ite; it++)
+	{
+		if (!is_banned((*it).first))
+		{
+			client_list.push_back((*it).first);
+		}
+	}
+	return (client_list);
+}
+
 t_mask_list		Channel::get_banmask_list( void )
 {
 	return _banmask_list;
@@ -428,7 +445,7 @@ void	Channel::transfer_ownership( void )
 
  	for (; it != ite; it++)
  	{
- 		if (get_permission((*it).first) == REGULAR)
+ 		if (get_permission((*it).first) == REGULAR && !is_banned((*it).first))
 		{
  			(*it).second = OWNER;
 			set_channel_owner((*it).first);
@@ -440,7 +457,7 @@ void	Channel::transfer_ownership( void )
 string Channel::parse_modes( Message& msg )
 {
 	string 	message = msg[2];
-	string 	mask = " ";
+	// string 	mask = " ";
 
 	if (message.empty())
 		return "";
@@ -470,7 +487,7 @@ string Channel::parse_modes( Message& msg )
 			else if (message[i] == 'b')
 			{
 				_mode_flags |= FLAG_B;
-				this->add_banmask(mask);
+				//this->add_banmask(mask);
 			}
 		}
 		return msg.get_substr_after("+");
@@ -507,7 +524,7 @@ string Channel::parse_modes( Message& msg )
 			{
 				_mode_flags &= FLAG_B;
 				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'b'));
-				this->remove_banmask(mask);
+				//this->remove_banmask(mask);
 			}
 		}
 		return msg.get_substr_after("-");

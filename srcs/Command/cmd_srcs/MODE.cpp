@@ -164,7 +164,7 @@ void CommandManager::cmd_mode(Message &msg)
 			msg.set_mode_rpl(msg[2][0] + modes + " " + params);
 		}
 		run_reply(RPL_CHANNELMODEIS, msg);
-		recipient_list = channel->get_clients_not_matching_permissions(BAN);
+		recipient_list = channel->get_clients_not_banned();
 		send_to_clients(recipient_list, source_client->get_prefix() + "MODE " + msg[1] + " " + msg[2] + " " + msg[3] + CRLF);
 		
 	}

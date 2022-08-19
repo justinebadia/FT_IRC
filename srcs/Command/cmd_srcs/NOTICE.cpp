@@ -23,7 +23,8 @@ void	CommandManager::cmd_notice( Message& msg )
 		if (channel)
 		{
 			client = msg.get_client_ptr();
-			recipient_list = channel->get_clients_not_matching_permissions(BAN);
+			// recipient_list = channel->get_clients_not_matching_permissions(BAN); WARNING
+			recipient_list = channel->get_clients_not_banned();
 			recipient_list.remove(client);
 			send_to_clients(recipient_list, msg.get_client_ptr()->get_prefix() + "NOTICE " + channel->get_name() + " " + msg.get_substr_after(":") + CRLF);
 		}

@@ -211,7 +211,7 @@ void CommandManager::rpl_whoreply( Message& msg )
 		{
 			msg.append_out(": 352 " + client->get_nickname() + " * " + (*it)->get_username() + " " + (*it)->get_client_ip() + " " + _server->get_server_ip() + " H :0" + (*it)->get_realname());
 			if (++it != ite)
-				msg.append_out(CRLF);			
+				msg.append_out(CRLF);
 		}
 	}
 }
