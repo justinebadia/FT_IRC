@@ -82,25 +82,29 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
-	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE
-	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,USERS,WHOIS
-	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] PRIVMSG, KICK,PART
+	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE,KILL,PRIVMSG,WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,PING,USERS,WHO,WHOIS
+	_reply_map.insert(std::make_pair(ERR_NOSUCHCHANNEL, err_nosuchchannel));			//[403] JOIN,PRIVMSG,KICK,PART
 	_reply_map.insert(std::make_pair(ERR_CANNOTSENDTOCHAN, err_cannotsendtochan));		//[404] PRIVMSG
+	_reply_map.insert(std::make_pair(ERR_TOOMANYCHANNELS, err_toomanychannels));		//[405] JOIN
 	_reply_map.insert(std::make_pair(ERR_NOORIGIN, err_noorigin));						//[409] PING
 	_reply_map.insert(std::make_pair(ERR_NORECIPIENT, err_norecipient));				//[411] PRIVMSG
 	_reply_map.insert(std::make_pair(ERR_NOTEXTTOSEND, err_notexttosend));				//[412] PRIVMSG
-	_reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK
+	_reply_map.insert(std::make_pair(ERR_NONICKNAMEGIVEN, err_nonicknamegiven));		//[431] NICK,WHOIS
 	_reply_map.insert(std::make_pair(ERR_ERRONEUSNICKNAME, err_erroneusnickname));		//[432] NICK
 	_reply_map.insert(std::make_pair(ERR_NICKNAMEINUSE, err_nicknameinuse));			//[433] NICK
 	_reply_map.insert(std::make_pair(ERR_USERNOTINCHANNEL, err_usernotinchannel));		//[441] KICK
 	_reply_map.insert(std::make_pair(ERR_NOTONCHANNEL, err_notonchannel));				//[442] INVITE,KICK,PART,TOPIC
 	_reply_map.insert(std::make_pair(ERR_USERONCHANNEL, err_useronchannel));			//[443] INVITE
-	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));			//[461] INVITE,KICK,PART,TOPIC,USERS_MSG
-	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] USERS_MSG
-	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] USERS_MSG,OPER
+	_reply_map.insert(std::make_pair(ERR_NEEDMOREPARAMS, err_needmoreparams));			//[461] INVITE,JOIN,KICK,OPER,PART,PASS,TOPIC,USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_ALREADYREGISTERED, err_alreadyregistered));	//[462] PASS,USERS_MSG
+	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] OPER,PASS
 	_reply_map.insert(std::make_pair(ERR_KEYSET, err_keyset));							//[467] MODE_KEY_SET
+	_reply_map.insert(std::make_pair(ERR_CHANNELISFULL, err_channelisfull));			//[471] JOIN
+	_reply_map.insert(std::make_pair(ERR_INVITEONLYCHAN, err_inviteonlychan));			//[473] JOIN
 	_reply_map.insert(std::make_pair(ERR_BANNEDFROMCHAN, err_bannedfromchan));			//[474] JOIN
-	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] KICK
+	_reply_map.insert(std::make_pair(ERR_BADCHANNELKEY, err_badchannelkey));			//[475] JOIN
+	_reply_map.insert(std::make_pair(ERR_BADCHANMASK, err_badchanmask));				//[476] JOIN,KICK
 	_reply_map.insert(std::make_pair(ERR_NOPRIVILEGES, err_noprivileges));				//[481] KILL
 	_reply_map.insert(std::make_pair(ERR_CHANOPRIVSNEEDED, err_chanoprivsneeded));		//[482] INVITE,KICK,TOPIC
 	_reply_map.insert(std::make_pair(ERR_CANTKILLSERVER, err_cantkillserver));			//[483] KILL

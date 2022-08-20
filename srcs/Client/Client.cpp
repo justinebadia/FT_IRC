@@ -15,6 +15,7 @@
 using namespace irc;
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
+
 Client::Client( int fd ) // main constructor
 	: _nickname("")
 	, _username("")
@@ -61,7 +62,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 
 Client::~Client( void ) // destructor
 {
-	// freeaddrinfo( reinterpret_cast<struct addrinfo*>(&get_addr()) );
+	// freeaddrinfo( reinterpret_cast<struct addrinfo*>(&get_addr()) ); //WARNING
 }
 
 void	Client::_init_client( void )

@@ -27,7 +27,7 @@ void	CommandManager::cmd_topic( Message& msg )
 	topic = channel->get_topic();
 	if (msg.get_param_count() == 1)				// SHOW TOPIC
 	{
-		if (topic.empty() == true)				// WARNING A VERIFIER si NULL ou string vide ""
+		if (topic.empty() == true)
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
@@ -43,7 +43,7 @@ void	CommandManager::cmd_topic( Message& msg )
 			}
 		}
 		channel->set_topic(msg.get_substr_after(":"));
-		recipient_list = channel->get_clients_any_permissions();
+		recipient_list = channel->get_clients_not_banned();	// WARNING
 		send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	}
 }

@@ -21,7 +21,7 @@ void CommandManager::process_single_list( Message& msg )
 	run_reply(RPL_LIST, msg);
 	run_reply(RPL_LISTEND, msg);
 	recipient_list.push_back(source_client);
-	send_to_clients(recipient_list, source_client->get_prefix() + "NAMES " + msg[1] + CRLF);
+	send_to_clients(recipient_list, source_client->get_prefix() + "LIST " + msg[1] + CRLF);
 	
 }
 
@@ -31,7 +31,7 @@ void CommandManager::cmd_list( Message& msg )
 	size_t		pos = 0;
 	string		channels;
 	string		chan_name;
-	Message		single_join_msg(msg.get_client_ptr());
+	Message		single_list_msg(msg.get_client_ptr());
 
 	channels = msg[1];
 	if (channels.empty())	//make a string of all channels
@@ -56,10 +56,10 @@ void CommandManager::cmd_list( Message& msg )
 		next_pos = channels.find(',', pos);
 		if (next_pos == string::npos)
 			next_pos = channels.length();
-		single_join_msg.append_in("NAMES " + channels.substr(pos, next_pos - pos));
-		process_single_list(single_join_msg);
-		msg.append_out(single_join_msg.get_message_out());
-		single_join_msg.clear_all();
+		single_list_msg.append_in("LIST " + channels.substr(pos, next_pos - pos));
+		process_single_list(single_list_msg);
+		msg.append_out(single_list_msg.get_message_out());
+		single_list_msg.clear_all();
 		pos = next_pos + 1;
 	}
 	return ;

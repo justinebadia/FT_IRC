@@ -316,7 +316,14 @@ void	CommandManager::err_cannotsendtochan( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 
-	msg.append_out(": 404 " + client->get_nickname() + " " + msg[1] + " :can not send to channel.");
+	msg.append_out(": 404 " + client->get_nickname() + " " + msg[1] + " :Cannot send to channel.");
+}
+
+void	CommandManager::err_toomanychannels( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+
+	msg.append_out(": 405 " + client->get_nickname() + " " + msg[1] + " :Too many channels");
 }
 
 void	CommandManager::err_noorigin( Message& msg )
@@ -410,10 +417,28 @@ void	CommandManager::err_keyset( Message& msg )
 	msg.append_out(": 467 " + client->get_nickname() + " " + msg[1] + " :Channel key already set");
 }
 
+void	CommandManager::err_channelisfull( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 471 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (full)");
+}
+
+void	CommandManager::err_inviteonlychan( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 473 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (+i)");
+}
+
 void	CommandManager::err_bannedfromchan( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 	msg.append_out(": 474 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (+b)");
+}
+
+void	CommandManager::err_badchannelkey( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 475 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (+k)");
 }
 
 void	CommandManager::err_badchanmask( Message& msg )

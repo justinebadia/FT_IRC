@@ -20,8 +20,8 @@ using std::string;
 Channel::Channel( void ) // default constructor 
 	: _name("")
 	, _owner(NULL)
-	, _private(false)
-	, _secret(false)
+	//, _private(false)
+	//, _secret(false)
 	, _invite_only(false)
 	, _password_required(false)
 	, _topic_by_chanop_only(false)
@@ -41,8 +41,8 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 {
 	_name  = rhs._name;
 	_owner = rhs._owner;
-	_private = rhs._private;
-	_secret = rhs._secret;
+	//_private = rhs._private;
+	//_secret = rhs._secret;
 	_invite_only = rhs._invite_only;
 	_password_required = rhs._password_required;
 	_topic_by_chanop_only = rhs._topic_by_chanop_only;
@@ -55,11 +55,11 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	return *this;
 }							
 
-Channel::Channel( const string& channel_name, Client* channel_owner )			// no password constructor
+Channel::Channel( const string& channel_name, Client* channel_owner )			// main constructor
 	: _name(channel_name)
 	, _owner(channel_owner)
-	, _private(false)
-	, _secret(false)
+	//, _private(false)
+	//, _secret(false)
 	, _invite_only(false)
 	, _password_required(false)
 	, _topic_by_chanop_only(false)
@@ -73,22 +73,22 @@ Channel::Channel( const string& channel_name, Client* channel_owner )			// no pa
 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
 }
 
-Channel::Channel( const string& channel_name, Client* channel_owner, const string& channel_password ) // password required constructor
-	: _name(channel_name)
-	, _owner(channel_owner)
-	, _private(true)
-	, _secret(false)
-	, _invite_only(false)
-	, _topic_by_chanop_only(true)
-	, _topic("")
-	, _password(channel_password)
-	, _memberlist(0) 
-	, _mode_flags(0)
-	,_mode_str("")
-{
-	add_member(channel_owner, OWNER);
-	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
-}
+// Channel::Channel( const string& channel_name, Client* channel_owner, const string& channel_password ) // password required constructor
+// 	: _name(channel_name)
+// 	, _owner(channel_owner)
+// 	, _private(true)
+// 	, _secret(false)
+// 	, _invite_only(false)
+// 	, _topic_by_chanop_only(true)
+// 	, _topic("")
+// 	, _password(channel_password)
+// 	, _memberlist(0) 
+// 	, _mode_flags(0)
+// 	,_mode_str("")
+// {
+// 	add_member(channel_owner, OWNER);
+// 	// DATABASE ADD THIS CHANNEL IN THE CHANNEL LIST
+// }
 
 Channel::~Channel( void ) // destructor
 {
@@ -112,9 +112,9 @@ const string&		Channel::get_name( void ) const { return _name; }
 
 Client*				Channel::get_owner( void ) const { return _owner; } 
 
-bool				Channel::get_is_private( void ) const { return _private; }
+//bool				Channel::get_is_private( void ) const { return _private; }
 
-bool				Channel::get_is_secret( void ) const { return _secret; }
+//bool				Channel::get_is_secret( void ) const { return _secret; }
 
 bool				Channel::get_is_invite_only( void ) const { return _invite_only; } 
 
@@ -237,15 +237,15 @@ int		Channel::set_permission( Client* client, e_permission type )
  	return FAIL;
 }
 
-void	Channel::set_mode_private( bool setting )
-{
-	_private = setting;
-}
+// void	Channel::set_mode_private( bool setting )
+// {
+// 	_private = setting;
+// }
 
-void	Channel::set_mode_secret( bool setting )
-{
-	_secret = setting;
-}
+// void	Channel::set_mode_secret( bool setting )
+// {
+// 	_secret = setting;
+// }
 
 void	Channel::set_mode_invite_only( bool setting ) 
 {

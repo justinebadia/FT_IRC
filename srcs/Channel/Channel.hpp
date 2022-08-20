@@ -37,11 +37,13 @@ private:
 
 	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
+
 	/*---------------------ATTRIBUTES---------------------*/
+
 	string								_name;						// channel_name
 	Client*								_owner;
-	bool								_private;					// ±p
-	bool								_secret;					// ±s
+	// bool								_private;					// ±p
+	// bool								_secret;					// ±s
 	bool								_invite_only;				// ±i
 	bool								_password_required;			// ±flag pour +k
 	bool								_topic_by_chanop_only;		// ±t
@@ -51,28 +53,31 @@ private:
 	int									_mode_flags;
 	string								_mode_str;
 	t_mask_list							_banmask_list;
-	// t_client_ptr_list					_banlist;
+
 
 public:
 
 	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
-	Channel( void ); 												// default constructor
-	Channel( const string& channel_name, Client* channel_owner ); 									// no password constructor
-	Channel( const string& channel_name, Client* channel_owner, const string& channel_password );	// password required constructor
-	Channel( const Channel& rhs );									// copy constructor
-	~Channel( void );												// destructor
-	Channel& operator=( const Channel& rhs );	 					// copy operator overload
+	
+	Channel( void ); 																				// default constructor
+	Channel( const string& channel_name, Client* channel_owner ); 									// main constructor
+	// Channel( const string& channel_name, Client* channel_owner, const string& channel_password );	// password required constructor
+	Channel( const Channel& rhs );																	// copy constructor
+	~Channel( void );																				// destructor
+	Channel& operator=( const Channel& rhs );	 													// copy operator overload
 
 
 	/*---------------OTHER-OPERATOR-OVERLOAD--------------*/
+
 	bool	operator==( const Channel& rhs) const;
 
 
 	/*-----------------------GETTERS----------------------*/
+
 	const string&						get_name( void ) const;
 	Client*								get_owner( void ) const;
-	bool								get_is_private( void ) const;
-	bool								get_is_secret( void ) const;
+	// bool								get_is_private( void ) const;
+	// bool								get_is_secret( void ) const;
 	bool								get_is_invite_only( void ) const;
 	bool								get_is_password_required( void ) const;
 	bool								get_is_topic_by_chanop_only( void ) const;
@@ -91,6 +96,7 @@ public:
 
 
 	/*-----------------------SETTERS----------------------*/
+
 	void	set_channel_owner( Client* new_owner );
 	int		set_permission( Client* client, e_permission type );
 	void	set_mode_private( bool setting );
@@ -105,6 +111,7 @@ public:
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
+
 	bool	is_member( Client* client );
 	bool	is_owner( Client* client );
 	bool	is_chanop( Client* client );
@@ -123,11 +130,13 @@ public:
 	void	transfer_ownership( void );
 	string	parse_modes( Message& msg );
 
+
 };
 
 	/*-----------------NON-MEMBER-FUNCTIONS---------------*/
 
 	std::ostream&	operator<<( std::ostream& o, const Channel& obj );
+
 
 } // namespace irc end bracket
 
