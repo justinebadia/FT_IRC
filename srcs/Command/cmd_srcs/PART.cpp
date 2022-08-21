@@ -32,6 +32,8 @@ void    CommandManager::process_single_part( Message& msg )
 		if (reason.empty())
 			reason = "No reason given";
 		send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + " :" + reason + CRLF);
+//		if (channel->is_owner(source_client))
+//				channel->set_channel_owner(NULL);
 		channel->remove_member(source_client);
 	}
 }

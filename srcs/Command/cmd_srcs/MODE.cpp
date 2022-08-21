@@ -31,16 +31,20 @@ vector<string> tokenize_params(string const& str)
 void CommandManager::handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel *channel, Message& msg)
 {
 	pos_it++;
-	Client *to_chanop = _database->get_client(parsed[pos_it]);
-	if (to_chanop)
+	Client *target_client = _database->get_client(parsed[pos_it]);
+	if (target_client)
 	{
 		
-		if (channel->is_member(to_chanop))
+		if (channel->is_member(target_client))
 		{
 			if (msg[2][0] == '-')
-				channel->set_permission(to_chanop, REGULAR);
+			{
+				if (channel->is_owner(target_client))
+					channel->set_channel_owner(NULL);
+				channel->set_permission(target_client, REGULAR);
+			}
 			else
-				channel->set_permission(to_chanop, CHANOP);
+				channel->set_permission(target_client, CHANOP);
 			modes += "o";
 			params += parsed[pos_it];
 		}
