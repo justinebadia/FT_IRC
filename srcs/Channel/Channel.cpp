@@ -457,7 +457,6 @@ void	Channel::transfer_ownership( void )
 string Channel::parse_modes( Message& msg )
 {
 	string 	message = msg[2];
-	// string 	mask = " ";
 
 	if (message.empty())
 		return "";
@@ -487,7 +486,6 @@ string Channel::parse_modes( Message& msg )
 			else if (message[i] == 'b')
 			{
 				_mode_flags |= FLAG_B;
-				//this->add_banmask(mask);
 			}
 		}
 		return msg.get_substr_after("+");
@@ -524,7 +522,6 @@ string Channel::parse_modes( Message& msg )
 			{
 				_mode_flags &= FLAG_B;
 				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'b'));
-				//this->remove_banmask(mask);
 			}
 		}
 		return msg.get_substr_after("-");

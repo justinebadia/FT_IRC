@@ -10,6 +10,11 @@
 #include "numeric_replies.hpp"
 #include "typedef.hpp"
 #include "color.hpp"
+#include <iostream>
+#include <fstream>
+
+
+
 
 namespace irc 
 {
@@ -279,6 +284,38 @@ void	CommandManager::rpl_endofbanlist( Message& msg )
 	msg.append_out(": 368 " + client->get_nickname() + " " + msg[1] + " :End of channel ban list");
 }
 
+void CommandManager::rpl_motdstart (Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+
+	msg.append_out(": 375 " + client->get_nickname() + " : - TOBASTINE Message of the day - ");
+}
+
+void CommandManager::rpl_motd (Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+    std::ifstream banner("/Users/justine/Documents/dev/FT_IRC/tobastine.txt");
+	msg.append_out(": 372 " + client->get_nickname() + " : - " + BLUE + "Welcome to TOBASTINE IRC - " + RESET + CRLF);
+	msg.append_out(": 372 " + client->get_nickname() + " : - " + MAGENTA + "MADE with love by Tshimoda, Sfournie, Jbadia" + RESET + CRLF);
+	if (banner)
+	{
+		while (banner.good())
+		{
+			std::string temp;                  
+	   		std::getline (banner, temp);
+	   		temp += CRLF;
+			msg.append_out(": 372 " + client->get_nickname() + " : - " + BLUE + temp + RESET);
+		}
+	}
+}
+
+void CommandManager::rpl_endofmotd (Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+
+	msg.append_out(": 376 " + client->get_nickname() + " :End of MOTD command");
+}
+
 void	CommandManager::rpl_youreoper( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
@@ -421,6 +458,12 @@ void	CommandManager::err_channelisfull( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
 	msg.append_out(": 471 " + client->get_nickname() + " " + msg[1] + " :Cannot join channel (full)");
+}
+
+void CommandManager::err_unknownmode( Message& msg )
+{
+	Client*	client = msg.get_client_ptr();
+	msg.append_out(": 472 " + client->get_nickname() + " " + msg[2][0] + " :is unknown mode char to me for " + msg[1]);
 }
 
 void	CommandManager::err_inviteonlychan( Message& msg )

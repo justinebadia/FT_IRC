@@ -77,6 +77,7 @@ public:
 	static void	cmd_list( Message& msg );
 	static void process_single_list( Message& msg );
 	static void cmd_mode( Message& msg );
+	static void cmd_motd( Message& msg );
 	static void cmd_names( Message& msg );
 	static void process_single_names( Message& msg );
 	static void	cmd_nick( Message& msg );
@@ -117,6 +118,9 @@ public:
 	static void	rpl_endofnames( Message& msg );			//[366] NAMES
 	static void	rpl_banlist( Message& msg );			//[367] MODE
 	static void	rpl_endofbanlist( Message& msg );		//[368] MODE
+	static void	rpl_motd( Message& msg );				//[372] MOTD
+	static void	rpl_motdstart( Message& msg );			//[375] MOTD
+	static void	rpl_endofmotd( Message& msg );			//[376] MOTD
 	static void rpl_youreoper( Message& msg );			//[381] OPER
 	static void	rpl_usersstart( Message& msg );			//[392] WHOIS
 	static void	rpl_endofusers( Message& msg );			//[394] WHOIS
@@ -141,6 +145,7 @@ public:
 	static void	err_passwdmismatch( Message& msg );		//[464] OPER,PASS
 	static void err_keyset( Message& msg ); 			//[467] MODE_ERR_KEYSET
 	static void	err_channelisfull( Message& msg );		//[471] JOIN
+	static void err_unknownmode( Message& msg );		//[472] MODE
 	static void	err_inviteonlychan( Message& msg );		//[473] JOIN
 	static void	err_bannedfromchan( Message& msg );		//[474] JOIN
 	static void	err_badchannelkey( Message& msg );		//[475] JOIN

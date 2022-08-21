@@ -48,6 +48,7 @@ _CMDS_SRCS	=	$(D_CMD)/utils_commands.cpp \
 				$(D_CMDS)/KILL.cpp \
 				$(D_CMDS)/LIST.cpp \
 				$(D_CMDS)/MODE.cpp \
+				$(D_CMDS)/MOTD.cpp \
 				$(D_CMDS)/NAMES.cpp \
 				$(D_CMDS)/NICK.cpp \
 				$(D_CMDS)/NOTICE.cpp \

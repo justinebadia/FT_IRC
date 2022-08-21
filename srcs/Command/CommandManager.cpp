@@ -46,6 +46,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("KILL"), cmd_kill));
 	_command_map.insert(std::make_pair(string("LIST"), cmd_list));
 	_command_map.insert(std::make_pair(string("MODE"), cmd_mode));
+	_command_map.insert(std::make_pair(string("MOTD"), cmd_motd));
 	_command_map.insert(std::make_pair(string("NOTICE"), cmd_notice));
 	_command_map.insert(std::make_pair(string("NAMES"), cmd_names));
 	_command_map.insert(std::make_pair(string("NICK"), cmd_nick));
@@ -81,6 +82,10 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_ENDOFNAMES, rpl_endofnames));					//[366] NAMES
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
+	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
+	_reply_map.insert(std::make_pair(RPL_MOTDSTART, rpl_motdstart));							//[375] MOTD
+	_reply_map.insert(std::make_pair(RPL_MOTD, rpl_motd));								//[372] MOTD
+	_reply_map.insert(std::make_pair(RPL_ENDOFMOTD, rpl_endofmotd));							//[376] MOTD
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE,KILL,PRIVMSG,WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,PING,USERS,WHO,WHOIS
@@ -101,6 +106,7 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(ERR_PASSWDMISMATCH, err_passwdmismatch));			//[464] OPER,PASS
 	_reply_map.insert(std::make_pair(ERR_KEYSET, err_keyset));							//[467] MODE_KEY_SET
 	_reply_map.insert(std::make_pair(ERR_CHANNELISFULL, err_channelisfull));			//[471] JOIN
+	_reply_map.insert(std::make_pair(ERR_UNKNOWNMODE, err_unknownmode));				//[472] MODE
 	_reply_map.insert(std::make_pair(ERR_INVITEONLYCHAN, err_inviteonlychan));			//[473] JOIN
 	_reply_map.insert(std::make_pair(ERR_BANNEDFROMCHAN, err_bannedfromchan));			//[474] JOIN
 	_reply_map.insert(std::make_pair(ERR_BADCHANNELKEY, err_badchannelkey));			//[475] JOIN

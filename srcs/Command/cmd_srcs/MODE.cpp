@@ -31,22 +31,22 @@ vector<string> tokenize_params(string const& str)
 void CommandManager::handle_o_mode(size_t &pos_it, string& modes, string& params, std::vector<string> parsed, Channel *channel, Message& msg)
 {
 	pos_it++;
-	Client *to_chanop = _database->get_client(parsed[pos_it]);
-	if (to_chanop)
+	Client *target_client = _database->get_client(parsed[pos_it]);
+	if (target_client)
 	{
 		
-		if (channel->is_member(to_chanop))
+		if (channel->is_member(target_client))
 		{
 			if (msg[2][0] == '-')
-				channel->set_permission(to_chanop, REGULAR);
+				channel->set_permission(target_client, REGULAR);
 			else
-				channel->set_permission(to_chanop, CHANOP);
+				channel->set_permission(target_client, CHANOP);
 			modes += "o";
 			params += parsed[pos_it];
 		}
 		else
 		{
-			irc::CommandManager::run_reply(ERR_NOTONCHANNEL, msg);
+			irc::CommandManager::run_reply(ERR_USERNOTINCHANNEL, msg);
 			return;
 		}
 	}
@@ -125,13 +125,12 @@ void CommandManager::cmd_mode(Message &msg)
 		/*if there are more than 2 parameters, it means there are flags, so the client need to be chanop/owner */
 		if (msg.get_param_count() >= 2)
 		{
-			Client *client = msg.get_client_ptr();
-			if (!(channel->is_chanop(client)) && !(channel->is_owner(client)))
+			if (!(channel->is_chanop(source_client)) && !(channel->is_owner(source_client)))
 			{
 				run_reply(ERR_CHANOPRIVSNEEDED, msg);
 				return;
 			}
-			if (!channel->is_member(client))
+			if (!channel->is_member(source_client))
 			{
 				run_reply(ERR_NOTONCHANNEL, msg);
 				return;
@@ -139,8 +138,10 @@ void CommandManager::cmd_mode(Message &msg)
 		}
 
 		/*Parsing the string*/
+		if (msg[2][0] != '+' && msg[2][0] != '-')
+			return (run_reply(ERR_UNKNOWNMODE, msg));
 		vector<string> parsed = tokenize_params(channel->parse_modes(msg)); // tokenize the flags and their parameters
-		if (channel->get_mode_flags() > 0)
+		if (channel->get_mode_flags() > 0 && !parsed.empty())
 		{
 			for (size_t i = 0; i < parsed[0].length(); i++)
 			{

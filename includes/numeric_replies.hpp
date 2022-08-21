@@ -71,9 +71,9 @@
 // #define	RPL_ENDOFWHOWAS			369
 // #define	RPL_INFO				371
 // #define	RPL_ENDOFINFO			374
-// #define	RPL_MOTDSTART			375
-// #define	RPL_MOTD				372
-// #define	RPL_ENDOFMOTD			376
+#define	RPL_MOTD				372
+#define	RPL_MOTDSTART			375
+#define	RPL_ENDOFMOTD			376
 // #define	RPL_WHOISHOST			378
 // #define	RPL_WHOISMODES			379
 #define	RPL_YOUREOPER				381
@@ -111,7 +111,7 @@
 // #define	ERR_YOUREBANNEDCREEP	465
 #define ERR_KEYSET				467
 #define	ERR_CHANNELISFULL		471
-// #define	ERR_UNKNOWNMODE			472
+#define	ERR_UNKNOWNMODE			472
 #define	ERR_INVITEONLYCHAN		473
 #define	ERR_BANNEDFROMCHAN		474
 #define	ERR_BADCHANNELKEY		475
