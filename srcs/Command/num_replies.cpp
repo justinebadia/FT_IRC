@@ -294,7 +294,7 @@ void CommandManager::rpl_motdstart (Message& msg )
 void CommandManager::rpl_motd (Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
-    std::ifstream banner("/Users/justine/Documents/dev/FT_IRC/tobastine.txt");
+    std::ifstream banner("srcs/tobastine.txt");
 	msg.append_out(": 372 " + client->get_nickname() + " : - " + BLUE + "Welcome to TOBASTINE IRC - " + RESET + CRLF);
 	msg.append_out(": 372 " + client->get_nickname() + " : - " + MAGENTA + "MADE with love by Tshimoda, Sfournie, Jbadia" + RESET + CRLF);
 	if (banner)
