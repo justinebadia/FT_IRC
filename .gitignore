@@ -3,6 +3,7 @@
 *.dSym
 *.DSum/*
 .vscode
+.vscode/*
 *.swp
 a.out
 compile_flags.txt

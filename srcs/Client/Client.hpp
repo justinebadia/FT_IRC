@@ -96,7 +96,6 @@ public:
 	int								get_registration_flags( void ) const;
 	const time_t&					get_last_read( void ) const;
 
-	static t_pollfd*				get_pollfd_array( void );
 	t_pollfd&						get_pollfd( void );
 	t_addr6&						get_addr6_ref( void );
 	t_addr6							get_addr6_copy( void ) const;

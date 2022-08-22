@@ -1,7 +1,7 @@
 
 
 #include <algorithm>
-#include <sys/syslimits.h>
+#include <limits.h>
 
 #include "Server.hpp"
 #include "Database.hpp" 
