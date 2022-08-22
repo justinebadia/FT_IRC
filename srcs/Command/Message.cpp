@@ -77,6 +77,8 @@ Client*			Message::get_client_ptr( void ) const { return _client_ptr; }
 const string&	Message::get_message_in( void ) const { return _message_in; }
 const string&	Message::get_message_out( void ) const { return _message_out; }
 string 			Message::get_mode_rpl( void ) { return _mode_rpl; }
+string 			Message::get_special_output( void ) { return _special_output; }
+
 
 string		Message::get_substr_after( const string& symbol )
 {
@@ -86,7 +88,7 @@ string		Message::get_substr_after( const string& symbol )
 	pos = _message_in.find(symb, 1);
 	if (pos == string::npos)
 		return string("");
-	return _message_in.substr(pos + 2);
+	return _message_in.substr(pos + symb.length());
 }
 
 
@@ -107,7 +109,9 @@ void	Message::set_client_ptr( Client* client )
 	_client_ptr = client;
 }
 
-void Message::set_mode_rpl(string test) { _mode_rpl = test;}
+void Message::set_mode_rpl(const string& mode_reply) { _mode_rpl = mode_reply;}
+void Message::set_special_output(const string& output_reply) { _special_output = output_reply;}
+
 
 /*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 

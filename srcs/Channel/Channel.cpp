@@ -460,37 +460,7 @@ string Channel::parse_modes( Message& msg )
 
 	if (message.empty())
 		return "";
-	if (message.at(0) == '+')
-	{
-		for (size_t i = 0; i != message.length(); i++)
-		{
-			if (message[i] == 'o')
-				_mode_flags |= FLAG_O;
-			else if (message[i] == 'i')
-			{
-				set_mode_invite_only(true);
-				_mode_flags |= FLAG_I;
-			}
-			else if (message[i] == 't')
-			{
-				set_mode_topic_by_chanop_only(true);
-				_mode_flags |= FLAG_T;
-			}
-			else if (message[i] == 'k')
-			{
-				if (get_is_password_required() == true)
-					continue ;
-				set_mode_key_password_required(true);
-				_mode_flags |= FLAG_K;
-			}
-			else if (message[i] == 'b')
-			{
-				_mode_flags |= FLAG_B;
-			}
-		}
-		return msg.get_substr_after("+");
-	}
-	else if (message.at(0) == '-')
+	if (message.at(0) == '-')
 	{
 		for (size_t i = 1; i != message.length(); i++)
 		{
@@ -524,7 +494,40 @@ string Channel::parse_modes( Message& msg )
 				_mode_str.erase(remove(_mode_str.begin(), _mode_str.end(), 'b'));
 			}
 		}
-		return msg.get_substr_after("-");
+		return msg.get_substr_after(msg[1] + " -");
+	}
+	else
+	{
+		for (size_t i = 0; i != message.length(); i++)
+		{
+			if (message[i] == 'o')
+				_mode_flags |= FLAG_O;
+			else if (message[i] == 'i')
+			{
+				set_mode_invite_only(true);
+				_mode_flags |= FLAG_I;
+			}
+			else if (message[i] == 't')
+			{
+				set_mode_topic_by_chanop_only(true);
+				_mode_flags |= FLAG_T;
+			}
+			else if (message[i] == 'k')
+			{
+				if (get_is_password_required() == true)
+					continue ;
+				set_mode_key_password_required(true);
+				_mode_flags |= FLAG_K;
+			}
+			else if (message[i] == 'b')
+			{
+				_mode_flags |= FLAG_B;
+			}
+		}
+		if (message.at(0) == '+')
+			return msg.get_substr_after(msg[1] + " +");
+		else 
+			return msg.get_substr_after(msg[1] + " ");
 	}
 	return "";
 }

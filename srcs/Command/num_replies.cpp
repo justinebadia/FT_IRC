@@ -145,14 +145,17 @@ void	CommandManager::rpl_listend( Message& msg )
 void	CommandManager::rpl_channelmodeis( Message& msg )
 {
 	Client* client = msg.get_client_ptr();
+	Channel* channel = _database->get_channel(msg[1]);
 
+	if (!channel)
+		return;
 	msg.append_out(": 324 " + client->get_nickname() + " " + msg[1]);
 	if (msg.get_param_count() == 1)
 	{
-		if (!_database->get_channel(msg[1])->get_password().empty())
-			msg.append_out(" +" + _database->get_channel(msg[1])->get_mode_str() + " " + _database->get_channel(msg[1])->get_password());
+		if (!channel->get_password().empty())
+			msg.append_out(" +" + channel->get_mode_str() + " " + channel->get_password());
 		else
-			msg.append_out(" +" + _database->get_channel(msg[1])->get_mode_str());
+			msg.append_out(" +" + channel->get_mode_str());
 	}
 	else
 		msg.append_out(" " + msg.get_mode_rpl());
@@ -267,15 +270,11 @@ void	CommandManager::rpl_banlist( Message& msg )
 
 		for (; it != ite;)
 		{
-			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it) + " " + client->get_full_id());
+			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it) + " " + client->get_nickname());
 			if (++it != ite)
 				msg.append_out(CRLF);
-
 		}
 	}
-	// else
-	// 	msg.append_out(": 367 " + client->get_nickname() + " " + msg[1]); 
- 
 }
 
 void	CommandManager::rpl_endofbanlist( Message& msg )
@@ -464,7 +463,7 @@ void	CommandManager::err_channelisfull( Message& msg )
 void CommandManager::err_unknownmode( Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
-	msg.append_out(": 472 " + client->get_nickname() + " " + msg[2][0] + " :is unknown mode char to me for " + msg[1]);
+	msg.append_out(": 472 " + client->get_nickname() + " " + msg.get_special_output() + " :is unknown mode char to me for " + msg[1]);
 }
 
 void	CommandManager::err_inviteonlychan( Message& msg )
