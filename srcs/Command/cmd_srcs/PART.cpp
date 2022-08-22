@@ -26,7 +26,6 @@ void    CommandManager::process_single_part( Message& msg )
 	else
 	{
 		t_client_ptr_list	recipient_list;
-		// recipient_list = channel->get_clients_not_matching_permissions(BAN); WARNING
 		recipient_list = channel->get_clients_not_banned();
 		reason = msg.get_substr_after(":");
 		if (reason.empty())
