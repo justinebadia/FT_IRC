@@ -229,10 +229,7 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 			_process_client_pollerr( pollfd_array[i] );
 			continue;
 		}
-		if (pollfd_array[i].revents & POLLIN)
-		{
-			_process_client_pollin( pollfd_array[i]);
-		}
+		_process_client_pollin( pollfd_array[i]);
 		//_process_client_messages
 		if (pollfd_array[i].revents & POLLOUT)
 		{
@@ -261,22 +258,28 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	
 	if (!client || client->get_to_be_killed())
 		return ;
-	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
-	if (bytes <= 0)
-		return disconnect_client(pollfd.fd);
-	client->set_last_read_to_now();
-	buffer[bytes] = '\0';
-	client->append_buff(BUFFIN, string(buffer));
-	Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
-				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN)); // WARNING
-	if (!client->is_registered())
+	if (pollfd.revents & POLLIN)
 	{
-		CommandManager::execute_commands_registration(*client);
-		_check_registration(client);
+		bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
+		if (bytes <= 0)
+			return disconnect_client(pollfd.fd);
+		client->set_last_read_to_now();
+		buffer[bytes] = '\0';
+		client->append_buff(BUFFIN, string(buffer));
+		Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
+				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN)); // WARNING
 	}
-	else
-		CommandManager::execute_commands(*client);
-	Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
+	if (!client->get_buff(BUFFIN).empty())
+	{
+		if (!client->is_registered())
+		{
+			CommandManager::execute_commands_registration(*client);
+			_check_registration(client);
+		}
+		else
+			CommandManager::execute_commands(*client);
+		Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
+	}
 }
 
 void	Server::_check_registration( Client* client )

@@ -206,7 +206,7 @@ void	CommandManager::execute_commands_registration( Client& client )
 	
 	Message	msg(&client);
 	t_cmd_function_ptr command;
-	while ((next = buffin.find("\r\n", start)) != string::npos)
+	if ((next = buffin.find("\r\n", start)) != string::npos)
 	{
 		msg = Message(&client);
 		msg.append_in(buffin.substr(start, next - start));
