@@ -267,15 +267,11 @@ void	CommandManager::rpl_banlist( Message& msg )
 
 		for (; it != ite;)
 		{
-			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it));
+			msg.append_out(": 367 " + client->get_nickname() + " " + msg[1] + " " + (*it) + " " + client->get_nickname());
 			if (++it != ite)
 				msg.append_out(CRLF);
-
 		}
 	}
-	else
-		msg.append_out(": 367 " + client->get_nickname() + " " + msg[1]); 
-
 }
 
 void	CommandManager::rpl_endofbanlist( Message& msg )
