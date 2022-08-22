@@ -33,6 +33,7 @@ private:
 	string		_message_in;
 	string		_message_out;
 	string 		_mode_rpl;
+	string 		_special_output;
 	
 public:
 
@@ -60,11 +61,14 @@ public:
 	string			get_substr_after( const string& symbol );
 	int 			get_param_count( void );
 	string			get_mode_rpl( void );
+	string			get_special_output( void );
+
 
 	/*-----------------------SETTERS----------------------*/
 
 	void	set_client_ptr( Client* client_ptr );
-	void	set_mode_rpl( string );
+	void	set_mode_rpl( const string& mode_reply);
+	void	set_special_output( const string& output_reply);
 
 
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
