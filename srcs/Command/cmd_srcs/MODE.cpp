@@ -38,7 +38,11 @@ void CommandManager::handle_o_mode(size_t &pos_it, string& modes, string& params
 		if (channel->is_member(target_client))
 		{
 			if (msg[2][0] == '-')
+			{
+				if (channel->is_owner(target_client))
+					channel->set_channel_owner(NULL);
 				channel->set_permission(target_client, REGULAR);
+			}
 			else
 				channel->set_permission(target_client, CHANOP);
 			modes += "o";

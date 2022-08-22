@@ -39,7 +39,6 @@ void	set_exit_true( int signal )
 	Server::get_server().set_exit(true);
 }
 
-
 /*---------------PROHIBITED-CONSTRUCTORS--------------*/
 
 Server::Server( void ) // default constructor [PRIVATE]

@@ -129,7 +129,8 @@ void	CommandManager::rpl_list( Message& msg )
 
 	if (!channel)
 		return;
-	string	names = ": 322 " + client->get_nickname() + " " + channel->get_name() +  " = :" + channel->get_topic();
+	string visible_count = std::to_string(channel->get_memberlist().size());
+	string	names = ": 322 " + client->get_nickname() + " " + channel->get_name() + " " + visible_count + " :" + channel->get_topic();
 
 	msg.append_out(names);
 }

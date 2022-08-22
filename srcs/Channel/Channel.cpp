@@ -390,7 +390,7 @@ void	Channel::remove_member( Client* client )
 				}
 			}
 			_memberlist.erase(it);
-			std::cout << "AFTER Channel::remove_member()\n";
+//			std::cout << "AFTER Channel::remove_member()\n";
 			print_memberlist();
 			break;
 		}

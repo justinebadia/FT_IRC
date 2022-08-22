@@ -21,8 +21,7 @@ void CommandManager::process_single_list( Message& msg )
 	run_reply(RPL_LIST, msg);
 	run_reply(RPL_LISTEND, msg);
 	recipient_list.push_back(source_client);
-	send_to_clients(recipient_list, source_client->get_prefix() + "LIST " + msg[1] + CRLF);
-	
+	//send_to_clients(recipient_list, source_client->get_prefix() + "LIST " + msg[1] + CRLF);
 }
 
 void CommandManager::cmd_list( Message& msg )			
@@ -46,6 +45,8 @@ void CommandManager::cmd_list( Message& msg )
 			channels += ",";
 		}
 	}
+	if (channels.empty())
+		return run_reply(RPL_LISTEND, msg);
 	while (pos < channels.length())
 	{
 		if (channels[pos] == ',')

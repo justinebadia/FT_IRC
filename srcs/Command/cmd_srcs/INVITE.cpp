@@ -24,30 +24,28 @@ void CommandManager::cmd_invite( Message& msg )
 		run_reply(ERR_NOSUCHNICK, msg);
 		return;
 	}
-
 	Channel* channel = _database->get_channel(msg[2]);	// if the channel doesnt exist
 	if (!channel)
-		return; // Not sure if its also ERR_NOSUCHNICK
-		
+	{
+		run_reply(ERR_NOSUCHNICK, msg);	// WARNING RFC N'A PAS MIS POUR INVITE : NO SUCH CHANNEL
+		return;
+	}
 	if (channel->is_member(source_client) == false)
 	{	
 		run_reply(ERR_NOTONCHANNEL, msg);
 		return;
 	}
-
 	Client* target_client = _database->get_client(msg[1]);
 	if (channel->is_member(target_client))
 	{
 		run_reply(ERR_USERONCHANNEL, msg);
 		return;
 	}
-
 	if (!channel->is_owner(source_client) && !channel->is_chanop(source_client))
 	{	
 		run_reply(ERR_CHANOPRIVSNEEDED, msg);
 		return;
 	}
-
 	if (channel->get_is_invite_only() == true)
 	{
 		_database->create_invite_coupon(target_client, channel);
