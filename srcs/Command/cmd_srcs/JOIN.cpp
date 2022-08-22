@@ -74,6 +74,8 @@ void CommandManager::process_single_join( Message& msg )
 			run_reply(RPL_TOPIC, msg);
 		// recipient_list = channel->get_clients_not_matching_permissions(BAN);WARNING
 		recipient_list = channel->get_clients_not_banned();
+		recipient_list.remove(source_client);
+		recipient_list.push_back(source_client);
 		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
 	else	// the channel doesn't exist
