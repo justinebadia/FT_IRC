@@ -295,8 +295,8 @@ void CommandManager::rpl_motd (Message& msg )
 {
 	Client*	client = msg.get_client_ptr();
     std::ifstream banner("srcs/tobastine.txt");
-	msg.append_out(": 372 " + client->get_nickname() + " : - " + BLUE + "Welcome to TOBASTINE IRC - " + RESET + CRLF);
-	msg.append_out(": 372 " + client->get_nickname() + " : - " + MAGENTA + "MADE with love by Tshimoda, Sfournie, Jbadia" + RESET + CRLF);
+	msg.append_out(": 372 " + client->get_nickname() + " : - " + "Welcome to TOBASTINE IRC - " + CRLF);
+	msg.append_out(": 372 " + client->get_nickname() + " : - " + "MADE with love by Tshimoda, Sfournie, Jbadia" + CRLF);
 	if (banner)
 	{
 		while (banner.good())
@@ -304,7 +304,7 @@ void CommandManager::rpl_motd (Message& msg )
 			std::string temp;                  
 	   		std::getline (banner, temp);
 	   		temp += CRLF;
-			msg.append_out(": 372 " + client->get_nickname() + " : - " + BLUE + temp + RESET);
+			msg.append_out(": 372 " + client->get_nickname() + " : - " + temp);
 		}
 	}
 }
