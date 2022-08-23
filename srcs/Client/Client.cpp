@@ -91,7 +91,7 @@ void	Client::_init_client( void )
 
 bool	Client::operator==( const Client& rhs) const
 {
-	return this->get_nickname() == rhs.get_nickname();
+	return this->get_fd() == rhs.get_fd();
 }
 
 
