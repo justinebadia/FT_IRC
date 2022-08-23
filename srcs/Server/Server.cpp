@@ -229,10 +229,7 @@ void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
 			_process_client_pollerr( pollfd_array[i] );
 			continue;
 		}
-		if (pollfd_array[i].revents & POLLIN)
-		{
-			_process_client_pollin( pollfd_array[i]);
-		}
+		_process_client_pollin( pollfd_array[i]);
 		//_process_client_messages
 		if (pollfd_array[i].revents & POLLOUT)
 		{
@@ -261,37 +258,21 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	
 	if (!client || client->get_to_be_killed())
 		return ;
-	bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
-	if (bytes <= 0)
-		return disconnect_client(pollfd.fd);
-	client->set_last_read_to_now();
-	buffer[bytes] = '\0';
-	client->append_buff(BUFFIN, string(buffer));
-	Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
+	if (pollfd.revents & POLLIN)
+	{
+		bytes = recv( pollfd.fd, buffer, MAX_IN, MSG_DONTWAIT );
+		if (bytes <= 0)
+			return disconnect_client(pollfd.fd);
+		client->set_last_read_to_now();
+		buffer[bytes] = '\0';
+		client->append_buff(BUFFIN, string(buffer));
+		Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
 				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN)); // WARNING
-	if (!client->is_registered())
-	{
-		CommandManager::execute_commands_registration(*client);
-		_check_registration(client);
 	}
-	else
-		CommandManager::execute_commands(*client);
-	Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
-}
-
-void	Server::_check_registration( Client* client )
-{
-	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
+	if (!client->get_buff(BUFFIN).empty())
 	{
-		Message					message(client);
-		t_reply_function_ptr	reply;
-
-		client->set_registration_flags(Client::COMPLETE); 
-		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
-		if (reply)
-			reply(message);
-		client->append_buff(BUFFOUT, message.get_message_out());
-		client->append_buff(BUFFOUT, "\r\n");
+		CommandManager::execute_commands(client);
+		// Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
 	}
 }
 
@@ -397,6 +378,22 @@ int	Server::run_server( void )
 	}
 	_kill_server();
 	return 0;
+}
+
+void	Server::check_registration( Client* client )
+{
+	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
+	{
+		Message					message(client);
+		t_reply_function_ptr	reply;
+
+		client->set_registration_flags(Client::COMPLETE); 
+		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
+		if (reply)
+			reply(message);
+		client->append_buff(BUFFOUT, message.get_message_out());
+		client->append_buff(BUFFOUT, "\r\n");
+	}
 }
 
 void	Server::disconnect_client( const int& fd )

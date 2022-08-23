@@ -63,7 +63,8 @@ void CommandManager::process_single_join( Message& msg )
 		}
 		if (channel->get_is_password_required() == true)
 		{
-			if (channel->get_password() != msg[2])
+			Server::log(channel->get_password() + " " + msg[2]);
+			if (channel->get_password().compare(msg[2]) )
 				return run_reply(ERR_BADCHANNELKEY, msg);
 		}
 		channel->add_member(source_client, REGULAR);
@@ -74,6 +75,8 @@ void CommandManager::process_single_join( Message& msg )
 			run_reply(RPL_TOPIC, msg);
 		// recipient_list = channel->get_clients_not_matching_permissions(BAN);WARNING
 		recipient_list = channel->get_clients_not_banned();
+		recipient_list.remove(source_client);
+		recipient_list.push_back(source_client);
 		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
 	else	// the channel doesn't exist
@@ -106,9 +109,15 @@ void CommandManager::cmd_join( Message& msg )
 	size_t		pos = 0;
 	string		channels;
 	string		chan_name;
+	size_t		key_pos = 0;
+	size_t		key_next_pos = 0;
+	string		keys;
+	string		key;
 	Message		single_join_msg(msg.get_client_ptr());
 
 	channels = msg[1];
+	keys = msg[2];
+
 	if (channels.empty())
 	{
 		return run_reply(ERR_NEEDMOREPARAMS, msg);
@@ -120,15 +129,31 @@ void CommandManager::cmd_join( Message& msg )
 			pos++;
 			continue;
 		}
+		if (keys[key_pos] == ',')
+		{
+			key_pos++;
+			continue;
+		}
+
 		next_pos = channels.find(',', pos);
 		if (next_pos == string::npos)
 			next_pos = channels.length();
-		single_join_msg.append_in("JOIN " + channels.substr(pos, next_pos - pos));
+
+		key_next_pos = keys.find(',', pos);
+		if (key_next_pos == string::npos)
+			key_next_pos = keys.length();
+
+		if (keys.empty() || key_pos > keys.length())
+			single_join_msg.append_in("JOIN " + channels.substr(pos, next_pos - pos));
+		else
+			single_join_msg.append_in("JOIN " + channels.substr(pos, next_pos - pos) + " " + keys.substr(key_pos, key_next_pos - key_pos));
+
 		process_single_join(single_join_msg);
 		msg.append_out(single_join_msg.get_message_out());
 		Server::log(msg.get_message_out());
 		single_join_msg.clear_all();
 		pos = next_pos + 1;
+		key_pos = key_next_pos + 1;
 	}
 	return ;
 }

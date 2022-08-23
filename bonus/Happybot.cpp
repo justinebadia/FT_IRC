@@ -48,7 +48,7 @@ void	Happybot::_init_Happybot( void )
 {
 	_mood = HAPPY;
 	_name = "Happybot";
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	_init_grumpy_thoughts();
 	_init_happy_thoughts();
 }
@@ -101,17 +101,17 @@ string	Happybot::get_random_thought( void )
 
 string	Happybot::get_random_happy_thought( void )
 {
-	int	r_int;
+	unsigned long	r_int;
 
-	r_int = rand() % _happy_thoughts.size();
+	r_int = static_cast<unsigned long>(rand()) % _happy_thoughts.size();
 	return _happy_thoughts[r_int];
 }
 
 string	Happybot::get_random_grumpy_thought( void )
 {
-	int	r_int;
+	unsigned long	r_int;
 
-	r_int = rand() % _grumpy_thoughts.size();
+	r_int = static_cast<unsigned long>(rand()) % _grumpy_thoughts.size();
 	return _grumpy_thoughts[r_int];
 }
 

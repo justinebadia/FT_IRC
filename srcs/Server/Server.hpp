@@ -97,7 +97,6 @@ private:
 	void		_process_client_pollerr( const t_pollfd& pollfd );
 	void		_process_client_pollin( const t_pollfd& pollfd );
 	void		_read_client_socket( const int& fd, char** buffer, ssize_t* bytes );
-	void		_check_registration( Client* client );
 	void		_process_client_pollout( const t_pollfd& pollfd );
 
 public:
@@ -134,6 +133,7 @@ public:
 	/*---------------OTHER-MEMBER-FUNCTIONS---------------*/
 	
 	int			run_server( void );
+	void		check_registration( Client* client );
 	void		disconnect_client( const int& fd );
 	void		disconnect_all_clients( void );
 
