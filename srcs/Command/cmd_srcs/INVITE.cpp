@@ -52,7 +52,7 @@ void CommandManager::cmd_invite( Message& msg )
 		run_reply(RPL_INVITING, msg);
 	
 		t_client_ptr_list	recipient_list;
-		recipient_list.push_back(source_client);
+	//	recipient_list.push_back(source_client);
 		recipient_list.push_back(target_client);
 		send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
 	}

@@ -18,7 +18,7 @@ void CommandManager::process_single_join( Message& msg )
 	t_client_ptr_list	recipient_list;
 	Channel* 			channel = NULL;
 	string topic;
-
+/*
 	// JOIN ZERO
 	if (msg[1] == "0")
 	{
@@ -29,12 +29,13 @@ void CommandManager::process_single_join( Message& msg )
 
 		for (; it != ite; it++)
 		{
-			recipient_list = channel->get_clients_any_permissions();
+			recipient_list = (*it)->get_clients_any_permissions();
 			send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
 			(*it)->remove_member(source_client);
 		}
 		return;
 	}
+*/
 	channel = _database->get_channel(msg[1]);
 	if (!validate_with_regex(REGEX_CHANNEL, msg[1]))
 	{

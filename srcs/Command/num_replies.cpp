@@ -179,7 +179,7 @@ void	CommandManager::rpl_inviting( Message& msg )
 {
 	Client* client = msg.get_client_ptr();
 
-	msg.append_out(": 341 " + client->get_nickname() + " " + msg[2] + " " + msg[1]);
+	msg.append_out(": 341 " + client->get_nickname() + " " + msg[1] + " " + msg[2]);
 }
 
 void CommandManager::rpl_whoreply( Message& msg )
