@@ -40,7 +40,7 @@ Happybot&	Happybot::operator=( const Happybot& rhs )
 	_pollfd[0] = rhs._pollfd[0];
 	return *this;
 
-};
+}
 
 /*--------------------BOT-FUNCTIONS--------------------*/
 
@@ -163,11 +163,12 @@ int		Happybot::connect_to_server( string hostname, int port, string password )
 
 int		Happybot::run_bot( void )
 {	
+	time_t	last_run;
 	int		res;
 	int		valread = 0;
 	int		client_fd = _pollfd->fd;
 	char	buffer[1024];
-	std::string	input;	
+	string	input;	
 
 	//join_happy_world();
 	input = "JOIN #happy_world\r\n";
@@ -205,6 +206,35 @@ int		Happybot::run_bot( void )
     // closing the connected socket
     close(client_fd);
 	return 0;
+}
+
+void	Happybot::check_input( const string& input )
+{
+	size_t	start = 0;
+	size_t	next = 0;
+	
+	t_cmd_function_ptr command;
+	while ((next = buffin.find("\r\n", start)) != string::npos)
+	{
+		msg = Message(client);
+		msg.append_in(buffin.substr(start, next - start));
+		if (_is_allowed(msg[0], client) == true)
+		{
+			command = get_command_ptr(msg[0]);
+			if (command)
+			{
+				command(msg);
+				client->append_buff(BUFFOUT, msg.get_message_out());
+				if (client->is_registered() == false)
+					_server->check_registration(client);
+			}
+		}
+		msg.clear_all();
+		start = next + 2;
+	}
+	if (start != string::npos)
+		buffin.erase(0, start);
+	return ;
 }
 
 void	Happybot::join_happy_world( void )

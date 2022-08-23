@@ -194,7 +194,7 @@ t_invite_coupon_list	Database::get_invite_coupon_list( void ) { return _invite_c
 
 void	Database::init_Database( void )
 {
-
+	_client_list = t_client_list();
 }
 
 int	Database::add_client_list( const Client& client )
@@ -301,6 +301,10 @@ void	Database::delete_client_from_all_lists( Client* client )
 	t_channel_list::iterator it = _channel_list.begin();
 	t_channel_list::iterator ite = _channel_list.end();
 
+	if (is_client_listed(client->get_nickname()) == false)
+	{
+			return ; // client is not in the database
+	}
 	for (; it != ite; it++) // for loop to delete the client from every channel_memberlist
 	{
 		if ((*it).is_member(client) == true)
@@ -308,12 +312,7 @@ void	Database::delete_client_from_all_lists( Client* client )
 			(*it).remove_member(client); // removing client from one channel_memberlist;
 		}
 	}
-	if (is_client_listed(client->get_nickname()) == false)
-	{
-			return ; // client is not in the database
-	}
-	else
-		_client_list.remove(*client);
+	_client_list.remove(*client);
 }
 
 void Database::delete_inactive_channels( void )

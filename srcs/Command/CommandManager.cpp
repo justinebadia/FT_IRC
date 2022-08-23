@@ -56,6 +56,7 @@ void	CommandManager::_init_command_map( void )
 	_command_map.insert(std::make_pair(string("PING"), cmd_ping));
 	_command_map.insert(std::make_pair(string("PRIVMSG"), cmd_privmsg));
 	_command_map.insert(std::make_pair(string("QUIT"), cmd_quit));
+	_command_map.insert(std::make_pair(string("SQUIT"), cmd_squit));
 	_command_map.insert(std::make_pair(string("TOPIC"), cmd_topic));
 	_command_map.insert(std::make_pair(string("USER"), cmd_user));
 	_command_map.insert(std::make_pair(string("WHO"), cmd_who));

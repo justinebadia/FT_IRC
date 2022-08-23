@@ -82,5 +82,13 @@ bool	compare_to_mask( const string& mask, const string& str )// WARNING missing 
 	return true;
 }
 
+string	convert_ip_address(const string &ip)
+{
+	if (ip.compare(0, 7, "::ffff:") == 0 || ip.compare(0, 7, "::FFFF:") == 0)
+		return ip.substr(7);
+	else
+		return ip;  
+}
+
 } // namespace irc end bracket
 
