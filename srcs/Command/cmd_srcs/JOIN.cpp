@@ -20,12 +20,12 @@ void CommandManager::process_single_join( Message& msg )
 	string topic;
 /*
 	// JOIN ZERO
-	if (msg[1] == "0")
-	{
-		// source_client PART all joined channels
-		t_channel_ptr_list joined_channel_list = _database->get_channel_list_of_client(source_client);
-		t_channel_ptr_list::iterator it = joined_channel_list.begin();
-		t_channel_ptr_list::iterator ite = joined_channel_list.end();
+	// if (msg[1] == "0")
+	// {
+	// 	// source_client PART all joined channels
+	// 	t_channel_ptr_list joined_channel_list = _database->get_channel_list_of_client(source_client);
+	// 	t_channel_ptr_list::iterator it = joined_channel_list.begin();
+	// 	t_channel_ptr_list::iterator ite = joined_channel_list.end();
 
 		for (; it != ite; it++)
 		{
