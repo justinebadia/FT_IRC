@@ -271,30 +271,8 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 	}
 	if (!client->get_buff(BUFFIN).empty())
 	{
-		if (!client->is_registered())
-		{
-			CommandManager::execute_commands_registration(*client);
-			_check_registration(client);
-		}
-		else
-			CommandManager::execute_commands(*client);
-		Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
-	}
-}
-
-void	Server::_check_registration( Client* client )
-{
-	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
-	{
-		Message					message(client);
-		t_reply_function_ptr	reply;
-
-		client->set_registration_flags(Client::COMPLETE); 
-		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
-		if (reply)
-			reply(message);
-		client->append_buff(BUFFOUT, message.get_message_out());
-		client->append_buff(BUFFOUT, "\r\n");
+		CommandManager::execute_commands(client);
+		// Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
 	}
 }
 
@@ -400,6 +378,22 @@ int	Server::run_server( void )
 	}
 	_kill_server();
 	return 0;
+}
+
+void	Server::check_registration( Client* client )
+{
+	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
+	{
+		Message					message(client);
+		t_reply_function_ptr	reply;
+
+		client->set_registration_flags(Client::COMPLETE); 
+		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
+		if (reply)
+			reply(message);
+		client->append_buff(BUFFOUT, message.get_message_out());
+		client->append_buff(BUFFOUT, "\r\n");
+	}
 }
 
 void	Server::disconnect_client( const int& fd )

@@ -45,7 +45,7 @@ private:
 	static void	_init_command_map( void );
 	static void	_init_reply_map( void );
 
-	static bool	_is_unregistered_allowed( const string& cmd_name );
+	static bool	_is_allowed( const string& cmd_name, Client* client );
 	
 
 public:
@@ -64,7 +64,7 @@ public:
 
 	/*-----------------COMMANDS-FUNCTIONS-----------------*/
 
-	static void	execute_commands( Client& client );
+	static void	execute_commands( Client* client );
 	static void	execute_commands_registration( Client& client );
 
 	static void cmd_error( Message& msg );

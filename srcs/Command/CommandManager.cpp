@@ -119,15 +119,14 @@ void	CommandManager::_init_reply_map( void )
 
 }
 
-bool	CommandManager::_is_unregistered_allowed( const string& cmd_name )
+bool	CommandManager::_is_allowed( const string& cmd_name, Client* client )
 {
-	if (cmd_name.compare("NICK") == 0 
-		|| cmd_name.compare("USER") == 0
-		|| cmd_name.compare("PASS") == 0
-		|| cmd_name.compare("QUIT") == 0)
-	{
+	if (client->is_registered() == true)
 		return true;
-	}
+	if (cmd_name.compare("PASS") == 0 || cmd_name.compare("QUIT") == 0)
+		return true;
+	if (client->is_password_validated() && (cmd_name.compare("NICK") == 0 || cmd_name.compare("USER") == 0))
+		return true;
 	return false;
 }
 
@@ -171,55 +170,27 @@ void	CommandManager::set_database( Database* database )
 
 /*-----------------------------COMMANDS-FUNCTIONS-----------------------------*/
 
-void	CommandManager::execute_commands( Client& client )
+void	CommandManager::execute_commands( Client* client )
 {
-	string&	buffin = client.get_buff(BUFFIN);
+	string&	buffin = client->get_buff(BUFFIN);
 	size_t	start = 0;
 	size_t	next = 0;
 	
-	Message	msg(&client);
+	Message	msg(client);
 	t_cmd_function_ptr command;
 	while ((next = buffin.find("\r\n", start)) != string::npos)
 	{
-		msg = Message(&client);
+		msg = Message(client);
 		msg.append_in(buffin.substr(start, next - start));
-		command = get_command_ptr(msg[0]);
-		if (command)
+		if (_is_allowed(msg[0], client) == true)
 		{
-			command(msg);
-			if (msg.get_client_ptr())
-				client.append_buff(BUFFOUT, msg.get_message_out());
-		}
-		msg.clear_all();
-		start = next + 2;
-	}
-	if (start != string::npos)
-		buffin.erase(0, start);
-	return ;
-}
-
-void	CommandManager::execute_commands_registration( Client& client )
-{
-	string&	buffin = client.get_buff(BUFFIN);
-	size_t	start = 0;
-	size_t	next = 0;
-	
-	Message	msg(&client);
-	t_cmd_function_ptr command;
-	if ((next = buffin.find("\r\n", start)) != string::npos)
-	{
-		msg = Message(&client);
-		msg.append_in(buffin.substr(start, next - start));
-		if (_is_unregistered_allowed(msg[0]))
-		{
-			if (client.is_password_validated() || msg[0] == "PASS" || msg[0] == "QUIT")
+			command = get_command_ptr(msg[0]);
+			if (command)
 			{
-				command = get_command_ptr(msg[0]);
-				if (command)
-				{
-					command(msg);
-					client.append_buff(BUFFOUT, msg.get_message_out());
-				}
+				command(msg);
+				client->append_buff(BUFFOUT, msg.get_message_out());
+				if (client->is_registered() == false)
+					_server->check_registration(client);
 			}
 		}
 		msg.clear_all();
