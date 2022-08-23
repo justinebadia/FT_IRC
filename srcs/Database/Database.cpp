@@ -301,7 +301,7 @@ void	Database::delete_client_from_all_lists( Client* client )
 	t_channel_list::iterator it = _channel_list.begin();
 	t_channel_list::iterator ite = _channel_list.end();
 
-	if (is_client_listed(client->get_nickname()) == false)
+	if (is_client_listed(client->get_fd()) == false)
 	{
 			return ; // client is not in the database
 	}

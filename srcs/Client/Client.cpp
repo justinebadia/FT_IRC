@@ -82,6 +82,8 @@ void	Client::_init_client( void )
 	_socket_opened = true;
 	_to_be_killed = false;
 	_registration = NONE_SET;
+	_buff[0] = string();
+	_buff[1] = string();
 	std::time(&_last_read);
 }
 
