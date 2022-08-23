@@ -58,6 +58,7 @@ _CMDS_SRCS	=	$(D_CMD)/utils_commands.cpp \
 				$(D_CMDS)/PING.cpp \
 				$(D_CMDS)/PRIVMSG.cpp \
 				$(D_CMDS)/QUIT.cpp \
+				$(D_CMDS)/SQUIT.cpp \
 				$(D_CMDS)/TOPIC.cpp \
 				$(D_CMDS)/USER.cpp \
 				$(D_CMDS)/WHO.cpp \

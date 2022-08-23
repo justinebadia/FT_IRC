@@ -1,0 +1,107 @@
+{
+   hostname
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:_notify_fork_child
+   fun:notify_register_check
+   fun:si_inet_config
+   fun:_mdns_search_ex
+   fun:_mdns_search
+   fun:mdns_hostbyname
+   fun:si_host_byname
+   fun:search_host_byname
+   fun:si_host_byname
+   fun:gethostbyname
+   fun:_ZN3irc6Server15grab_ip_addressEv
+}
+
+{
+   once_callout
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:_notify_fork_child
+   fun:notify_register_check
+   fun:__si_module_static_ds_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+   fun:si_module_static_ds
+   fun:si_module_with_name
+   fun:si_module_config_modules_for_category
+   fun:__si_module_static_search_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:_notify_fork_child
+   fun:_notify_fork_child
+   fun:notify_register_check
+   fun:si_inet_config
+   fun:_mdns_search_ex
+   fun:_mdns_search
+   fun:mdns_hostbyname
+   fun:si_host_byname
+   fun:search_host_byname
+   fun:si_host_byname
+   fun:gethostbyname
+}
+
+{
+   callout
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:_notify_fork_child
+   fun:_notify_fork_child
+   fun:notify_register_check
+   fun:__si_module_static_ds_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+   fun:si_module_static_ds
+   fun:si_module_with_name
+   fun:si_module_config_modules_for_category
+   fun:__si_module_static_search_block_invoke
+   fun:_dispatch_client_callout
+}
+
+{
+   static
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:__si_module_static_ds_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+   fun:si_module_static_ds
+   fun:si_module_with_name
+   fun:si_module_config_modules_for_category
+   fun:__si_module_static_search_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+   fun:si_module_static_search
+}
+
+{
+   module
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:si_module_config_modules_for_category
+   fun:__si_module_static_search_block_invoke
+   fun:_dispatch_client_callout
+   fun:_dispatch_once_callout
+   fun:si_module_static_search
+   fun:si_module_with_name
+   fun:si_search
+   fun:gethostbyname
+   fun:_ZN3irc6Server15grab_ip_addressEv
+   fun:_ZN3irc6ServerC2ERKjNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEb
+   fun:_ZN3irc6ServerC1ERKjNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEb
+}

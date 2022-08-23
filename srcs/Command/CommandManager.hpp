@@ -89,6 +89,7 @@ public:
 	static void cmd_ping( Message& msg );
 	static void cmd_privmsg( Message& msg );
 	static void cmd_quit( Message& msg );
+	static void cmd_squit( Message& msg );
 	static void	cmd_topic( Message& msg );
 	static void	cmd_user( Message& msg );
 	static void cmd_who( Message& msg );

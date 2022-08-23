@@ -94,7 +94,7 @@ void	Server::_init_server( void )
 		throw Server::SetsockoptErrorException();
 	}
 	
-	this->get_addr6().sin6_family = AF_INET6; //change to 6 eventually
+	this->get_addr6().sin6_family = AF_INET6;
 	this->get_addr6().sin6_addr = in6addr_any;
 	this->get_addr6().sin6_port = htons(get_port());
 	
@@ -200,20 +200,43 @@ t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
 
 void	Server::_process_connections( const t_pollfd& pollfd )
 {
+	Client		client;
+	t_addr6*	cli_addr6;
 	int			client_fd;
 	
 	if (pollfd.revents | POLLIN)
 	{
 		while(true)
 		{
-			socklen_t	len;
-			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
+			cli_addr6 = &client.get_addr6_ref();
+			socklen_t	len = sizeof(*cli_addr6);
+			char ip[INET6_ADDRSTRLEN];
+
+			client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(cli_addr6), &len);
 			if (client_fd == -1)
 				break;
 			int	opt = 1;
 			setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
-			_database.add_client_list(Client(client_fd, _server_name));
-			Server::log("process_connections: Added client with fd " + std::to_string(client_fd) + RESET); // WARNING
+			client.set_fd(client_fd);
+			if (cli_addr6->sin6_family == AF_INET6)
+				inet_ntop(AF_INET6, &cli_addr6->sin6_addr, ip, INET6_ADDRSTRLEN);
+			else
+				inet_ntop(AF_INET, &cli_addr6->sin6_addr, ip, INET_ADDRSTRLEN);
+			client.set_ip(convert_ip_address(ip));
+			_database.add_client_list(client);
+
+			// socklen_t	len = 0;
+			// t_socket	client_sock = t_socket();
+			
+			// client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
+			// if (client_fd == -1)
+			// 	break;
+			// int	opt = 1;
+			// setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
+			// _database.add_client_list(Client(client_fd, _server_name));
+
+			
+			Server::log("Newly accepted client ip = " + client.get_client_ip());
 		}
 	}
 }
@@ -375,6 +398,8 @@ int	Server::run_server( void )
 		{
 			_process_clients(&pollfds[1], client_count);
 		}
+		if (pollfds)
+			delete [] pollfds;
 	}
 	_kill_server();
 	return 0;
@@ -402,10 +427,11 @@ void	Server::disconnect_client( const int& fd )
 	
 	Client* client = _database.get_client(fd);
 
+	Server::log("Disconnected client of fd " + std::to_string(fd));
+	if (fd > 0)
+		close(client->get_fd());
 	if (client)
 		_database.delete_client_from_all_lists(client);
-	close(fd);
-	Server::log("Disconnected client of fd " + std::to_string(fd));
 }
 
 void	Server::disconnect_all_clients( void )
@@ -507,7 +533,7 @@ const string Server::grab_ip_address( void )
 
 	host = gethostbyname(hostname);
 
-	for (int i = 0; host->h_addr_list[i]; i++) 
+	for (int i = 0; host && host->h_addr_list[i]; i++) 
 	{
 		sock_addr.sin_addr = *((struct in_addr*) host->h_addr_list[i]);
 		inet_ntop(AF_INET, &sock_addr.sin_addr, ip, sizeof(ip));

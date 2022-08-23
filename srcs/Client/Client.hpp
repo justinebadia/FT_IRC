@@ -53,7 +53,7 @@ private:
 	string			_username;
 	string			_hostname;
 	string 			_realname;
-	const string 	_client_ip;
+	string 			_client_ip;
 	bool			_to_be_killed;
 	bool			_operator;
 	
@@ -110,6 +110,8 @@ public:
 
 	/*-----------------------SETTERS----------------------*/
 
+	void	set_fd( const int& fd );
+	void	set_ip( const string& ip );
 	void	set_nickname( const string& nickname );
 	void	set_username( const string& username );
 	void	set_hostname( const string& hostname );

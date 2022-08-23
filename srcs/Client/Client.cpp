@@ -4,6 +4,7 @@
 #include "../includes/color.hpp"
 #include "../includes/utils.hpp"
 
+#include <sys/poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -16,12 +17,18 @@ using namespace irc;
 
 /*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
+Client::Client( void ) // main constructor
+{
+	_init_client();
+	_socket.pollfd.fd = 0;
+}
+
 Client::Client( int fd ) // main constructor
 	: _nickname("")
 	, _username("")
 	, _hostname("")
 	, _realname("")
-	, _client_ip(grab_client_ip_adress())
+	, _client_ip("")
 {
 	_init_client();
 	_socket.pollfd.fd = fd;
@@ -33,7 +40,7 @@ Client::Client( int fd, string hostname ) // WARNING: TESTING PURPOSE constructo
 	, _username("")
 	, _hostname(hostname)
 	, _realname("")
-	, _client_ip(grab_client_ip_adress())  
+	, _client_ip("")  
 {
 	_init_client();
 	_socket.pollfd.fd = fd;
@@ -46,14 +53,17 @@ Client::Client( const Client& rhs ) : 	_client_ip(rhs._client_ip)// copy constru
 
 Client&	Client::operator=( const Client& rhs ) // copy operator overload
 {
+	set_fd(rhs.get_fd());
+	set_ip(rhs.get_client_ip());
 	set_nickname(rhs.get_nickname());
 	set_username(rhs.get_username());
 	set_hostname(rhs.get_hostname());
-	_realname = rhs._realname;
-	_socket.pollfd.fd = rhs.get_fd();
+	set_realname(rhs.get_realname());
 	_socket.pollfd.events = POLLIN | POLLOUT | POLLERR;
 	_socket_opened = rhs.is_opened();
 	_last_read = rhs.get_last_read();
+	_to_be_killed = rhs.get_to_be_killed();
+	_socket = rhs._socket;
 	
 	_registration = rhs.get_registration_flags();
 	// _socket.addr = rhs.get_addr_copy();
@@ -128,6 +138,8 @@ const string&	Client::get_source( void ) const { return _nickname; }
 
 /*-----------------------SETTERS----------------------*/
 
+void	Client::set_fd( const int& fd ) { _socket.pollfd.fd = fd; }
+void	Client::set_ip( const string& ip ) { _client_ip = ip; }
 void	Client::set_nickname( const string& nickname ) { _nickname = nickname; }
 void	Client::set_username( const string& username ) { _username = username; }
 void	Client::set_hostname( const string& hostname ) { _hostname = hostname; }
