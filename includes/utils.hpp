@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   User.hpp                                           :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/25 11:36:54 by sfournie          #+#    #+#             */
-/*   Updated: 2022/07/25 12:15:52 by sfournie         ###   ########.fr       */
+/*   Created: 2022/08/01 10:25:24 by sfournie          #+#    #+#             */
+/*   Updated: 2022/08/24 15:09:36 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
-#ifndef USER_HPP
-#define USER_HPP
-
+#ifndef UTILS_HPP
+#define UTILS_HPP
 #include <string>
+#include <regex>
+#include <list>
+#include "typedef.hpp"
 
 using std::string;
+using std::list;
 
-class User
+namespace irc
 {
-	
-};
+
+bool	        validate_with_regex( string regex_format, string entry );
+bool			compare_to_mask( const string& mask, const string& str );
+bool			compare_to_mask_list( list<string>* mask_list, const string& str );
+string    		convert_ip_address( const string& ip );
+
+}
 
 #endif
