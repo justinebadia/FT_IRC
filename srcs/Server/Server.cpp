@@ -524,7 +524,7 @@ void	Server::log_error( const string& msg )
 
 const string	 Server::grab_ip_address( void )
 {
-		char hostname[128];
+	char hostname[128];
 	char ip[16];
 	struct hostent* host;
 	struct sockaddr_in sock_addr;

@@ -31,7 +31,7 @@ D_OBJS	:= obj # not used
 INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_CMD) -I$(D_CHAN) -I$(D_DB)
 
 # Files
-MAIN		= 	test_files/main_loop.cpp
+MAIN		= 	./entry.cpp
 
 _CLASS_SRCS	=	$(D_CHAN)/Channel.cpp \
 				$(D_CLI)/Client.cpp \
