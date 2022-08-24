@@ -32,8 +32,7 @@ using std::endl;
 
 int Server::log_level = 1;
 
-/*WARNING: move set_exit_true() in a different file*/
-void	set_exit_true( int signal ) 
+void	set_exit_true( int signal ) //Can't be in Server due to function pointer restrictions. Could be static though.
 {
 	(void)signal;
 	Server::get_server().set_exit(true);
@@ -124,7 +123,7 @@ void	Server::_kill_server( void )
 	close(get_fd());
 }
 
-void	Server::_check_for_kills( void )
+void	Server::_check_for_kills( void ) // Attempt to disconnect any clients that has been flagged for deletion
 {
 	t_client_ptr_list			clients;
 	t_client_ptr_list::iterator	it;
@@ -140,7 +139,7 @@ void	Server::_check_for_kills( void )
 	}
 }
 
-void	Server::_check_for_timeouts( void )
+void	Server::_check_for_timeouts( void ) // Check and disconnect inactive users
 {
 	t_client_ptr_list			clients;
 	t_client_ptr_list::iterator	it;
@@ -148,7 +147,6 @@ void	Server::_check_for_timeouts( void )
 
 	clients = _database.get_client_ptr_list();
 	std::time(&current_time);
-	// Server::log("TIME - LAST_PING: " + std::to_string(current_time - _last_ping));
 	for (it = clients.begin(); it != clients.end(); it++)
 	{
 		if (current_time - (*it)->get_last_read() >= CLIENT_TIMEOUT)
@@ -171,7 +169,7 @@ void	Server::_init_operators( void )
 	_operator_vect.push_back(Operator("tshimoda", "irc"));
 }
 
-void	Server::_clean_operators( void )
+void	Server::_clean_operators( void ) // "Unlock" the operator accounts that were previously used by a client
 {
 	t_operator_vect::iterator	it;
 
@@ -187,7 +185,7 @@ void	Server::_clean_operators( void )
 
 
 
-t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
+t_pollfd*	Server::_poll_sockets( void ) // Create, poll() and return the array of Server and Clients' socket fd(s)
 {
 	t_pollfd*	pollfd_array;
 
@@ -198,7 +196,7 @@ t_pollfd*	Server::_poll_sockets( void ) //needs to be deleted
 	return pollfd_array;
 }
 
-void	Server::_process_connections( const t_pollfd& pollfd )
+void	Server::_process_connections( const t_pollfd& pollfd ) // Check and attempt to accept incoming connections
 {
 	Client		client;
 	t_addr6*	cli_addr6;
@@ -218,57 +216,48 @@ void	Server::_process_connections( const t_pollfd& pollfd )
 			int	opt = 1;
 			setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 			client.set_fd(client_fd);
+
+			// Get the client's ip address
 			if (cli_addr6->sin6_family == AF_INET6)
 				inet_ntop(AF_INET6, &cli_addr6->sin6_addr, ip, INET6_ADDRSTRLEN);
 			else
 				inet_ntop(AF_INET, &cli_addr6->sin6_addr, ip, INET_ADDRSTRLEN);
 			client.set_ip(convert_ip_address(ip));
 			_database.add_client_list(client);
-
-			// socklen_t	len = 0;
-			// t_socket	client_sock = t_socket();
-			
-			// client_fd = accept(pollfd.fd, reinterpret_cast<struct sockaddr*>(&_server_socket.addr6), &len);
-			// if (client_fd == -1)
-			// 	break;
-			// int	opt = 1;
-			// setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
-			// _database.add_client_list(Client(client_fd, _server_name));
-
 			
 			Server::log("Newly accepted client ip = " + client.get_client_ip());
 		}
 	}
 }
 
-void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size )
+void	Server::_process_clients( const t_pollfd* pollfd_array, size_t size ) // Loop through all Clients' sockets
 {
 	size_t	i;
 
 	for (i = 0; i < size; i++)
 	{
-		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP)
+		if (pollfd_array[i].revents & POLLERR || pollfd_array[i].revents & POLLHUP) // Force disconnect broken sockets
 		{
 			_process_client_pollerr( pollfd_array[i] );
 			continue;
 		}
-		_process_client_pollin( pollfd_array[i]);
+		_process_client_pollin( pollfd_array[i]); // Check for pollin and read if needed, then execute the client's buffin.
 		//_process_client_messages
 		if (pollfd_array[i].revents & POLLOUT)
 		{
-			_process_client_pollout(pollfd_array[i]);
+			_process_client_pollout(pollfd_array[i]); // Send data to clients if needed
 		}
-		_database.clean_database();
-		_check_for_timeouts();
-		_check_for_kills();
-		_clean_operators();
+		_database.clean_database();	// Clean empty channels
+		_check_for_timeouts();		// Force disconnect inactive clients / send PING on a timer
+		_check_for_kills();			// Attempt to disconnect clients flagged for deletion
+		_clean_operators();			// Unlock any operator's account that were previously used by a client that has left
 	}
 }
 
 void	Server::_process_client_pollerr( const t_pollfd& pollfd )
 {
 	disconnect_client(pollfd.fd);
-	Server::log("Server::_process_client_pollerr: removed client fd " + std::to_string(pollfd.fd)); // WARNING
+	Server::log("Server::_process_client_pollerr: removed client fd " + std::to_string(pollfd.fd));
 }
 
 void	Server::_process_client_pollin( const t_pollfd& pollfd )
@@ -290,12 +279,11 @@ void	Server::_process_client_pollin( const t_pollfd& pollfd )
 		buffer[bytes] = '\0';
 		client->append_buff(BUFFIN, string(buffer));
 		Server::log(string(YELLOW) + "_process_client_pollin: content received from client fd "
-				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN)); // WARNING
+				+ std::to_string(pollfd.fd) + ":\n" + RESET + client->get_buff(BUFFIN));
 	}
 	if (!client->get_buff(BUFFIN).empty())
 	{
 		CommandManager::execute_commands(client);
-		// Server::log(string(YELLOW) + "_process_client_pollin: buffin processed successfully");
 	}
 }
 
@@ -407,13 +395,13 @@ int	Server::run_server( void )
 
 void	Server::check_registration( Client* client )
 {
-	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set()) // WARNING missing password check
+	if (!client->is_registered() && client->is_nickname_set() && client->is_username_set())
 	{
 		Message					message(client);
 		t_reply_function_ptr	reply;
 
-		client->set_registration_flags(Client::COMPLETE); 
-		reply = CommandManager::get_reply_ptr(RPL_WELCOME); //WARNING
+		client->set_registration_flags(Client::COMPLETE);
+		reply = CommandManager::get_reply_ptr(RPL_WELCOME); 
 		if (reply)
 			reply(message);
 		client->append_buff(BUFFOUT, message.get_message_out());

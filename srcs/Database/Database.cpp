@@ -41,17 +41,11 @@ Database::~Database( void )										// default destructor
 	_client_list.clear();
 	_channel_list.clear();
 	_invite_coupon_list.clear();
-	// WARNING : add any other container to clear
 }
 
 
 /*---------------------------------GETTERS-----------------------------------*/
 
-// Database&	Database::get_Database( void ) // singleton
-// {
-// 	static Database singleton(void); // static singleton declared on the stack, call the main constructor
-// 	return singleton;
-// }
 
 // [Client related getters]
 
@@ -383,7 +377,7 @@ void	Database::create_invite_coupon( Client* client, Channel* channel )
 {
 	_invite_coupon_list.push_back(std::make_pair(client, channel));
 	_invite_coupon_list.sort();
-	_invite_coupon_list.unique();	// WARNING Not sure if invite_coupon_must_be_unique
+	_invite_coupon_list.unique();
 }
 
 int	Database::use_invite_coupon( Client* client, Channel* channel )

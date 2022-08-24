@@ -18,24 +18,7 @@ void CommandManager::process_single_join( Message& msg )
 	t_client_ptr_list	recipient_list;
 	Channel* 			channel = NULL;
 	string topic;
-/*
-	// JOIN ZERO
-	// if (msg[1] == "0")
-	// {
-	// 	// source_client PART all joined channels
-	// 	t_channel_ptr_list joined_channel_list = _database->get_channel_list_of_client(source_client);
-	// 	t_channel_ptr_list::iterator it = joined_channel_list.begin();
-	// 	t_channel_ptr_list::iterator ite = joined_channel_list.end();
 
-		for (; it != ite; it++)
-		{
-			recipient_list = (*it)->get_clients_any_permissions();
-			send_to_clients(recipient_list, source_client->get_prefix() + " PART " + channel->get_name() + CRLF);
-			(*it)->remove_member(source_client);
-		}
-		return;
-	}
-*/
 	channel = _database->get_channel(msg[1]);
 	if (!validate_with_regex(REGEX_CHANNEL, msg[1]))
 	{
@@ -51,14 +34,14 @@ void CommandManager::process_single_join( Message& msg )
 		{
 			if (_database->use_invite_coupon(source_client, channel) == SUCCESS)
 			{
-				// cout << "found the invite coupon!" << endl;
+				Server::log("An invite coupon has been consumed");
 			}
 			else
 			{
 				return run_reply(ERR_INVITEONLYCHAN, msg);
 			}
 		}
-		else if (channel->is_banned(source_client))// WARNING Ne fonctionne plus avec le banmask
+		else if (channel->is_banned(source_client))
 		{
 			return run_reply(ERR_BANNEDFROMCHAN, msg);
 		}
@@ -74,7 +57,6 @@ void CommandManager::process_single_join( Message& msg )
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
-		// recipient_list = channel->get_clients_not_matching_permissions(BAN);WARNING
 		recipient_list = channel->get_clients_not_banned();
 		recipient_list.remove(source_client);
 		recipient_list.push_back(source_client);
@@ -94,13 +76,12 @@ void CommandManager::process_single_join( Message& msg )
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);
-		//recipient_list = channel->get_clients_not_matching_permissions(BAN);WARNING
 		recipient_list = channel->get_clients_not_banned();
 		send_to_clients(recipient_list, source_client->get_prefix() + "JOIN " + msg[1] + CRLF);
 	}
 	Message	msg_names(source_client, "NAMES " + msg[1]);
 	cmd_names(msg_names);
-	msg.append_out(msg_names.get_message_out()); // WARNING
+	msg.append_out(msg_names.get_message_out());
 
 }
 

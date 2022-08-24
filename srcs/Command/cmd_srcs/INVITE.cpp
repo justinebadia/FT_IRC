@@ -27,7 +27,7 @@ void CommandManager::cmd_invite( Message& msg )
 	Channel* channel = _database->get_channel(msg[2]);	// if the channel doesnt exist
 	if (!channel)
 	{
-		run_reply(ERR_NOSUCHNICK, msg);	// WARNING RFC N'A PAS MIS POUR INVITE : NO SUCH CHANNEL
+		run_reply(ERR_NOSUCHNICK, msg);	// RFC N'A PAS MIS POUR INVITE : NO SUCH CHANNEL
 		return;
 	}
 	if (channel->is_member(source_client) == false)

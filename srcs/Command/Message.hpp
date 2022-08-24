@@ -22,13 +22,8 @@ class Message {
 
 private:
 	
-	/*---------------PROHIBITED-CONSTRUCTORS--------------*/
-
-	
-
 	/*--------------------ATTRIBUTES---------------------*/
 	
-	// Message		_empty_object;								// call the default constructor to create an instance on the stack
 	Client*		_client_ptr;
 	string		_message_in;
 	string		_message_out;

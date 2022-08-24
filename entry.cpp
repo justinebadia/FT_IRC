@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_loop.cpp                                      :+:      :+:    :+:   */
+/*   entry.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 11:52:15 by sfournie          #+#    #+#             */
-/*   Updated: 2022/08/13 18:39:23 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/24 15:39:18 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,5 @@ int	main( int argc, char** argv )
 		cerr << "Error running the server: " << e.what() << endl;
 		return FAIL;
 	}
-	
-	// set_signal_ctrl_c();
-	// signal(SIGINT, &
 	return SUCCESS;
 }

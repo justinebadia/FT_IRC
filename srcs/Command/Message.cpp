@@ -36,8 +36,6 @@ Message::~Message( void )									// destructor
 
 /*-------------OTHER-OPERATOR-OVERLOADS-------------*/
 
-//where is bool	operator==( const Message& rhs )			// equal equal operator overload
-
 string		Message::operator[]( int i )					// scope operator overload
 {
 	size_t start	= 0;

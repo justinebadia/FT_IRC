@@ -212,7 +212,7 @@ void CommandManager::cmd_ping( Message& msg )
 
 
 /*[QUIT]---------------------------------------------------------------------------------------------------------------[QUIT]*/
-void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right stuff at all
+void CommandManager::cmd_quit( Message& msg )
 {
 	Client*				client	= msg.get_client_ptr();
 	string				prefix = client->get_prefix();
@@ -222,9 +222,9 @@ void CommandManager::cmd_quit( Message& msg )// WARNING not sending the right st
 		return;
 	client->set_to_be_killed(true);
 	msg.set_client_ptr(NULL);
-	if (!msg[1].empty())  // WARNING todo
+	if (!msg[1].empty())
 		send_to_channels(chan_list, prefix + "QUIT :Quit: " + msg.get_substr_after(":") + CRLF);	
-	if (msg[1].empty())  // WARNING todo
+	if (msg[1].empty())
 		send_to_channels(chan_list, prefix + "QUIT :Quit: No reason given" + CRLF);
 	msg.append_out("Error :connection will be closed..." + CRLF);
 }
@@ -248,7 +248,7 @@ void	CommandManager::cmd_topic( Message& msg )
 	topic = channel->get_topic();
 	if (msg.get_param_count() == 1)				// SHOW TOPIC
 	{
-		if (topic.empty() == true)				// WARNING A VERIFIER si NULL ou string vide ""
+		if (topic.empty() == true)
 			run_reply(RPL_NOTOPIC, msg);
 		else
 			run_reply(RPL_TOPIC, msg);

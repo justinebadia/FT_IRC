@@ -29,9 +29,7 @@ void CommandManager::cmd_quit( Message& msg )
 	msg.set_client_ptr(NULL);
 	if (!msg.get_substr_after(":").empty())
 		send_to_clients(recipient_list, client->get_prefix() + "QUIT :Quit: " + msg.get_substr_after(":") + CRLF);
-		//send_to_channels(chan_list, prefix + "QUIT :Quit: " + msg.get_substr_after(":") + CRLF);	WARNING
 	if (msg[1].empty())
 		send_to_clients(recipient_list, client->get_prefix() + "QUIT :Quit: No reason given" + CRLF);
-		//send_to_channels(chan_list, prefix + "QUIT :Quit: No reason given" + CRLF);WARNING
 	msg.append_out("Error :connection will be closed..." + CRLF);
 }

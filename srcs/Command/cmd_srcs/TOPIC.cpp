@@ -22,7 +22,7 @@ void	CommandManager::cmd_topic( Message& msg )
 		return;
 	}
 /*
-	if (!channel) // WARNING Hexchat ajoute ip address si TOPIC n'a pas de param
+	if (!channel) // Hexchat ajoute ip address si TOPIC n'a pas de param
 	{
 		run_reply(ERR_NOSUCHCHANNEL, msg);
 		return;
@@ -52,7 +52,7 @@ void	CommandManager::cmd_topic( Message& msg )
 			}
 		}
 		channel->set_topic(msg.get_substr_after(":"));
-		recipient_list = channel->get_clients_not_banned();	// WARNING
+		recipient_list = channel->get_clients_not_banned();
 		send_to_clients(recipient_list, source_client->get_prefix() + "TOPIC " + msg[1] + " :" + msg.get_substr_after(":") + CRLF);
 	}
 }

@@ -40,7 +40,6 @@ void CommandManager::cmd_privmsg( Message& msg )
 		client = msg.get_client_ptr();
 		if (channel->is_banned(client))
 			return run_reply(ERR_CANNOTSENDTOCHAN, msg);
-		// recipient_list = channel->get_clients_not_matching_permissions(BAN);WARNING
 		recipient_list = channel->get_clients_not_banned();
 		recipient_list.remove(client);
 		send_to_clients(recipient_list, client->get_prefix() + "PRIVMSG " + channel->get_name() + " :" + msg.get_substr_after(":") + CRLF);

@@ -48,7 +48,7 @@ Channel& Channel::operator=( const Channel& rhs )	// copy operator overload
 	_topic_by_chanop_only = rhs._topic_by_chanop_only;
 	_topic = rhs._topic;
 	_password = rhs._password;
-	_memberlist = t_channel_memberlist(rhs._memberlist);	// WARNING algo de copy???
+	_memberlist = t_channel_memberlist(rhs._memberlist);
 	_mode_flags = rhs._mode_flags;
 	_mode_str = rhs._mode_str;
 
@@ -354,9 +354,7 @@ void	Channel::add_member( Client* client, e_permission type )
 		_memberlist.push_back(std::make_pair(client, type));
 	}
 
-	// WARNING
-	print_memberlist();
-	// WARNING
+	// print_memberlist(); // LOG
 }
 
 void	Channel::remove_member( Client* client )

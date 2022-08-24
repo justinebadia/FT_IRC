@@ -35,7 +35,7 @@ Client::Client( int fd ) // main constructor
 	// _socket.addr = addr;	
 }
 
-Client::Client( int fd, string hostname ) // WARNING: TESTING PURPOSE constructor - Pourquoi on le garde pas ?
+Client::Client( int fd, string hostname )
 	: _nickname("")
 	, _username("")
 	, _hostname(hostname)
@@ -72,7 +72,7 @@ Client&	Client::operator=( const Client& rhs ) // copy operator overload
 
 Client::~Client( void ) // destructor
 {
-	// freeaddrinfo( reinterpret_cast<struct addrinfo*>(&get_addr()) ); //WARNING
+
 }
 
 void	Client::_init_client( void )
@@ -171,19 +171,6 @@ void	Client::clear_buff( u_int buff_i )
 		_buff[0].clear();
 	if (buff_i == BUFFOUT)
 		_buff[1].clear();
-}
-
-void	Client::trim_buff( u_int buff_i, size_t len ) // WARNING pas utilisé
-{
-	string	*buff = NULL;
-
-	if (buff_i == BUFFIN)
-		buff = &buff[0];
-	if (buff_i == BUFFOUT)
-		buff = &buff[1];
-	if (!buff)
-		return ;
-	*buff = buff->substr(0, len);
 }
 
 bool	Client::is_event( int event ) const { return (get_revents() & event); }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Database.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sfournie <sfournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:53:04 by tshimoda          #+#    #+#             */
-/*   Updated: 2022/08/20 15:04:16 by tshimoda         ###   ########.fr       */
+/*   Updated: 2022/08/24 15:36:04 by sfournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ public:
 	
 	/*--------------CONSTRUCTORS-&-DESTRUCTOR-------------*/
 
-	// static Database&		get_Database(  ); 				// singleton
 	Database( void );										// main constructor
 	~Database( void );										// default destructor
 

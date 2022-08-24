@@ -36,7 +36,7 @@ bool	compare_to_mask_list( list<string>* mask_list, const string& str )
 	return false;
 }
 
-bool	compare_to_mask( const string& mask, const string& str )// WARNING missing '?'
+bool	compare_to_mask( const string& mask, const string& str )
 {
 	size_t	mask_i = 0;
 	size_t	str_i = 0;
@@ -82,7 +82,7 @@ bool	compare_to_mask( const string& mask, const string& str )// WARNING missing 
 	return true;
 }
 
-string	convert_ip_address(const string &ip)
+string	convert_ip_address(const string &ip) // convert IPv4 mapped as IPv6 to IPv4 notation
 {
 	if (ip.compare(0, 7, "::ffff:") == 0 || ip.compare(0, 7, "::FFFF:") == 0)
 		return ip.substr(7);

@@ -60,7 +60,6 @@ void CommandManager::process_single_kick( Message& msg )
 		}
 		else
 		{
-			//recipient_list = channel->get_clients_any_permissions();WARNING
 			recipient_list = channel->get_clients_not_banned();
 			if (msg[3].empty() == false)
 			{

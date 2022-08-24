@@ -65,10 +65,7 @@ private:
 	t_operator_vect		_operator_vect;
 
 	time_t				_last_ping;
-	static int			log_level;
-
-	//	std::map<int, void (Message::*reply_function)( int reply )> reply_map;
-	
+	static int			log_level;	
 
 public:
 
@@ -174,6 +171,6 @@ public:
 
 } // namespace irc end bracket
 
-void	set_exit_true( int signal ); // WARNING To be moved
+void	set_exit_true( int signal );
 
 #endif

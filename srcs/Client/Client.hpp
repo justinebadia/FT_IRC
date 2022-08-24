@@ -24,7 +24,7 @@ namespace irc {
 
 class Client {
 
-friend class Server; // WARNING: TESTING PURPOSE
+friend class Server;
 
 public:
 
@@ -126,7 +126,6 @@ public:
 
 	void	append_buff( u_int buff_i, const string& content );
 	void	clear_buff( u_int buff_i );
-	void	trim_buff( u_int buff_i, size_t len );
 
 	bool	is_event( int event ) const ;
 	bool	is_opened( void ) const;

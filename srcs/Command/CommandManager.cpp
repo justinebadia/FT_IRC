@@ -84,9 +84,9 @@ void	CommandManager::_init_reply_map( void )
 	_reply_map.insert(std::make_pair(RPL_BANLIST, rpl_banlist));						//[367] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
 	_reply_map.insert(std::make_pair(RPL_ENDOFBANLIST, rpl_endofbanlist));				//[368] MODE
-	_reply_map.insert(std::make_pair(RPL_MOTDSTART, rpl_motdstart));							//[375] MOTD
+	_reply_map.insert(std::make_pair(RPL_MOTDSTART, rpl_motdstart));					//[375] MOTD
 	_reply_map.insert(std::make_pair(RPL_MOTD, rpl_motd));								//[372] MOTD
-	_reply_map.insert(std::make_pair(RPL_ENDOFMOTD, rpl_endofmotd));							//[376] MOTD
+	_reply_map.insert(std::make_pair(RPL_ENDOFMOTD, rpl_endofmotd));					//[376] MOTD
 	_reply_map.insert(std::make_pair(RPL_YOUREOPER, rpl_youreoper));					//[381] OPER
 	_reply_map.insert(std::make_pair(ERR_NOSUCHNICK, err_nosuchnick));					//[401] INVITE,KILL,PRIVMSG,WHOIS
 	_reply_map.insert(std::make_pair(ERR_NOSUCHSERVER, err_nosuchserver));				//[402] LIST,NAMES,PING,USERS,WHO,WHOIS
