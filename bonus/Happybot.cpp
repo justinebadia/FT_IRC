@@ -14,6 +14,8 @@
 #include <math.h>
 
 using std::string;
+using std::cerr;
+using std::endl;
 
 /*============================================================================*/
 namespace irc {
@@ -36,6 +38,8 @@ Happybot&	Happybot::operator=( const Happybot& rhs )
 	_happy_thoughts = rhs._happy_thoughts;
 	_grumpy_thoughts = rhs._grumpy_thoughts;
 	_name = rhs._name;
+	_user = rhs._user;
+	_realname = rhs._realname;
 	_mood = rhs._mood;
 	_pollfd[0] = rhs._pollfd[0];
 	return *this;
@@ -47,7 +51,9 @@ Happybot&	Happybot::operator=( const Happybot& rhs )
 void	Happybot::_init_Happybot( void )
 {
 	_mood = HAPPY;
-	_name = "Happybot";
+	_name = "happybot";
+	_user = "happybot";
+	_realname = "happybot";
 	srand(static_cast<unsigned int>(time(NULL)));
 	_init_grumpy_thoughts();
 	_init_happy_thoughts();
@@ -80,6 +86,139 @@ void	Happybot::_init_grumpy_thoughts( void )
 	_grumpy_thoughts.push_back("Some people avoid thinking deeply in public, only because they are afraid of coming across as suicidal.");
 	_grumpy_thoughts.push_back("I'm busy saving everybody else when I can't even save myself");
 }
+
+
+
+int		Happybot::connect_to_server( string hostname, int port, string password )
+{
+	int sock = 0, client_fd;
+    struct sockaddr_in serv_addr;
+	std::string	input;		
+
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+	{
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+  
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(port);
+  
+    // Convert IPv4 and IPv6 addresses from text to binary
+    // form
+    if (inet_pton(AF_INET, hostname.c_str(), &serv_addr.sin_addr)
+        <= 0) {
+        printf(
+            "\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+  
+    if ((client_fd
+         = connect(sock, (struct sockaddr*)&serv_addr,
+                   sizeof(serv_addr)))
+        < 0) {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+	_pollfd[0].fd = sock;
+	_pollfd[0].events = POLLIN | POLLOUT;
+
+	input = "PASS " + password + "\r\n";
+	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
+	input = "NICK " + _name + "\r\n";
+	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
+	input = "USER " + _user + " * * :" + _realname + "\r\n";
+	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
+
+	return 0;
+}
+
+int		Happybot::run_bot( void )
+{	
+	int		res;
+	int		bytes = 0;
+	int		client_fd = _pollfd->fd;
+	char	buffer[1024];
+
+	buffout.append("JOIN #happy_world\r\n");
+	while(1)
+	{
+		res = poll(_pollfd, 1, 0);
+		if (res != 0)
+		{
+			if ((_pollfd[0].revents & POLLIN) == POLLIN)
+			{
+				
+				bytes = (int)(recv( _pollfd[0].fd, buffer, 1024, MSG_DONTWAIT ));
+				if (bytes <= 0)
+				{
+					std::cerr << "Error: Server connection has closed for unknown reason" << std::endl;
+					break;
+				}
+				buffin.append(buffer, (unsigned long)bytes);
+				process_buffin();
+				printf("\nRead : %s\n", buffer);
+			}
+			if (_pollfd[0].revents & POLLOUT && buffout.size())
+			{
+				bytes = (int)send(_pollfd[0].fd, buffout.c_str(), buffout.size(), MSG_DONTWAIT);
+				if (bytes > 0)
+					buffout.erase(0, (unsigned long)bytes);
+			}
+		}
+	}
+  
+    // closing the connected socket
+    close(client_fd);
+	return 0;
+}
+
+void	Happybot::process_buffin( void )
+{
+	size_t	start = 0;
+	size_t	next = 0;
+	string	cmd;
+
+	cerr << "pre-find crlf" << endl;
+	while ((next = buffin.find("\r\n", start)) != string::npos)
+	{
+		cmd = buffin.substr(start, next - start);
+		cerr << "cmd string = " << cmd << endl;
+		if (cmd.find(" NOTICE " + _name + " happy") != string::npos)
+		{
+			cerr << "found happy" << endl;
+			buffout.append("NOTICE #happy_world :" + get_random_happy_thought() + "\r\n");
+		}
+		else if (cmd.find(" NOTICE " + _name + " grumpy") != string::npos)
+		{
+			cerr << "found grumpy" << endl;
+			buffout.append("NOTICE #happy_world :" + get_random_grumpy_thought() + "\r\n");
+		}
+		else if (cmd.find("PING") != string::npos)
+			buffout.append("PONG\r\n");
+		start = next + 2;
+	}
+	if (start != string::npos)
+		buffin.erase(0, start);
+	return ;
+}
+
+void	Happybot::join_happy_world( void )
+{
+
+}
+void	Happybot::send_love_to_everybody( void )
+{
+
+}
+// void	Happybot::send_love_to_someone( string target_nick )
+// {
+
+// }
+// void	Happybot::send_love_to_channel( string channel_name )
+// {
+
+// }
 
 void	Happybot::set_as_grumpy( void )
 {
@@ -115,147 +254,6 @@ string	Happybot::get_random_grumpy_thought( void )
 	return _grumpy_thoughts[r_int];
 }
 
-int		Happybot::connect_to_server( string hostname, int port, string password )
-{
-	int sock = 0, valread, client_fd;
-    struct sockaddr_in serv_addr;
-	std::string	input;		
-
-    char buffer[1024] = { 0 };
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-	{
-        printf("\n Socket creation error \n");
-        return -1;
-    }
-  
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
-  
-    // Convert IPv4 and IPv6 addresses from text to binary
-    // form
-    if (inet_pton(AF_INET, hostname.c_str(), &serv_addr.sin_addr)
-        <= 0) {
-        printf(
-            "\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-  
-    if ((client_fd
-         = connect(sock, (struct sockaddr*)&serv_addr,
-                   sizeof(serv_addr)))
-        < 0) {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-	_pollfd[0].fd = sock;
-	_pollfd[0].events = POLLIN | POLLOUT;
-	int res;
-
-	input = "PASS " + password + "\r\n";
-	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
-	input = "NICK " + _name + "\r\n";
-	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
-	input = "USER " + std::string("happybot") + " * * :" + "happybot" + "\r\n";
-	send(_pollfd[0].fd, input.c_str(), input.size(), 0);
-
-	return 0;
-}
-
-int		Happybot::run_bot( void )
-{	
-	time_t	last_run;
-	int		res;
-	int		valread = 0;
-	int		client_fd = _pollfd->fd;
-	char	buffer[1024];
-	string	input;	
-
-	//join_happy_world();
-	input = "JOIN #happy_world\r\n";
-	send(_pollfd[0].fd, input.c_str(), input.size(), MSG_DONTWAIT);
-	while(1)
-	{
-		if (!input.size())
-        {
-			std::getline(std::cin, input);
-            if (!input.compare("EXIT"))
-                break;
-            input.append("\r\n");
-        }
-        
-		res = poll(_pollfd, 1, 0);
-		if (res != 0)
-		{
-			if ((_pollfd[0].revents & POLLIN) == POLLIN)
-			{
-				valread = read(_pollfd[0].fd, buffer, 1024);
-				if (valread > 0)
-					printf("\nRead : %s\n", buffer);
-			}
-			if (_pollfd[0].revents & POLLOUT && input.size())
-			{
-				if (send(_pollfd[0].fd, input.c_str(), input.size(), MSG_DONTWAIT))
-					input.clear();
-				input = "NOTICE #happy_world :" + get_random_happy_thought();
-				send(_pollfd[0].fd, input.c_str(), input.size(), MSG_DONTWAIT);
-				input.clear();
-			}
-		}
-	}
-  
-    // closing the connected socket
-    close(client_fd);
-	return 0;
-}
-
-void	Happybot::check_input( const string& input )
-{
-	size_t	start = 0;
-	size_t	next = 0;
-	
-	t_cmd_function_ptr command;
-	while ((next = buffin.find("\r\n", start)) != string::npos)
-	{
-		msg = Message(client);
-		msg.append_in(buffin.substr(start, next - start));
-		if (_is_allowed(msg[0], client) == true)
-		{
-			command = get_command_ptr(msg[0]);
-			if (command)
-			{
-				command(msg);
-				client->append_buff(BUFFOUT, msg.get_message_out());
-				if (client->is_registered() == false)
-					_server->check_registration(client);
-			}
-		}
-		msg.clear_all();
-		start = next + 2;
-	}
-	if (start != string::npos)
-		buffin.erase(0, start);
-	return ;
-}
-
-void	Happybot::join_happy_world( void )
-{
-
-}
-void	Happybot::send_love_to_everybody( void )
-{
-
-}
-void	Happybot::send_love_to_someone( string target_nick )
-{
-
-}
-void	Happybot::send_love_to_channel( string channel_name )
-{
-
-}
-
-
-
 } // namespace irc end bracket
 
 int main (int argc, char **argv)
@@ -267,7 +265,15 @@ int main (int argc, char **argv)
 		return 1;
 
 	if (!happybot.connect_to_server(argv[1], std::stoi(std::string(argv[2])), argv[3]))
+	{
 		happybot.run_bot();
+	}
+	else
+	{
+		std::cerr << "Happybot couldn't connect to server :(" << std::endl;
+		return 1;
+	}
+		
 	return 0;
 
 }
