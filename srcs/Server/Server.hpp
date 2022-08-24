@@ -142,7 +142,7 @@ public:
 	bool		is_client_operator( const string& nickname );
 	bool		is_client_operator( const int& fd );
 
-	const string grab_ip_address( void );
+	const string	grab_ip_address( void );
 
 	static void	log( const string& msg );
 	static void	log_error( const string& msg );

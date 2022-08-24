@@ -97,7 +97,7 @@ void	Server::_init_server( void )
 	this->get_addr6().sin6_family = AF_INET6;
 	this->get_addr6().sin6_addr = in6addr_any;
 	this->get_addr6().sin6_port = htons(get_port());
-	
+
 	if ((bind(this->get_fd(), (struct sockaddr*)&this->get_addr6(), sizeof(this->get_addr6())) == FAIL)) // Step 3: bind()
 	{
 		throw Server::BindErrorException();
@@ -522,15 +522,14 @@ void	Server::log_error( const string& msg )
 		cout << RED << "Server log: " << RESET << msg << endl;
 }
 
-const string Server::grab_ip_address( void )
+const string	 Server::grab_ip_address( void )
 {
-	char hostname[128];
+		char hostname[128];
 	char ip[16];
 	struct hostent* host;
 	struct sockaddr_in sock_addr;
 
 	gethostname(hostname, sizeof(hostname));
-
 	host = gethostbyname(hostname);
 
 	for (int i = 0; host && host->h_addr_list[i]; i++) 
