@@ -136,8 +136,10 @@ test	: _test $(NAME)
 _test	:
 		$(eval CFLAGS= -g -Wall -Wextra -Wshadow -Wconversion -Wpedantic)
 
+val		: valgrind --leak-check=full  --show-leak-kinds=all --suppressions=valgrind_suppress.supp ./ircserv 6667 pass
+
 bonus	: all
 		@ $(C_BOT)
 		@ /bin/echo happybot Executable is : $(BOT_NAME)
 
-.PHONY	: all clean fclean re test server client bonus
+.PHONY	: all clean fclean re server client test val bonus
