@@ -4,11 +4,13 @@ CC		= clang++
 CFLAGS	= -Werror -Wall -Wextra -Wshadow -Wconversion -Wpedantic -Iinclude -std=c++98
 C_OBJS	= $(CC) $(CFLAGS) $(INCS) -c $< -o $@
 C_MAIN	= $(CC) $(CFLAGS) $(INCS) $(OBJS) $(MAIN) -o $(NAME)
+C_BOT	= $(CC) $(CFLAGS) -I./bonus $(BOT_SRCS) -o $(BOT_NAME)
 
 # Program
-EXE		= ircserv
-NAME	= ircserv
-DESC	= \"ft_irc : coding our own IRC server\"
+EXE			= ircserv
+NAME		= ircserv
+DESC		= \"ft_irc : coding our own IRC server\"
+BOT_NAME	= happybot
 
 MAKE_PATH	 := $(abspath $(lastword $(MAKEFILE_LIST)))
 
@@ -23,6 +25,7 @@ D_CMD	:= $(D_SRCS)/Command
 D_CMDS	:= $(D_CMD)/cmd_srcs
 D_CHAN	:= $(D_SRCS)/Channel
 D_DB	:= $(D_SRCS)/Database
+D_BOT	:= ./bonus
 D_OBJS	:= obj # not used
 
 INCS	= -I$(D_INCS) -I$(D_CLI) -I$(D_SERV) -I$(D_CMD) -I$(D_CHAN) -I$(D_DB)
@@ -92,6 +95,7 @@ UTILS_HDRS	= $(patsubst %.hpp, $(D_INCS)/%.hpp, $(_UTILS_HDRS))
 
 SRCS		= $(CLASS_SRCS) $(CMDS_SRCS) $(UTILS_SRCS)
 HDRS		= $(CLASS_HDRS) $(UTILS_HDRS)
+BOT_SRCS	= $(D_BOT)/Happybot.cpp
 OBJS		= $(SRCS:.cpp=.o)
 
 PRINTED :=
@@ -117,6 +121,7 @@ clean	:
 
 fclean	: clean
 		@ rm -f $(NAME)
+		@ rm -f $(BOT_NAME)
 
 re		: fclean all
 
@@ -131,4 +136,8 @@ test	: _test $(NAME)
 _test	:
 		$(eval CFLAGS= -g -Wall -Wextra -Wshadow -Wconversion -Wpedantic)
 
-.PHONY	: all clean fclean re test server client
+bonus	: all
+		@ $(C_BOT)
+		@ /bin/echo happybot Executable is : $(BOT_NAME)
+
+.PHONY	: all clean fclean re test server client bonus

@@ -43,7 +43,11 @@ private:
 	vector<string>	_grumpy_thoughts;
 	int				_mood;
 	string			_name;
+	string			_user;
+	string			_realname;
 	struct pollfd	_pollfd[1];
+	string			buffin;
+	string			buffout;
 	
 	void	_init_Happybot( void );
 	void	_init_happy_thoughts( void );
@@ -69,6 +73,8 @@ public:
 
 	int		connect_to_server( string hostname, int port, string password );
 	int		run_bot( void );
+	void	process_buffin( void );
+
 	void	join_happy_world( void );
 	void	send_love_to_everybody( void );
 	void	send_love_to_someone( string target_nick );
