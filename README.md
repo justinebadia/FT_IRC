@@ -70,3 +70,4 @@ Once you're register, you'll receive a welcome reply :
 | KILL | KILL <client> <comment> - *This command may only be issued by IRC operators. It forcibly removes \<client\> from the network.*|
 | PING | PING - *Tests the presence of a connection. PING message results in a PONG reply.*|
 | ERROR | ERROR <error message> - *It is used before terminating client connections.*|
+
