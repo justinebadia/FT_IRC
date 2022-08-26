@@ -119,10 +119,12 @@ void CommandManager::cmd_mode(Message &msg)
 	string				modes = "";
 	string				params = "";
 	string 				format = "";
+	string				sign = "";
 	size_t				pos_it = 0;
 	Client*				source_client = msg.get_client_ptr();
 	t_client_ptr_list	recipient_list;
 	Channel* 			channel;
+
 	/*Checking for channel's errors*/
 	if (msg.get_param_count() < 1)
 	{
@@ -184,17 +186,17 @@ void CommandManager::cmd_mode(Message &msg)
 				else
 					run_reply(ERR_UNKNOWNMODE, msg);
 			}
-			if(msg[2][0] == '-')
-				msg.set_mode_rpl(msg[2][0] + modes + params);
-			else
-				msg.set_mode_rpl("+" + modes + params);
+			sign = msg[2][0];
+			if(sign.compare("-"))
+				sign = "+";
+			msg.set_mode_rpl(sign + modes + params);
 		}
 		run_reply(RPL_CHANNELMODEIS, msg);
 		recipient_list = channel->get_clients_not_banned();
 		recipient_list.remove(source_client);
 		if (!modes.empty())
 		{
-			format = source_client->get_prefix() + "MODE " + msg[1] + " " + modes;
+			format = source_client->get_prefix() + "MODE " + msg[1] + " " + sign + modes;
 			if (!params.empty())
 				format += params;
 			send_to_clients(recipient_list, format + CRLF);
