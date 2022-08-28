@@ -299,13 +299,13 @@ void CommandManager::rpl_motd (Message& msg )
 	msg.append_out(": 372 " + client->get_nickname() + " : - " + "MADE with love by Tshimoda, Sfournie, Jbadia" + CRLF);
 	if (banner)
 	{
-		while (banner.good())
+		std::string temp;       
+		while (std::getline (banner, temp))
 		{
-			std::string temp;                  
-	   		std::getline (banner, temp);
 	   		temp += CRLF;
 			msg.append_out(": 372 " + client->get_nickname() + " : - " + temp);
 		}
+		banner.close();
 	}
 }
 
