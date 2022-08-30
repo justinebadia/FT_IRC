@@ -57,3 +57,4 @@ void CommandManager::cmd_invite( Message& msg )
 		send_to_clients(recipient_list, source_client->get_prefix() + " INVITE " + msg[1] + " " + msg[2] + CRLF);
 	}
 }
+
